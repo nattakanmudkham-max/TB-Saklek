@@ -30,52 +30,105 @@ export default function LTBIPage() {
   )
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">🧪 วัณโรคระยะแฝง (LTBI)</h1>
-          <p className="text-gray-500 text-sm">ผู้สัมผัสที่ IGRA ผิดปกติ และได้รับการรักษา</p>
+    <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
+      {/* Page header */}
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '20px 32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{
+              width: 44, height: 44, background: '#f3e8ff', borderRadius: 12,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
+            }}>🧪</div>
+            <div>
+              <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>วัณโรคระยะแฝง (LTBI)</h1>
+              <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>ผู้สัมผัสที่ IGRA ผิดปกติ และได้รับการรักษา</p>
+            </div>
+          </div>
+          <Link href="/ltbi/new" style={{
+            background: '#2563eb', color: '#fff', padding: '9px 18px',
+            borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none',
+            boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
+          }}>
+            + เพิ่มรายการ
+          </Link>
         </div>
-        <Link href="/ltbi/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
-          + เพิ่มรายการ
-        </Link>
       </div>
-      <div className="flex gap-3 mb-4">
-        <input placeholder="ค้นหาชื่อผู้ป่วย / Index case"
-          value={search} onChange={e => setSearch(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 max-w-sm" />
-        <select value={year} onChange={e => setYear(e.target.value)} className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-          {[2569, 2568, 2567].map(y => <option key={y} value={y}>ปีงบ {y}</option>)}
-        </select>
-      </div>
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>{['Index Case', 'TB No.', 'ชื่อผู้รับการรักษา', 'IGRA', 'หมายเหตุการรักษา', ''].map(h =>
-              <th key={h} className="text-left px-3 py-3 text-xs font-medium text-gray-600">{h}</th>
-            )}</tr>
-          </thead>
-          <tbody>
-            {loading ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">กำลังโหลด...</td></tr>
-              : filtered.length === 0 ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">ไม่พบข้อมูล</td></tr>
-              : filtered.map(d => (
-                <tr key={d.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-3 py-3 text-gray-600">{d.index_name}</td>
-                  <td className="px-3 py-3 font-mono text-xs text-gray-400">{d.index_tb_no}</td>
-                  <td className="px-3 py-3 font-medium">{d.contact_name}</td>
-                  <td className="px-3 py-3">
-                    <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded text-xs">{d.igra || 'ผิดปกติ'}</span>
+
+      <div style={{ padding: '24px 32px' }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center' }}>
+          <div style={{ position: 'relative', flex: 1, maxWidth: 340 }}>
+            <span style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#94a3b8' }}>🔍</span>
+            <input
+              placeholder="ค้นหาชื่อผู้ป่วย / Index case"
+              value={search} onChange={e => setSearch(e.target.value)}
+              style={{
+                width: '100%', border: '1px solid #e2e8f0', borderRadius: 10,
+                padding: '9px 12px 9px 34px', fontSize: 13, background: '#fff',
+                outline: 'none', color: '#334155',
+              }}
+            />
+          </div>
+          <select value={year} onChange={e => setYear(e.target.value)} style={{
+            border: '1px solid #e2e8f0', borderRadius: 10, padding: '9px 14px',
+            fontSize: 13, background: '#fff', color: '#334155', outline: 'none', cursor: 'pointer',
+          }}>
+            {[2569, 2568, 2567].map(y => <option key={y} value={y}>ปีงบ {y}</option>)}
+          </select>
+          <span style={{ fontSize: 12, color: '#94a3b8', marginLeft: 4 }}>{filtered.length} รายการ</span>
+        </div>
+
+        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                {['Index Case', 'TB No.', 'ชื่อผู้รับการรักษา', 'IGRA', 'หมายเหตุการรักษา', ''].map(h => (
+                  <th key={h} style={{
+                    textAlign: 'left', padding: '11px 14px',
+                    fontSize: 11, fontWeight: 700, color: '#64748b',
+                    letterSpacing: 0.5, textTransform: 'uppercase',
+                  }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
+                  <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>ไม่พบข้อมูล
+                </td></tr>
+              ) : filtered.map((d, i) => (
+                <tr key={d.id} style={{
+                  borderBottom: '1px solid #f1f5f9',
+                  background: i % 2 === 1 ? '#fafbfc' : '#fff',
+                }} className="table-row">
+                  <td style={{ padding: '11px 14px', color: '#64748b' }}>{d.index_name}</td>
+                  <td style={{ padding: '11px 14px', fontFamily: 'monospace', fontSize: 11, color: '#94a3b8', fontWeight: 600 }}>{d.index_tb_no}</td>
+                  <td style={{ padding: '11px 14px', fontWeight: 600, color: '#0f172a' }}>{d.contact_name}</td>
+                  <td style={{ padding: '11px 14px' }}>
+                    <span style={{
+                      background: '#ffedd5', color: '#c2410c',
+                      padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                    }}>{d.igra || 'ผิดปกติ'}</span>
                   </td>
-                  <td className="px-3 py-3 text-gray-600 text-xs">{d.treatment_note}</td>
-                  <td className="px-3 py-3">
-                    <Link href={`/ltbi/${d.id}`} className="text-blue-600 hover:underline text-xs">แก้ไข</Link>
+                  <td style={{ padding: '11px 14px', color: '#475569', fontSize: 12 }}>{d.treatment_note}</td>
+                  <td style={{ padding: '11px 14px' }}>
+                    <Link href={`/ltbi/${d.id}`} style={{
+                      color: '#2563eb', fontSize: 12, fontWeight: 600,
+                      textDecoration: 'none', padding: '4px 10px',
+                      background: '#eff6ff', borderRadius: 6,
+                    }}>แก้ไข</Link>
                   </td>
                 </tr>
               ))}
-          </tbody>
-        </table>
-        <div className="px-4 py-2 text-xs text-gray-400 border-t">ทั้งหมด {filtered.length} ราย</div>
+            </tbody>
+          </table>
+          <div style={{ padding: '10px 16px', fontSize: 12, color: '#94a3b8', borderTop: '1px solid #f1f5f9' }}>
+            แสดง {filtered.length} จาก {data.length} รายการ
+          </div>
+        </div>
       </div>
+      <style>{`.table-row:hover { background: #f0f7ff !important; }`}</style>
     </div>
   )
 }

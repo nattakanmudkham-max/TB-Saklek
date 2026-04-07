@@ -39,37 +39,72 @@ export default function NewStaffPage() {
   }
 
   return (
-    <div className="p-8 max-w-3xl">
-      <button onClick={() => router.back()} className="text-sm text-gray-500 hover:text-gray-700 mb-3">← กลับ</button>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">เพิ่มข้อมูลคัดกรองเจ้าหน้าที่</h1>
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="grid grid-cols-2 gap-4">
-          <SectionTitle>ข้อมูลทั่วไป</SectionTitle>
-          <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
-          <FormInput label="ลำดับที่" type="number" value={form.seq} onChange={e => set('seq', e.target.value)} />
-          <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
-
-          <SectionTitle>ข้อมูลเจ้าหน้าที่</SectionTitle>
-          <FormSelect label="คำนำหน้า" options={['นาย','นาง','นางสาว','ดร.','ผศ.','รศ.'].map(v=>({value:v,label:v}))} value={form.prefix} onChange={e => set('prefix', e.target.value)} />
-          <FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} required />
-          <FormInput label="สกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} required />
-          <FormInput label="ตำแหน่ง" value={form.position} onChange={e => set('position', e.target.value)} placeholder="เช่น พยาบาลวิชาชีพชำนาญการ" />
-          <FormSelect label="ประเภท" options={TYPES} value={form.staff_type} onChange={e => set('staff_type', e.target.value)} />
-          <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
-
-          <SectionTitle>ผลการคัดกรอง</SectionTitle>
-          <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
-          <FormSelect label="ผล CXR" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
-          <div className="col-span-full"><FormTextArea label="หมายเหตุ" value={form.notes} onChange={e => set('notes', e.target.value)} /></div>
+    <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => router.back()} style={{
+            background: '#f1f5f9', border: 'none', borderRadius: 8,
+            padding: '7px 12px', fontSize: 13, color: '#475569', cursor: 'pointer',
+          }}>← กลับ</button>
+          <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, background: '#dbeafe', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>👤</div>
+            <h1 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>เพิ่มข้อมูลคัดกรองเจ้าหน้าที่</h1>
+          </div>
         </div>
-        {msg && <div className="mt-4 text-sm font-medium">{msg}</div>}
-        <div className="flex gap-3 mt-6">
-          <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50">
-            {saving ? 'กำลังบันทึก...' : '💾 บันทึก'}
-          </button>
-          <button type="button" onClick={() => router.back()} className="border border-gray-300 px-4 py-2 rounded-lg text-sm">ยกเลิก</button>
-        </div>
-      </form>
+      </div>
+
+      <div style={{ padding: '28px 32px', maxWidth: 760 }}>
+        <form onSubmit={handleSubmit}>
+          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '28px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div className="grid grid-cols-2 gap-5">
+              <SectionTitle>ข้อมูลทั่วไป</SectionTitle>
+              <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
+              <FormInput label="ลำดับที่" type="number" value={form.seq} onChange={e => set('seq', e.target.value)} />
+              <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
+
+              <SectionTitle>ข้อมูลเจ้าหน้าที่</SectionTitle>
+              <FormSelect label="คำนำหน้า" options={['นาย','นาง','นางสาว','ดร.','ผศ.','รศ.'].map(v=>({value:v,label:v}))} value={form.prefix} onChange={e => set('prefix', e.target.value)} />
+              <FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} required />
+              <FormInput label="สกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} required />
+              <FormInput label="ตำแหน่ง" value={form.position} onChange={e => set('position', e.target.value)} placeholder="เช่น พยาบาลวิชาชีพชำนาญการ" />
+              <FormSelect label="ประเภท" options={TYPES} value={form.staff_type} onChange={e => set('staff_type', e.target.value)} />
+              <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
+
+              <SectionTitle>ผลการคัดกรอง</SectionTitle>
+              <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
+              <FormSelect label="ผล CXR" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
+              <div className="col-span-full">
+                <FormTextArea label="หมายเหตุ" value={form.notes} onChange={e => set('notes', e.target.value)} />
+              </div>
+            </div>
+
+            {msg && (
+              <div style={{
+                marginTop: 20, padding: '12px 16px', borderRadius: 10,
+                background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2',
+                color: msg.includes('✅') ? '#15803d' : '#b91c1c',
+                fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}`,
+              }}>{msg}</div>
+            )}
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 28, paddingTop: 20, borderTop: '1px solid #f1f5f9' }}>
+              <button type="submit" disabled={saving} style={{
+                background: saving ? '#93c5fd' : '#2563eb',
+                color: '#fff', padding: '10px 24px', borderRadius: 10,
+                fontSize: 14, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
+                boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
+              }}>
+                {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
+              </button>
+              <button type="button" onClick={() => router.back()} style={{
+                background: '#fff', color: '#475569', padding: '10px 20px', borderRadius: 10,
+                fontSize: 14, border: '1px solid #e2e8f0', cursor: 'pointer',
+              }}>ยกเลิก</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

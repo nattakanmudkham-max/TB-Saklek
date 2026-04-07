@@ -41,52 +41,85 @@ export default function NewContactPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl">
-      <button onClick={() => router.back()} className="text-sm text-gray-500 hover:text-gray-700 mb-3">← กลับ</button>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">เพิ่มทะเบียนผู้สัมผัสร่วมบ้าน</h1>
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="grid grid-cols-2 gap-4">
-          <SectionTitle>ข้อมูล Index Case (ผู้ป่วย TB)</SectionTitle>
-          <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
-          <FormInput label="วันที่ขึ้นทะเบียน" type="date" value={form.registered_date} onChange={e => set('registered_date', e.target.value)} />
-          <FormInput label="ลำดับที่ (Index)" type="number" value={form.index_seq} onChange={e => set('index_seq', e.target.value)} />
-          <FormInput label="TB No." value={form.index_tb_no} onChange={e => set('index_tb_no', e.target.value)} placeholder="เช่น 682797800001" />
-          <FormInput label="HN (Index)" value={form.index_hn} onChange={e => set('index_hn', e.target.value)} />
-          <FormInput label="ชื่อ-สกุล (Index)" value={form.index_name} onChange={e => set('index_name', e.target.value)} required />
-          <FormInput label="อายุ (Index)" type="number" value={form.index_age} onChange={e => set('index_age', e.target.value)} />
-          <FormSelect label="จำแนกผู้ป่วย" options={PTYPE} value={form.index_patient_type} onChange={e => set('index_patient_type', e.target.value)} />
-          <div className="col-span-full">
-            <FormInput label="ที่อยู่ (Index)" value={form.index_address} onChange={e => set('index_address', e.target.value)} />
-          </div>
-
-          <SectionTitle>ข้อมูลผู้สัมผัส</SectionTitle>
-          <FormInput label="ลำดับที่ (ผู้สัมผัส)" type="number" value={form.contact_seq} onChange={e => set('contact_seq', e.target.value)} />
-          <FormInput label="HN (ผู้สัมผัส)" value={form.contact_hn} onChange={e => set('contact_hn', e.target.value)} />
-          <FormInput label="ชื่อ-สกุล (ผู้สัมผัส)" value={form.contact_name} onChange={e => set('contact_name', e.target.value)} required />
-          <FormInput label="อายุ (ผู้สัมผัส)" type="number" value={form.contact_age} onChange={e => set('contact_age', e.target.value)} />
-          <FormInput label="เบอร์โทรศัพท์" value={form.contact_phone} onChange={e => set('contact_phone', e.target.value)} />
-          <div className="col-span-full">
-            <FormInput label="ที่อยู่ (ผู้สัมผัส)" value={form.contact_address} onChange={e => set('contact_address', e.target.value)} />
-          </div>
-
-          <SectionTitle>ผลการตรวจคัดกรอง</SectionTitle>
-          <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
-          <FormSelect label="ผลการคัดกรอง (CXR)" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
-          <FormSelect label="Sputum AFB" options={AFB} value={form.sputum_afb} onChange={e => set('sputum_afb', e.target.value)} />
-          <FormSelect label="GeneXpert" options={AFB} value={form.genexpert} onChange={e => set('genexpert', e.target.value)} />
-          <FormSelect label="IGRA" options={IGRA} value={form.igra} onChange={e => set('igra', e.target.value)} />
-          <div className="col-span-full">
-            <FormTextArea label="หมายเหตุ" value={form.notes} onChange={e => set('notes', e.target.value)} />
+    <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => router.back()} style={{
+            background: '#f1f5f9', border: 'none', borderRadius: 8,
+            padding: '7px 12px', fontSize: 13, color: '#475569', cursor: 'pointer',
+          }}>← กลับ</button>
+          <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, background: '#fef9c3', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>👥</div>
+            <h1 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>เพิ่มทะเบียนผู้สัมผัสร่วมบ้าน</h1>
           </div>
         </div>
-        {msg && <div className="mt-4 text-sm font-medium">{msg}</div>}
-        <div className="flex gap-3 mt-6">
-          <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50">
-            {saving ? 'กำลังบันทึก...' : '💾 บันทึก'}
-          </button>
-          <button type="button" onClick={() => router.back()} className="border border-gray-300 px-4 py-2 rounded-lg text-sm">ยกเลิก</button>
-        </div>
-      </form>
+      </div>
+
+      <div style={{ padding: '28px 32px', maxWidth: 860 }}>
+        <form onSubmit={handleSubmit}>
+          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '28px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div className="grid grid-cols-2 gap-5">
+              <SectionTitle>ข้อมูล Index Case (ผู้ป่วย TB)</SectionTitle>
+              <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
+              <FormInput label="วันที่ขึ้นทะเบียน" type="date" value={form.registered_date} onChange={e => set('registered_date', e.target.value)} />
+              <FormInput label="ลำดับที่ (Index)" type="number" value={form.index_seq} onChange={e => set('index_seq', e.target.value)} />
+              <FormInput label="TB No." value={form.index_tb_no} onChange={e => set('index_tb_no', e.target.value)} placeholder="เช่น 682797800001" />
+              <FormInput label="HN (Index)" value={form.index_hn} onChange={e => set('index_hn', e.target.value)} />
+              <FormInput label="ชื่อ-สกุล (Index)" value={form.index_name} onChange={e => set('index_name', e.target.value)} required />
+              <FormInput label="อายุ (Index)" type="number" value={form.index_age} onChange={e => set('index_age', e.target.value)} />
+              <FormSelect label="จำแนกผู้ป่วย" options={PTYPE} value={form.index_patient_type} onChange={e => set('index_patient_type', e.target.value)} />
+              <div className="col-span-full">
+                <FormInput label="ที่อยู่ (Index)" value={form.index_address} onChange={e => set('index_address', e.target.value)} />
+              </div>
+
+              <SectionTitle>ข้อมูลผู้สัมผัส</SectionTitle>
+              <FormInput label="ลำดับที่ (ผู้สัมผัส)" type="number" value={form.contact_seq} onChange={e => set('contact_seq', e.target.value)} />
+              <FormInput label="HN (ผู้สัมผัส)" value={form.contact_hn} onChange={e => set('contact_hn', e.target.value)} />
+              <FormInput label="ชื่อ-สกุล (ผู้สัมผัส)" value={form.contact_name} onChange={e => set('contact_name', e.target.value)} required />
+              <FormInput label="อายุ (ผู้สัมผัส)" type="number" value={form.contact_age} onChange={e => set('contact_age', e.target.value)} />
+              <FormInput label="เบอร์โทรศัพท์" value={form.contact_phone} onChange={e => set('contact_phone', e.target.value)} />
+              <div className="col-span-full">
+                <FormInput label="ที่อยู่ (ผู้สัมผัส)" value={form.contact_address} onChange={e => set('contact_address', e.target.value)} />
+              </div>
+
+              <SectionTitle>ผลการตรวจคัดกรอง</SectionTitle>
+              <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
+              <FormSelect label="ผลการคัดกรอง (CXR)" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
+              <FormSelect label="Sputum AFB" options={AFB} value={form.sputum_afb} onChange={e => set('sputum_afb', e.target.value)} />
+              <FormSelect label="GeneXpert" options={AFB} value={form.genexpert} onChange={e => set('genexpert', e.target.value)} />
+              <FormSelect label="IGRA" options={IGRA} value={form.igra} onChange={e => set('igra', e.target.value)} />
+              <div className="col-span-full">
+                <FormTextArea label="หมายเหตุ" value={form.notes} onChange={e => set('notes', e.target.value)} />
+              </div>
+            </div>
+
+            {msg && (
+              <div style={{
+                marginTop: 20, padding: '12px 16px', borderRadius: 10,
+                background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2',
+                color: msg.includes('✅') ? '#15803d' : '#b91c1c',
+                fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}`,
+              }}>{msg}</div>
+            )}
+
+            <div style={{ display: 'flex', gap: 10, marginTop: 28, paddingTop: 20, borderTop: '1px solid #f1f5f9' }}>
+              <button type="submit" disabled={saving} style={{
+                background: saving ? '#93c5fd' : '#2563eb',
+                color: '#fff', padding: '10px 24px', borderRadius: 10,
+                fontSize: 14, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
+                boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
+              }}>
+                {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
+              </button>
+              <button type="button" onClick={() => router.back()} style={{
+                background: '#fff', color: '#475569', padding: '10px 20px', borderRadius: 10,
+                fontSize: 14, border: '1px solid #e2e8f0', cursor: 'pointer',
+              }}>ยกเลิก</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
