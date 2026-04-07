@@ -52,23 +52,21 @@ export default function AppointmentsPage() {
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>{['TB No.', 'HN', 'ชื่อ-สกุล', 'โรคประจำตัว', 'วันเริ่ม-สิ้นสุด', 'สูตรยา', 'นัด ด.1', 'นัด ด.6', ''].map(h =>
+            <tr>{['TB No.', 'HN', 'ชื่อ-สกุล', 'โรคประจำตัว', 'วันเริ่ม-สิ้นสุด', 'สูตรยา', ''].map(h =>
               <th key={h} className="text-left px-3 py-2 text-xs font-medium text-gray-600">{h}</th>
             )}</tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan={9} className="text-center py-8 text-gray-400">กำลังโหลด...</td></tr>
-              : filtered.length === 0 ? <tr><td colSpan={9} className="text-center py-8 text-gray-400">ไม่พบข้อมูล</td></tr>
+            {loading ? <tr><td colSpan={7} className="text-center py-8 text-gray-400">กำลังโหลด...</td></tr>
+              : filtered.length === 0 ? <tr><td colSpan={7} className="text-center py-8 text-gray-400">ไม่พบข้อมูล</td></tr>
               : filtered.map(d => (
                 <tr key={d.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-3 py-2 font-mono text-xs text-gray-500">{d.tb_no}</td>
+                  <td className="px-3 py-2 font-mono text-xs text-gray-500">{d.tb_no ? String(Math.round(parseFloat(d.tb_no))) : '-'}</td>
                   <td className="px-3 py-2">{d.hn}</td>
                   <td className="px-3 py-2 font-medium">{d.full_name}</td>
                   <td className="px-3 py-2 text-xs text-gray-500">{d.underlying_disease || '-'}</td>
                   <td className="px-3 py-2 text-xs">{d.treatment_start_date} → {d.treatment_end_date}</td>
                   <td className="px-3 py-2"><span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-mono">{d.regimen}</span></td>
-                  <td className="px-3 py-2 text-xs">{d.appt_m1 || '-'}</td>
-                  <td className="px-3 py-2 text-xs">{d.appt_m6 || '-'}</td>
                   <td className="px-3 py-2">
                     <Link href={`/appointments/${d.id}`} className="text-blue-600 hover:underline text-xs">แก้ไข</Link>
                   </td>

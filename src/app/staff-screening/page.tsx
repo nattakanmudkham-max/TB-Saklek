@@ -58,7 +58,7 @@ export default function StaffScreeningPage() {
               : filtered.map(d => (
                 <tr key={d.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="px-3 py-3">{d.seq}</td>
-                  <td className="px-3 py-3">{d.hn}</td>
+                  <td className="px-3 py-3">{String(Math.round(parseFloat(d.hn))).padStart(9, '0')}</td>
                   <td className="px-3 py-3 font-medium">{d.full_name}</td>
                   <td className="px-3 py-3 text-gray-600">{d.department}</td>
                   <td className="px-3 py-3">{d.cxr_date}</td>
