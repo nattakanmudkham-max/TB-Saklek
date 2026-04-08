@@ -155,7 +155,7 @@ export default function PatientsPage() {
 
         {/* Table */}
         <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', minWidth: 1100 }}>
+          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', minWidth: 1200 }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                 {[
@@ -166,7 +166,7 @@ export default function PatientsPage() {
                   { label: 'ชื่อ-สกุล', w: 180 },
                   { label: 'อายุ', w: 52 },
                   { label: 'ICD-10', w: 80 },
-                  { label: 'ประเภทปอด', w: 110 },
+                  { label: 'ประเภทปอด', w: 160 },
                   { label: 'วันเริ่มรักษา', w: 110 },
                   { label: 'ประเภทผู้ป่วย', w: 90 },
                   { label: 'ผลการรักษา', w: 140 },
@@ -197,31 +197,33 @@ export default function PatientsPage() {
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                     opacity: isDeleting ? 0.5 : 1,
                   }} className="table-row">
-                    <td style={{ padding: '10px 12px', color: '#94a3b8', fontSize: 12, fontWeight: 600, textAlign: 'center' }}>{i + 1}</td>
-                    <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600 }}>
+                    <td style={{ padding: '10px 12px', color: '#94a3b8', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
+                    <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.tb_no ? String(Math.round(parseFloat(String(p.tb_no)))) : '-'}
                     </td>
-                    <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600 }}>
+                    <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.hn ? String(Math.round(parseFloat(String(p.hn)))).padStart(9, '0') : '-'}
                     </td>
-                    <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12 }}>{toThaiBE(p.registered_date)}</td>
-                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a' }}>{p.full_name}</td>
-                    <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center' }}>{p.age ?? '-'}</td>
-                    <td style={{ padding: '10px 12px', color: '#475569' }}>{p.icd10 || '-'}</td>
-                    <td style={{ padding: '10px 12px' }}>
-                      <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                        {p.is_ip && <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 6px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>IP</span>}
-                        {p.is_ep && <span style={{ background: '#ffedd5', color: '#c2410c', padding: '2px 6px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>EP</span>}
-                        {!p.is_ip && !p.is_ep && <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
-                      </div>
+                    <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.registered_date)}</td>
+                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap' }}>{p.full_name}</td>
+                    <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.age ?? '-'}</td>
+                    <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.icd10 || '-'}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      {p.is_ip && p.is_ep
+                        ? <span style={{ background: '#ede9fe', color: '#7c3aed', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>ในปอด (IP) / นอกปอด (EP)</span>
+                        : p.is_ip
+                        ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>ในปอด (IP)</span>
+                        : p.is_ep
+                        ? <span style={{ background: '#ffedd5', color: '#c2410c', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>นอกปอด (EP)</span>
+                        : <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
                     </td>
-                    <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12 }}>{toThaiBE(p.treatment_start_date)}</td>
-                    <td style={{ padding: '10px 12px' }}>
+                    <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.treatment_start_date)}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.patient_type
                         ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 7px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>{p.patient_type}</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
                     </td>
-                    <td style={{ padding: '10px 12px' }}>
+                    <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       <span style={{ background: oc.bg, color: oc.text, padding: '2px 7px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>
                         {p.treatment_outcome || '-'}
                       </span>
