@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { FormInput, FormSelect, FormTextArea, SectionTitle } from '@/components/FormComponents'
+import { FormInput, FormSelect, FormTextArea, FormDateThai, SectionTitle } from '@/components/FormComponents'
 
 const FISCAL_YEARS = [2568, 2567, 2566, 2565, 2564, 2563, 2562, 2561].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
 const PATIENT_TYPES = ['NEW', 'Relapse', 'Transfer In', 'Treatment after failure', 'Treatment after loss to follow up'].map(v => ({ value: v, label: v }))
@@ -70,7 +70,7 @@ export default function NewPatientPage() {
               <FormSelect label="ปีงบประมาณ" options={FISCAL_YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
               <FormInput label="TB No." value={form.tb_no} onChange={e => set('tb_no', e.target.value)} placeholder="เช่น 682797800001" />
               <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
-              <FormInput label="วันที่ขึ้นทะเบียน" type="date" value={form.registered_date} onChange={e => set('registered_date', e.target.value)} />
+              <FormDateThai label="วันที่ขึ้นทะเบียน (พ.ศ.)" value={form.registered_date} onChange={v => set('registered_date', v)} />
 
               <SectionTitle>ข้อมูลผู้ป่วย</SectionTitle>
               <div className="col-span-full">
