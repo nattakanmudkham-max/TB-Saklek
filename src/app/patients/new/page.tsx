@@ -9,7 +9,7 @@ import { PROVINCES, DISTRICTS_BY_PROVINCE, SUBDISTRICTS_BY_DISTRICT } from '@/da
 // ─── Columns that exist in tb_patients DB table ───────────────────────────────
 const DB_COLS = new Set([
   'fiscal_year','tb_no','hn','registered_date','full_name','age','address',
-  'icd10','is_ip','is_ep','detected_place','treatment_place',
+  'icd10','xpert_result','is_ip','is_ep','detected_place','treatment_place',
   'treatment_start_date','patient_type','risk_group','result_m2','result_m3',
   'treatment_outcome','caregiver_name','phone','notes',
 ])
@@ -169,7 +169,7 @@ export default function NewPatientPage() {
     // Only include confirmed DB columns
     const fieldMap: Record<string, string> = {
       hn: 'hn', registered_date: 'registered_date',
-      icd10: 'icd10',
+      icd10: 'icd10', xpert_result: 'xpert_result',
       detected_place: 'detected_place', treatment_place: 'treatment_place',
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
       treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',

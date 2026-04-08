@@ -280,7 +280,7 @@ export default function EditPatientPage() {
     // Only send confirmed DB columns — omit potentially missing columns instead of sending null
     const fieldMap: Record<string, string> = {
       hn: 'hn', registered_date: 'registered_date',
-      icd10: 'icd10',
+      icd10: 'icd10', xpert_result: 'xpert_result',
       detected_place: 'detected_place', treatment_place: 'treatment_place',
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
       treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',
