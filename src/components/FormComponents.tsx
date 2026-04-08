@@ -155,6 +155,7 @@ interface ThaiDateProps {
 
 export function FormDateThai({ label, value, onChange, required }: ThaiDateProps) {
   const [display, setDisplay] = useState(() => isoToThai(value))
+  const pickerRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => { setDisplay(isoToThai(value)) }, [value])
 
@@ -170,20 +171,28 @@ export function FormDateThai({ label, value, onChange, required }: ThaiDateProps
     if (iso) setDisplay(isoToThai(iso))
   }
 
+  function handlePick(e: React.ChangeEvent<HTMLInputElement>) {
+    const iso = e.target.value
+    if (iso) { onChange(iso); setDisplay(isoToThai(iso)) }
+  }
+
   return (
     <div>
       <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
         {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
       </label>
-      <input
-        type="text"
-        value={display}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        placeholder="DD/MM/YYYY (พ.ศ.)"
-        className={inputClass}
-        required={required}
-      />
+      <div style={{ display: 'flex', gap: 4 }}>
+        <input type="text" value={display} onChange={handleChange} onBlur={handleBlur}
+          placeholder="DD/MM/YYYY (พ.ศ.)" className={inputClass} required={required && !display} />
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <button type="button"
+            onClick={() => { pickerRef.current?.showPicker?.(); pickerRef.current?.click() }}
+            style={{ height: '100%', padding: '0 10px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, cursor: 'pointer', fontSize: 15, color: '#2563eb', display: 'flex', alignItems: 'center' }}
+          >📅</button>
+          <input ref={pickerRef} type="date" value={value} onChange={handlePick}
+            style={{ position: 'absolute', opacity: 0, width: 0, height: 0, pointerEvents: 'none' }} tabIndex={-1} />
+        </div>
+      </div>
     </div>
   )
 }

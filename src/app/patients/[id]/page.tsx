@@ -4,6 +4,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { FormInput, FormSelect, FormTextArea, FormDateThai, SearchableSelect } from '@/components/FormComponents'
 import { THAI_HOSPITALS } from '@/data/thai_hospitals'
+import { PROVINCES, DISTRICTS_BY_PROVINCE, SUBDISTRICTS_BY_DISTRICT } from '@/data/thai_geography'
 
 const FISCAL_YEARS = Array.from({ length: 15 }, (_, i) => 2561 + i).reverse()
   .map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
@@ -42,11 +43,11 @@ const ICD10_OPTIONS = [
   { value: 'A187', label: 'A187: วัณโรคต่อมหมวกไต' },
   { value: 'A188', label: 'A188: วัณโรคของอวัยวะอื่นๆ ที่ระบุ' },
   { value: 'A189', label: 'A189: วัณโรคของอวัยวะอื่นๆ ไม่ระบุรายละเอียด' },
-  { value: 'A190', label: 'A190: วัณโรคแพร่กระจายเฉียบพลันในบริเวณที่ระบุเพียงแห่งเดียว' },
-  { value: 'A191', label: 'A191: วัณโรคแพร่กระจายเฉียบพลันในหลายบริเวณ' },
-  { value: 'A192', label: 'A192: วัณโรคแพร่กระจายเฉียบพลันชนิดไม่ระบุรายละเอียด' },
+  { value: 'A190', label: 'A190: วัณโรคแพร่กระจายเฉียบพลัน บริเวณเดียว' },
+  { value: 'A191', label: 'A191: วัณโรคแพร่กระจายเฉียบพลัน หลายบริเวณ' },
+  { value: 'A192', label: 'A192: วัณโรคแพร่กระจายเฉียบพลัน ไม่ระบุรายละเอียด' },
   { value: 'A198', label: 'A198: วัณโรคแพร่กระจายแบบอื่น' },
-  { value: 'A199', label: 'A199: วัณโรคแพร่กระจายชนิดไม่ระบุรายละเอียด' },
+  { value: 'A199', label: 'A199: วัณโรคแพร่กระจาย ไม่ระบุรายละเอียด' },
 ]
 
 const LUNG_TYPES = [
@@ -54,7 +55,6 @@ const LUNG_TYPES = [
   { value: 'EP', label: 'นอกปอด (EP)' },
   { value: 'IP/EP', label: 'ในปอด (IP) และนอกปอด (EP)' },
 ]
-
 const PATIENT_TYPES = [
   { value: 'NEW', label: 'ผู้ป่วยรายใหม่ (New)' },
   { value: 'Relapse', label: 'ผู้ป่วยกลับเป็นซ้ำ (Relapse)' },
@@ -63,20 +63,27 @@ const PATIENT_TYPES = [
   { value: 'Transfer-in', label: 'ผู้ป่วยย้ายมา (Transfer-in)' },
   { value: 'Other', label: 'ผู้ป่วยอื่นๆ (Other)' },
 ]
-
-const OUTCOMES = ['รักษาหาย', 'รักษาครบ(Completed)', 'เสียชีวิต(Died)', 'โอนออก(Transfered out)', 'ขาดยา', 'ล้มเหลว']
+const OUTCOMES = ['กำลังรักษา','รักษาหาย','รักษาครบ(Completed)','เสียชีวิต(Died)','โอนออก(Transfered out)','ขาดยา','ล้มเหลว']
   .map(v => ({ value: v, label: v }))
 const CXR_MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: `CXR เดือนที่ ${i + 1}`, label: `CXR เดือนที่ ${i + 1}` }))
 const AFB_MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: `AFB เดือนที่ ${i + 1}`, label: `AFB เดือนที่ ${i + 1}` }))
-const TITLES = ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'].map(v => ({ value: v, label: v }))
-const MEDICAL_RIGHTS = ['สวัสดิการข้าราชการ', 'ประกันสังคม', 'บัตรทอง/30 บาท', 'ชำระเอง', 'อื่นๆ'].map(v => ({ value: v, label: v }))
-const NATIONALITIES = ['ไทย', 'พม่า', 'ลาว', 'กัมพูชา', 'เวียดนาม', 'จีน', 'อื่นๆ'].map(v => ({ value: v, label: v }))
-const POPULATIONS = ['ไทย', 'ต่างด้าว', 'แรงงานต่างชาติ'].map(v => ({ value: v, label: v }))
-const STEPS = ['ข้อมูลทะเบียน', 'ข้อมูลผู้ป่วย', 'การวินิจฉัยและตรวจ', 'การรักษา', 'ผลระหว่างการรักษา', 'ผู้ดูแลและติดต่อ']
+const TITLES = ['นาย','นาง','นางสาว','เด็กชาย','เด็กหญิง'].map(v => ({ value: v, label: v }))
+const MEDICAL_RIGHTS = ['สวัสดิการข้าราชการ','ประกันสังคม','บัตรทอง/30 บาท','ชำระเอง','อื่นๆ'].map(v => ({ value: v, label: v }))
+const NATIONALITIES = ['ไทย','พม่า','ลาว','กัมพูชา','เวียดนาม','จีน','อื่นๆ'].map(v => ({ value: v, label: v }))
+const POPULATIONS = ['ไทย','ต่างด้าว','แรงงานต่างชาติ'].map(v => ({ value: v, label: v }))
+const STEPS = ['ข้อมูลทะเบียน','ข้อมูลผู้ป่วย','การวินิจฉัยและตรวจ','การรักษา','ผลระหว่างการรักษา','ผู้ดูแลและติดต่อ']
 
-function SectionHeader({ num, title, color, border, textColor }: {
-  num: number; title: string; color: string; border: string; textColor: string
-}) {
+function calcAge(iso: string) {
+  if (!iso) return { years: 0, months: 0 }
+  const b = new Date(iso), t = new Date()
+  let y = t.getFullYear() - b.getFullYear()
+  let m = t.getMonth() - b.getMonth()
+  if (m < 0) { y--; m += 12 }
+  if (t.getDate() < b.getDate() && m > 0) m--
+  return { years: y, months: m }
+}
+
+function SectionHeader({ num, title, color, border, textColor }: { num: number; title: string; color: string; border: string; textColor: string }) {
   return (
     <div style={{ background: color, borderBottom: `2px solid ${border}`, padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 14 }}>
       <div style={{ width: 32, height: 32, borderRadius: '50%', background: textColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{num}</div>
@@ -85,7 +92,7 @@ function SectionHeader({ num, title, color, border, textColor }: {
   )
 }
 
-function deriveLungType(is_ip: boolean, is_ep: boolean): string {
+function deriveLung(is_ip: boolean, is_ep: boolean) {
   if (is_ip && is_ep) return 'IP/EP'
   if (is_ip) return 'IP'
   if (is_ep) return 'EP'
@@ -102,67 +109,67 @@ export default function EditPatientPage() {
   const [activeStep, setActiveStep] = useState(0)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) {
-          const idx = sectionRefs.current.findIndex(r => r === e.target)
-          if (idx >= 0) setActiveStep(idx)
-        }
-      }),
-      { threshold: 0.25 }
-    )
-    sectionRefs.current.forEach(r => r && observer.observe(r))
-    return () => observer.disconnect()
-  }, [loading])
-
-  function goTo(idx: number) {
-    sectionRefs.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
   const [form, setForm] = useState({
-    fiscal_year: '2568', tb_no: '', hn: '', registered_date: '', screening_type: '',
-    title: '', first_name: '', last_name: '', id_card: '', birth_date: '', age: '',
+    fiscal_year: '2568', tb_no: '', hn: '', registered_date: '',
+    title: '', first_name: '', last_name: '', id_card: '', birth_date: '', age: '', age_months: '',
     population_type: '', nationality: '', medical_right: '',
-    address: '', village_no: '', subdistrict: '', district: '', province: '',
+    address: '', village_no: '', province: '', district: '', subdistrict: '',
     icd10: '', xpert_result: '', lung_type: '',
-    detected_place: '', treatment_place: '', treatment_start_date: '', patient_type: '', risk_group: '',
+    detected_place: '', treatment_place: '', treatment_start_date: '', patient_type: '',
+    risk_has: '', risk_group: '',
     cxr_result: '', cxr_date: '', sputum_result: '', sputum_lab_no: '', sputum_date: '',
     treatment_outcome: '', caregiver_name: '', phone: '', notes: '',
   })
 
   useEffect(() => {
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          const i = sectionRefs.current.findIndex(r => r === e.target)
+          if (i >= 0) setActiveStep(i)
+        }
+      }), { threshold: 0.25 }
+    )
+    sectionRefs.current.forEach(r => r && obs.observe(r))
+    return () => obs.disconnect()
+  }, [loading])
+
+  useEffect(() => {
     async function load() {
       const { data } = await supabase.from('tb_patients').select('*').eq('id', params.id).single()
       if (data) {
+        const riskVal = data.risk_group ?? ''
+        const birthIso = data.birth_date ?? ''
+        const { years, months } = calcAge(birthIso)
         setForm({
           fiscal_year: String(data.fiscal_year ?? '2568'),
           tb_no: String(data.tb_no ?? ''),
           hn: String(data.hn ?? ''),
           registered_date: data.registered_date ?? '',
-          screening_type: data.screening_type ?? '',
           title: data.title ?? '',
           first_name: data.first_name ?? (data.title ? '' : (data.full_name ?? '')),
           last_name: data.last_name ?? '',
           id_card: data.id_card ?? '',
-          birth_date: data.birth_date ?? '',
-          age: String(data.age ?? ''),
+          birth_date: birthIso,
+          age: birthIso ? String(years) : String(data.age ?? ''),
+          age_months: birthIso ? String(months) : '',
           population_type: data.population_type ?? '',
           nationality: data.nationality ?? '',
           medical_right: data.medical_right ?? '',
           address: data.address ?? '',
           village_no: data.village_no ?? '',
-          subdistrict: data.subdistrict ?? '',
-          district: data.district ?? '',
           province: data.province ?? '',
+          district: data.district ?? '',
+          subdistrict: data.subdistrict ?? '',
           icd10: data.icd10 ?? '',
           xpert_result: data.xpert_result ?? '',
-          lung_type: deriveLungType(!!data.is_ip, !!data.is_ep),
+          lung_type: deriveLung(!!data.is_ip, !!data.is_ep),
           detected_place: data.detected_place ?? '',
           treatment_place: data.treatment_place ?? '',
           treatment_start_date: data.treatment_start_date ?? '',
           patient_type: data.patient_type ?? '',
-          risk_group: data.risk_group ?? '',
+          risk_has: riskVal === 'ไม่มี' ? 'none' : riskVal ? 'yes' : '',
+          risk_group: riskVal === 'ไม่มี' ? '' : riskVal,
           cxr_result: data.result_m2 ?? '',
           cxr_date: data.cxr_date ?? '',
           sputum_result: data.result_m3 ?? '',
@@ -179,31 +186,46 @@ export default function EditPatientPage() {
     load()
   }, [params.id])
 
-  function set(field: string, value: string) {
-    setForm(prev => ({ ...prev, [field]: value }))
+  function set(field: string, value: string) { setForm(prev => ({ ...prev, [field]: value })) }
+
+  function handleBirthDate(iso: string) {
+    const { years, months } = calcAge(iso)
+    setForm(prev => ({ ...prev, birth_date: iso, age: String(years), age_months: String(months) }))
   }
 
+  const districts = DISTRICTS_BY_PROVINCE[form.province] ?? []
+  const subdistricts = SUBDISTRICTS_BY_DISTRICT[form.district] ?? []
+
+  function goTo(i: number) { sectionRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSaving(true); setMsg('')
+    e.preventDefault(); setSaving(true); setMsg('')
 
     const full_name = [form.title, form.first_name, form.last_name].filter(Boolean).join(' ') || undefined
     const is_ip = form.lung_type === 'IP' || form.lung_type === 'IP/EP'
     const is_ep = form.lung_type === 'EP' || form.lung_type === 'IP/EP'
+    const risk_group = form.risk_has === 'none' ? 'ไม่มี' : form.risk_group || null
+    const address = form.address || null
 
-    const skip = new Set(['title', 'first_name', 'last_name', 'lung_type', 'cxr_result', 'sputum_result'])
-    const raw: Record<string, unknown> = { full_name, is_ip, is_ep }
-    for (const [k, v] of Object.entries(form)) {
-      if (skip.has(k)) continue
-      raw[k] = v === '' ? null : v
-    }
-    raw.result_m2 = form.cxr_result || null
-    raw.result_m3 = form.sputum_result || null
-
-    const payload = {
-      ...raw,
+    const payload: Record<string, unknown> = {
+      full_name, is_ip, is_ep, risk_group, address,
       fiscal_year: parseInt(form.fiscal_year),
       age: form.age ? parseInt(form.age) : null,
+      tb_no: form.tb_no || null,
+      hn: form.hn || null,
+      registered_date: form.registered_date || null,
+      icd10: form.icd10 || null,
+      xpert_result: form.xpert_result || null,
+      detected_place: form.detected_place || null,
+      treatment_place: form.treatment_place || null,
+      treatment_start_date: form.treatment_start_date || null,
+      patient_type: form.patient_type || null,
+      result_m2: form.cxr_result || null,
+      result_m3: form.sputum_result || null,
+      treatment_outcome: form.treatment_outcome || null,
+      caregiver_name: form.caregiver_name || null,
+      phone: form.phone || null,
+      notes: form.notes || null,
     }
 
     const { error } = await supabase.from('tb_patients').update(payload).eq('id', params.id)
@@ -220,9 +242,7 @@ export default function EditPatientPage() {
   }
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#94a3b8', fontSize: 14 }}>
-      ⏳ กำลังโหลดข้อมูล...
-    </div>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#94a3b8', fontSize: 14 }}>⏳ กำลังโหลดข้อมูล...</div>
   )
 
   const displayName = [form.title, form.first_name, form.last_name].filter(Boolean).join(' ') || form.first_name
@@ -243,15 +263,13 @@ export default function EditPatientPage() {
               </div>
             </div>
           </div>
-          <button onClick={handleDelete} disabled={deleting} style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            🗑 ลบข้อมูล
-          </button>
+          <button onClick={handleDelete} disabled={deleting} style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>🗑 ลบข้อมูล</button>
         </div>
       </div>
 
       {/* Progress Bar */}
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '14px 32px', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 0, overflowX: 'auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto' }}>
           {STEPS.map((step, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
               <button type="button" onClick={() => goTo(i)} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', background: i === activeStep ? '#eff6ff' : 'transparent' }}>
@@ -260,7 +278,7 @@ export default function EditPatientPage() {
                 </div>
                 <span style={{ fontSize: 12, fontWeight: i === activeStep ? 700 : 400, color: i === activeStep ? '#2563eb' : i < activeStep ? '#22c55e' : '#64748b' }}>{step}</span>
               </button>
-              {i < STEPS.length - 1 && <div style={{ flex: 1, height: 2, background: i < activeStep ? '#22c55e' : '#e2e8f0', margin: '0 4px', minWidth: 20 }} />}
+              {i < STEPS.length - 1 && <div style={{ flex: 1, height: 2, background: i < activeStep ? '#22c55e' : '#e2e8f0', margin: '0 4px', minWidth: 16 }} />}
             </div>
           ))}
         </div>
@@ -273,22 +291,11 @@ export default function EditPatientPage() {
           <div ref={el => { sectionRefs.current[0] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <SectionHeader num={1} title="ข้อมูลทะเบียน" color="#fef2f2" border="#fecaca" textColor="#b91c1c" />
             <div style={{ padding: '24px' }}>
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 <FormSelect label="ปีงบประมาณ" options={FISCAL_YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
                 <FormInput label="รหัส TB No." value={form.tb_no} onChange={e => set('tb_no', e.target.value)} />
                 <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
                 <FormDateThai label="วันที่ขึ้นทะเบียน (พ.ศ.)" value={form.registered_date} onChange={v => set('registered_date', v)} />
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">ประเภทคัดกรอง</label>
-                  <div style={{ display: 'flex', gap: 16, padding: '9px 0' }}>
-                    {['Active', 'Passive'].map(t => (
-                      <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}>
-                        <input type="radio" name="screening_type" value={t} checked={form.screening_type === t} onChange={e => set('screening_type', e.target.value)} style={{ accentColor: '#2563eb' }} />
-                        {t}
-                      </label>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -304,20 +311,50 @@ export default function EditPatientPage() {
               </div>
               <div style={{ marginTop: 16 }} className="grid grid-cols-4 gap-4">
                 <FormInput label="เลขบัตรประชาชน" value={form.id_card} onChange={e => set('id_card', e.target.value)} />
-                <FormDateThai label="วันเกิด (พ.ศ.)" value={form.birth_date} onChange={v => set('birth_date', v)} />
-                <FormInput label="อายุ (ปี)" type="number" value={form.age} onChange={e => set('age', e.target.value)} min="0" max="150" />
+                <FormDateThai label="วันเกิด (พ.ศ.)" value={form.birth_date} onChange={handleBirthDate} />
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">อายุ (คำนวณอัตโนมัติ)</label>
+                  <div style={{ padding: '9px 12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, color: '#334155', minHeight: 38 }}>
+                    {form.age ? `${form.age} ปี ${form.age_months} เดือน` : <span style={{ color: '#94a3b8' }}>กรอกวันเกิด</span>}
+                  </div>
+                </div>
                 <FormSelect label="สิทธิ์การรักษา" options={MEDICAL_RIGHTS} value={form.medical_right} onChange={e => set('medical_right', e.target.value)} />
               </div>
               <div style={{ marginTop: 16 }} className="grid grid-cols-4 gap-4">
                 <FormSelect label="ประชากร" options={POPULATIONS} value={form.population_type} onChange={e => set('population_type', e.target.value)} />
                 <FormSelect label="สัญชาติ" options={NATIONALITIES} value={form.nationality} onChange={e => set('nationality', e.target.value)} />
-                <div className="col-span-2"><FormInput label="ที่อยู่" value={form.address} onChange={e => set('address', e.target.value)} /></div>
+                <div className="col-span-2"><FormInput label="ที่อยู่ (บ้านเลขที่ ซอย ถนน)" value={form.address} onChange={e => set('address', e.target.value)} /></div>
               </div>
               <div style={{ marginTop: 16 }} className="grid grid-cols-4 gap-4">
-                <FormInput label="หมู่ที่" value={form.village_no} onChange={e => set('village_no', e.target.value)} />
-                <FormInput label="ตำบล" value={form.subdistrict} onChange={e => set('subdistrict', e.target.value)} />
-                <FormInput label="อำเภอ" value={form.district} onChange={e => set('district', e.target.value)} />
-                <FormInput label="จังหวัด" value={form.province} onChange={e => set('province', e.target.value)} />
+                <FormInput label="หมู่ที่" value={form.village_no} onChange={e => set('village_no', e.target.value)} placeholder="เช่น 1" />
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">จังหวัด</label>
+                  <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                    value={form.province} onChange={e => { set('province', e.target.value); setForm(p => ({ ...p, district: '', subdistrict: '' })) }}>
+                    <option value="">-- เลือก --</option>
+                    {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">อำเภอ</label>
+                  {districts.length > 0
+                    ? <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                        value={form.district} onChange={e => { set('district', e.target.value); set('subdistrict', '') }}>
+                        <option value="">-- เลือก --</option>
+                        {districts.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    : <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" value={form.district} onChange={e => set('district', e.target.value)} placeholder="พิมพ์อำเภอ" />}
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">ตำบล</label>
+                  {subdistricts.length > 0
+                    ? <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                        value={form.subdistrict} onChange={e => set('subdistrict', e.target.value)}>
+                        <option value="">-- เลือก --</option>
+                        {subdistricts.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    : <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" value={form.subdistrict} onChange={e => set('subdistrict', e.target.value)} placeholder="พิมพ์ตำบล" />}
+                </div>
               </div>
             </div>
           </div>
@@ -342,10 +379,27 @@ export default function EditPatientPage() {
                 <SearchableSelect label="สถานที่ตรวจพบ" options={THAI_HOSPITALS} value={form.detected_place} onChange={v => set('detected_place', v)} />
                 <SearchableSelect label="สถานที่รักษา" options={THAI_HOSPITALS} value={form.treatment_place} onChange={v => set('treatment_place', v)} />
               </div>
-              <div style={{ marginTop: 16 }} className="grid grid-cols-3 gap-4">
+              <div style={{ marginTop: 16 }} className="grid grid-cols-2 gap-4">
                 <FormInput label="วันที่เริ่มรักษา" type="date" value={form.treatment_start_date} onChange={e => set('treatment_start_date', e.target.value)} />
                 <FormSelect label="ประเภทผู้ป่วย" options={PATIENT_TYPES} value={form.patient_type} onChange={e => set('patient_type', e.target.value)} />
-                <FormInput label="โรคประจำตัว" value={form.risk_group} onChange={e => set('risk_group', e.target.value)} placeholder="เช่น DM, HT, ผู้สูงอายุ" />
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">โรคประจำตัว</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 14 }}>
+                    <input type="radio" name="risk_has" value="none" checked={form.risk_has === 'none'} onChange={e => { set('risk_has', e.target.value); set('risk_group', '') }} style={{ accentColor: '#2563eb' }} />
+                    ไม่มี
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 14 }}>
+                    <input type="radio" name="risk_has" value="yes" checked={form.risk_has === 'yes'} onChange={e => set('risk_has', e.target.value)} style={{ accentColor: '#2563eb' }} />
+                    ระบุ
+                  </label>
+                  {form.risk_has === 'yes' && (
+                    <div style={{ flex: 1, minWidth: 250 }}>
+                      <FormInput label="" value={form.risk_group} onChange={e => set('risk_group', e.target.value)} placeholder="เช่น DM, HT, ผู้สูงอายุ" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -386,7 +440,6 @@ export default function EditPatientPage() {
           {msg && (
             <div style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 10, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}` }}>{msg}</div>
           )}
-
           <div style={{ display: 'flex', gap: 10, paddingBottom: 40 }}>
             <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '12px 28px', borderRadius: 10, fontSize: 15, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
               {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
