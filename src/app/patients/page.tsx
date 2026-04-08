@@ -7,6 +7,7 @@ interface Patient {
   id: string; fiscal_year: number; tb_no: string; hn: string; full_name: string
   age: number; icd10: string; registered_date: string; treatment_start_date: string
   patient_type: string; treatment_outcome: string; is_ip: boolean; is_ep: boolean
+  detected_place: string; treatment_place: string
 }
 
 function toThaiBE(iso: string): string {
@@ -18,6 +19,7 @@ function toThaiBE(iso: string): string {
 
 const outcomeColor = (v: string) => {
   if (!v) return { bg: '#f1f5f9', text: '#64748b' }
+  if (v.includes('กำลังรักษา')) return { bg: '#dbeafe', text: '#1d4ed8' }
   if (v.includes('หาย') || v.includes('ครบ')) return { bg: '#dcfce7', text: '#15803d' }
   if (v.includes('เสียชีวิต') || v.includes('ล้มเหลว')) return { bg: '#fee2e2', text: '#b91c1c' }
   if (v.includes('ขาดยา') || v.includes('โอน')) return { bg: '#fef9c3', text: '#854d0e' }
@@ -127,7 +129,7 @@ export default function PatientsPage() {
             {/* Patient type */}
             <select value={filterType} onChange={e => setFilterType(e.target.value)} style={selectStyle}>
               <option value="">ประเภทผู้ป่วย (ทั้งหมด)</option>
-              {['NEW', 'Relapse', 'Transfer In', 'Treatment after failure', 'Treatment after loss to follow up'].map(t => (
+              {['New', 'Relapse', 'Treatment After Failure', 'Treatment After Loss to Follow Up', 'Transfer In'].map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
             </select>
@@ -135,7 +137,7 @@ export default function PatientsPage() {
             {/* Outcome */}
             <select value={filterOutcome} onChange={e => setFilterOutcome(e.target.value)} style={selectStyle}>
               <option value="">ผลการรักษา (ทั้งหมด)</option>
-              {['รักษาหาย', 'รักษาครบ(Completed)', 'เสียชีวิต(Died)', 'โอนออก(Transfered out)', 'ขาดยา', 'ล้มเหลว'].map(o => (
+              {['กำลังรักษา', 'รักษาหาย', 'รักษาครบ(Completed)', 'เสียชีวิต(Died)', 'โอนออก(Transfered out)', 'ขาดยา(Loss to follow up)', 'ล้มเหลว(Failure)'].map(o => (
                 <option key={o} value={o}>{o}</option>
               ))}
             </select>
@@ -155,22 +157,24 @@ export default function PatientsPage() {
 
         {/* Table */}
         <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', minWidth: 1200 }}>
+          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', minWidth: 1400 }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                 {[
                   { label: 'ลำดับ', w: 52 },
+                  { label: 'ปีงบ', w: 70 },
                   { label: 'TB No.', w: 110 },
-                  { label: 'HN', w: 100 },
-                  { label: 'วันที่ลงทะเบียน', w: 120 },
+                  { label: 'HN', w: 90 },
+                  { label: 'วันที่ขึ้นทะเบียน', w: 120 },
                   { label: 'ชื่อ-สกุล', w: 180 },
                   { label: 'อายุ', w: 52 },
-                  { label: 'ICD-10', w: 80 },
+                  { label: 'ICD-10', w: 75 },
                   { label: 'ประเภทปอด', w: 160 },
+                  { label: 'สถานที่รักษา', w: 130 },
                   { label: 'วันเริ่มรักษา', w: 110 },
                   { label: 'ประเภทผู้ป่วย', w: 90 },
-                  { label: 'ผลการรักษา', w: 140 },
-                  { label: 'การจัดการ', w: 110 },
+                  { label: 'ผลการรักษา', w: 130 },
+                  { label: 'การจัดการ', w: 100 },
                 ].map(h => (
                   <th key={h.label} style={{
                     textAlign: 'center', padding: '10px 12px',
@@ -183,9 +187,9 @@ export default function PatientsPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
+                <tr><td colSpan={14} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
+                <tr><td colSpan={14} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>ไม่พบข้อมูล
                 </td></tr>
               ) : filtered.map((p, i) => {
@@ -198,11 +202,14 @@ export default function PatientsPage() {
                     opacity: isDeleting ? 0.5 : 1,
                   }} className="table-row">
                     <td style={{ padding: '10px 12px', color: '#94a3b8', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
+                    <td style={{ padding: '10px 12px', color: '#475569', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      {p.fiscal_year ? `${p.fiscal_year}` : '-'}
+                    </td>
                     <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.tb_no ? String(Math.round(parseFloat(String(p.tb_no)))) : '-'}
                     </td>
                     <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
-                      {p.hn ? String(Math.round(parseFloat(String(p.hn)))).padStart(9, '0') : '-'}
+                      {p.hn || '-'}
                     </td>
                     <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.registered_date)}</td>
                     <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'center' }}>{p.full_name}</td>
@@ -216,6 +223,9 @@ export default function PatientsPage() {
                         : p.is_ep
                         ? <span style={{ background: '#ffedd5', color: '#c2410c', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>นอกปอด (EP)</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
+                    </td>
+                    <td style={{ padding: '10px 12px', color: '#475569', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap', maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {p.treatment_place || '-'}
                     </td>
                     <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.treatment_start_date)}</td>
                     <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
