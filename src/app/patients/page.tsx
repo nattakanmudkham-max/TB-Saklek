@@ -34,7 +34,9 @@ export default function PatientsPage() {
   }
 
   const filtered = patients.filter(p =>
-    p.full_name?.includes(search) || p.hn?.includes(search) || p.tb_no?.includes(search)
+    p.full_name?.includes(search) ||
+    String(p.hn ?? '').includes(search) ||
+    String(p.tb_no ?? '').includes(search)
   )
 
   return (
@@ -129,12 +131,16 @@ export default function PatientsPage() {
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                     transition: 'background 0.1s',
                   }} className="table-row">
-                    <td style={{ padding: '11px 14px', fontFamily: 'monospace', fontSize: 11, color: '#475569', fontWeight: 600 }}>{p.tb_no}</td>
-                    <td style={{ padding: '11px 14px', color: '#334155' }}>{p.hn}</td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'monospace', fontSize: 11, color: '#475569', fontWeight: 600 }}>
+                      {p.tb_no ? String(Math.round(parseFloat(String(p.tb_no)))) : '-'}
+                    </td>
+                    <td style={{ padding: '11px 14px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, letterSpacing: 0.5 }}>
+                      {p.hn ? String(Math.round(parseFloat(String(p.hn)))).padStart(9, '0') : '-'}
+                    </td>
                     <td style={{ padding: '11px 14px', fontWeight: 600, color: '#0f172a' }}>{p.full_name}</td>
-                    <td style={{ padding: '11px 14px', color: '#475569' }}>{p.age}</td>
-                    <td style={{ padding: '11px 14px', color: '#475569' }}>{p.icd10}</td>
-                    <td style={{ padding: '11px 14px', color: '#475569' }}>{p.treatment_start_date}</td>
+                    <td style={{ padding: '11px 14px', color: '#475569' }}>{p.age ?? '-'}</td>
+                    <td style={{ padding: '11px 14px', color: '#475569' }}>{p.icd10 || '-'}</td>
+                    <td style={{ padding: '11px 14px', color: '#475569' }}>{p.treatment_start_date || '-'}</td>
                     <td style={{ padding: '11px 14px' }}>
                       <span style={{
                         background: '#dbeafe', color: '#1d4ed8',
