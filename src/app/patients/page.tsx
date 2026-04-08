@@ -105,7 +105,7 @@ export default function PatientsPage() {
           <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['TB No.', 'HN', 'ชื่อ-สกุล', 'อายุ', 'การวินิจฉัย (ICD-10)', 'ในปอด / นอกปอด', 'วันเริ่มรักษา', 'ประเภท', 'ผลการรักษา', ''].map(h => (
+                {['ลำดับ', 'TB No.', 'HN', 'ชื่อ-สกุล', 'อายุ', 'การวินิจฉัย (ICD-10)', 'ในปอด / นอกปอด', 'วันเริ่มรักษา', 'ประเภท', 'ผลการรักษา', ''].map(h => (
                   <th key={h} style={{
                     textAlign: 'left', padding: '11px 14px',
                     fontSize: 11, fontWeight: 700, color: '#64748b',
@@ -116,11 +116,11 @@ export default function PatientsPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
+                <tr><td colSpan={11} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
                   <div>⏳ กำลังโหลด...</div>
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
+                <tr><td colSpan={11} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
                   ไม่พบข้อมูล
                 </td></tr>
@@ -132,6 +132,7 @@ export default function PatientsPage() {
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                     transition: 'background 0.1s',
                   }} className="table-row">
+                    <td style={{ padding: '11px 14px', color: '#94a3b8', fontSize: 12, fontWeight: 600, textAlign: 'center' }}>{i + 1}</td>
                     <td style={{ padding: '11px 14px', fontFamily: 'monospace', fontSize: 11, color: '#475569', fontWeight: 600 }}>
                       {p.tb_no ? String(Math.round(parseFloat(String(p.tb_no)))) : '-'}
                     </td>
