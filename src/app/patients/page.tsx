@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabase'
 
 interface Patient {
   id: string; fiscal_year: number; tb_no: string; hn: string; full_name: string
-  age: number; icd10: string; treatment_start_date: string; patient_type: string; treatment_outcome: string
+  age: number; icd10: string; treatment_start_date: string; patient_type: string
+  treatment_outcome: string; is_ip: boolean; is_ep: boolean
 }
 
 const outcomeColor = (v: string) => {
@@ -104,7 +105,7 @@ export default function PatientsPage() {
           <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['TB No.', 'HN', 'ชื่อ-สกุล', 'อายุ', 'ICD-10', 'วันเริ่มรักษา', 'ประเภท', 'ผลการรักษา', ''].map(h => (
+                {['TB No.', 'HN', 'ชื่อ-สกุล', 'อายุ', 'การวินิจฉัย (ICD-10)', 'ในปอด / นอกปอด', 'วันเริ่มรักษา', 'ประเภท', 'ผลการรักษา', ''].map(h => (
                   <th key={h} style={{
                     textAlign: 'left', padding: '11px 14px',
                     fontSize: 11, fontWeight: 700, color: '#64748b',
@@ -115,11 +116,11 @@ export default function PatientsPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
                   <div>⏳ กำลังโหลด...</div>
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8', fontSize: 13 }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
                   ไม่พบข้อมูล
                 </td></tr>
@@ -140,6 +141,19 @@ export default function PatientsPage() {
                     <td style={{ padding: '11px 14px', fontWeight: 600, color: '#0f172a' }}>{p.full_name}</td>
                     <td style={{ padding: '11px 14px', color: '#475569' }}>{p.age ?? '-'}</td>
                     <td style={{ padding: '11px 14px', color: '#475569' }}>{p.icd10 || '-'}</td>
+                    <td style={{ padding: '11px 14px' }}>
+                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                        {p.is_ip && (
+                          <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 7px', borderRadius: 5, fontSize: 11, fontWeight: 600 }}>ในปอด</span>
+                        )}
+                        {p.is_ep && (
+                          <span style={{ background: '#ffedd5', color: '#c2410c', padding: '2px 7px', borderRadius: 5, fontSize: 11, fontWeight: 600 }}>นอกปอด</span>
+                        )}
+                        {!p.is_ip && !p.is_ep && (
+                          <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>
+                        )}
+                      </div>
+                    </td>
                     <td style={{ padding: '11px 14px', color: '#475569' }}>{p.treatment_start_date || '-'}</td>
                     <td style={{ padding: '11px 14px' }}>
                       <span style={{
