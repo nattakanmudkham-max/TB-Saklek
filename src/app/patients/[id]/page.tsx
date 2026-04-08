@@ -198,14 +198,25 @@ export default function EditPatientPage() {
         const nameData = data.first_name
           ? { title: data.title ?? '', first_name: data.first_name, last_name: data.last_name ?? '' }
           : parseName(data.full_name ?? '')
-        // แยกที่อยู่ (ถ้า DB มี column แยกแล้วใช้เลย ถ้าไม่มีให้ parse จาก address)
-        const addrData = (data.province || data.district || data.subdistrict)
-          ? { address: data.address ?? '', village_no: data.village_no ?? '', subdistrict: data.subdistrict ?? '', district: data.district ?? '', province: data.province ?? '' }
-          : parseAddress(data.address ?? '', PROVINCES)
+        // แยกที่อยู่
+        let addrData: { address: string; village_no: string; subdistrict: string; district: string; province: string }
+        if (data.province || data.district || data.subdistrict) {
+          // มี column แยกแล้ว — ตัดข้อมูลภูมิศาสตร์ออกจาก address ให้เหลือแค่บ้านเลขที่
+          let pureAddr = data.address ?? ''
+          const vn = data.village_no ?? ''
+          if (vn) pureAddr = pureAddr.replace(new RegExp(`หมู่\\s*0*${vn}\\b`), '').trim()
+          if (data.subdistrict) pureAddr = pureAddr.replace(data.subdistrict, '').trim()
+          if (data.district) pureAddr = pureAddr.replace(data.district, '').trim()
+          if (data.province) pureAddr = pureAddr.replace(data.province, '').trim()
+          pureAddr = pureAddr.replace(/หมู่\s*\d+/, '').trim()
+          addrData = { address: pureAddr, village_no: vn, subdistrict: data.subdistrict ?? '', district: data.district ?? '', province: data.province ?? '' }
+        } else {
+          addrData = parseAddress(data.address ?? '', PROVINCES)
+        }
         setForm({
           fiscal_year: String(data.fiscal_year ?? '2568'),
           tb_no: data.tb_no ?? '',
-          hn: String(data.hn ?? ''),
+          hn: data.hn ? String(data.hn).padStart(9, '0') : '',
           registered_date: data.registered_date ?? '',
           title: nameData.title,
           first_name: nameData.first_name,
@@ -266,7 +277,7 @@ export default function EditPatientPage() {
     const is_ip = form.lung_type === 'IP' || form.lung_type === 'IP/EP'
     const is_ep = form.lung_type === 'EP' || form.lung_type === 'IP/EP'
     const risk_group = form.risk_has === 'none' ? 'ไม่มี' : form.risk_group || null
-    const address = [form.address, form.village_no ? `หมู่ ${form.village_no}` : '', form.subdistrict, form.district, form.province].filter(Boolean).join(' ') || null
+    const address = form.address || null
 
     const payload: Record<string, unknown> = {
       full_name, is_ip, is_ep,

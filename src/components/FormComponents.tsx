@@ -189,7 +189,7 @@ export function FormDateThai({ label, value, onChange, required }: ThaiDateProps
             onClick={() => { pickerRef.current?.showPicker?.(); pickerRef.current?.click() }}
             style={{ height: '100%', padding: '0 10px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, cursor: 'pointer', fontSize: 15, color: '#2563eb', display: 'flex', alignItems: 'center' }}
           >📅</button>
-          <input ref={pickerRef} type="date" value={value} onChange={handlePick}
+          <input ref={pickerRef} type="date" value={value} onChange={handlePick} lang="th"
             style={{ position: 'absolute', opacity: 0, width: 0, height: 0, pointerEvents: 'none' }} tabIndex={-1} />
         </div>
       </div>

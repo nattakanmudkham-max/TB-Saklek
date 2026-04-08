@@ -209,7 +209,7 @@ export default function PatientsPage() {
                       {p.tb_no ? String(Math.round(parseFloat(String(p.tb_no)))) : '-'}
                     </td>
                     <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
-                      {p.hn || '-'}
+                      {p.hn ? String(p.hn).padStart(9, '0') : '-'}
                     </td>
                     <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.registered_date)}</td>
                     <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'center' }}>{p.full_name}</td>

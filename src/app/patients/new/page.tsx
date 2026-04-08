@@ -160,7 +160,7 @@ export default function NewPatientPage() {
     const is_ep = form.lung_type === 'EP' || form.lung_type === 'IP/EP'
     const risk_group = form.risk_has === 'none' ? 'ไม่มี' : form.risk_group || undefined
     // Build address from components
-    const address = [form.address, form.village_no ? `หมู่ ${form.village_no}` : '', form.subdistrict, form.district, form.province].filter(Boolean).join(' ') || form.address || undefined
+    const address = form.address || undefined
 
     const payload: Record<string, unknown> = { full_name, is_ip, is_ep }
     if (risk_group !== undefined) payload.risk_group = risk_group
