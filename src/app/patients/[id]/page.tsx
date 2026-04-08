@@ -198,22 +198,22 @@ export default function EditPatientPage() {
         const nameData = data.first_name
           ? { title: data.title ?? '', first_name: data.first_name, last_name: data.last_name ?? '' }
           : parseName(data.full_name ?? '')
-        // แยกที่อยู่ (ถ้า DB ยังไม่มี column แยก ให้ parse จาก address)
+        // แยกที่อยู่ (ถ้า DB มี column แยกแล้วใช้เลย ถ้าไม่มีให้ parse จาก address)
         const addrData = (data.province || data.district || data.subdistrict)
           ? { address: data.address ?? '', village_no: data.village_no ?? '', subdistrict: data.subdistrict ?? '', district: data.district ?? '', province: data.province ?? '' }
           : parseAddress(data.address ?? '', PROVINCES)
         setForm({
           fiscal_year: String(data.fiscal_year ?? '2568'),
-          tb_no: String(data.tb_no ?? ''),
+          tb_no: data.tb_no ?? '',
           hn: String(data.hn ?? ''),
           registered_date: data.registered_date ?? '',
           title: nameData.title,
           first_name: nameData.first_name,
           last_name: nameData.last_name,
           id_card: data.id_card ?? '',
-          birth_date: birthIso,
-          age: birthIso ? String(years) : String(data.age ?? ''),
-          age_months: birthIso ? String(months) : '',
+          birth_date: data.birth_date ?? birthIso,
+          age: (data.birth_date || birthIso) ? String(years) : String(data.age ?? ''),
+          age_months: (data.birth_date || birthIso) ? String(months) : '',
           population_type: data.population_type ?? '',
           nationality: data.nationality ?? '',
           medical_right: data.medical_right ?? '',
@@ -277,13 +277,17 @@ export default function EditPatientPage() {
     if (form.cxr_result) payload.result_m2 = form.cxr_result
     if (form.sputum_result) payload.result_m3 = form.sputum_result
 
-    // Only send confirmed DB columns — omit potentially missing columns instead of sending null
+    // Save all confirmed DB columns
     const fieldMap: Record<string, string> = {
-      hn: 'hn', registered_date: 'registered_date',
+      tb_no: 'tb_no', hn: 'hn', registered_date: 'registered_date',
+      id_card: 'id_card', birth_date: 'birth_date',
+      population_type: 'population_type', nationality: 'nationality', medical_right: 'medical_right',
+      province: 'province', district: 'district', subdistrict: 'subdistrict', village_no: 'village_no',
       icd10: 'icd10', xpert_result: 'xpert_result',
       detected_place: 'detected_place', treatment_place: 'treatment_place',
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
       treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',
+      cxr_date: 'cxr_date', sputum_lab_no: 'sputum_lab_no', sputum_date: 'sputum_date',
       phone: 'phone', notes: 'notes',
     }
     for (const [fk, dbk] of Object.entries(fieldMap)) {

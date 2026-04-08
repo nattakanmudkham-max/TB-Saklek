@@ -12,6 +12,8 @@ const DB_COLS = new Set([
   'icd10','xpert_result','is_ip','is_ep','detected_place','treatment_place',
   'treatment_start_date','patient_type','risk_group','result_m2','result_m3',
   'treatment_outcome','caregiver_name','phone','notes',
+  'id_card','birth_date','province','district','subdistrict','village_no',
+  'population_type','nationality','medical_right','cxr_date','sputum_lab_no','sputum_date',
 ])
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -166,13 +168,17 @@ export default function NewPatientPage() {
     if (form.cxr_result) payload.result_m2 = form.cxr_result
     if (form.sputum_result) payload.result_m3 = form.sputum_result
 
-    // Only include confirmed DB columns
+    // Save all confirmed DB columns
     const fieldMap: Record<string, string> = {
-      hn: 'hn', registered_date: 'registered_date',
+      tb_no: 'tb_no', hn: 'hn', registered_date: 'registered_date',
+      id_card: 'id_card', birth_date: 'birth_date',
+      population_type: 'population_type', nationality: 'nationality', medical_right: 'medical_right',
+      province: 'province', district: 'district', subdistrict: 'subdistrict', village_no: 'village_no',
       icd10: 'icd10', xpert_result: 'xpert_result',
       detected_place: 'detected_place', treatment_place: 'treatment_place',
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
       treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',
+      cxr_date: 'cxr_date', sputum_lab_no: 'sputum_lab_no', sputum_date: 'sputum_date',
       phone: 'phone', notes: 'notes',
     }
     for (const [fk, dbk] of Object.entries(fieldMap)) {
