@@ -208,24 +208,28 @@ export default function EditPatientPage() {
     const address = form.address || null
 
     const payload: Record<string, unknown> = {
-      full_name, is_ip, is_ep, risk_group, address,
+      full_name, is_ip, is_ep,
       fiscal_year: parseInt(form.fiscal_year),
-      age: form.age ? parseInt(form.age) : null,
-      hn: form.hn || null,
-      registered_date: form.registered_date || null,
-      icd10: form.icd10 || null,
-      xpert_result: form.xpert_result || null,
-      detected_place: form.detected_place || null,
-      treatment_place: form.treatment_place || null,
-      treatment_start_date: form.treatment_start_date || null,
-      patient_type: form.patient_type || null,
-      result_m2: form.cxr_result || null,
-      result_m3: form.sputum_result || null,
-      treatment_outcome: form.treatment_outcome || null,
-      caregiver_name: form.caregiver_name || null,
-      phone: form.phone || null,
-      notes: form.notes || null,
     }
+    if (risk_group !== undefined && risk_group !== null) payload.risk_group = risk_group
+    if (address) payload.address = address
+    if (form.cxr_result) payload.result_m2 = form.cxr_result
+    if (form.sputum_result) payload.result_m3 = form.sputum_result
+
+    // Only send confirmed DB columns — omit potentially missing columns instead of sending null
+    const fieldMap: Record<string, string> = {
+      hn: 'hn', registered_date: 'registered_date',
+      icd10: 'icd10', xpert_result: 'xpert_result',
+      detected_place: 'detected_place', treatment_place: 'treatment_place',
+      treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
+      treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',
+      phone: 'phone', notes: 'notes',
+    }
+    for (const [fk, dbk] of Object.entries(fieldMap)) {
+      const v = form[fk as keyof typeof form]
+      if (v) payload[dbk] = v
+    }
+    if (form.age) payload.age = parseInt(form.age)
 
     const { error } = await supabase.from('tb_patients').update(payload).eq('id', params.id)
     setSaving(false)
@@ -437,7 +441,7 @@ export default function EditPatientPage() {
           </div>
 
           {msg && (
-            <div style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 10, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}` }}>{msg}</div>
+            <div style={{ position: 'fixed', bottom: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 999, padding: '14px 24px', borderRadius: 12, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 14, fontWeight: 600, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}`, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', whiteSpace: 'nowrap' }}>{msg}</div>
           )}
           <div style={{ display: 'flex', gap: 10, paddingBottom: 40 }}>
             <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '12px 28px', borderRadius: 10, fontSize: 15, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
