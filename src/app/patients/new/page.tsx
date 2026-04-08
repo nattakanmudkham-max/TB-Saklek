@@ -168,7 +168,7 @@ export default function NewPatientPage() {
 
     // Only include confirmed DB columns
     const fieldMap: Record<string, string> = {
-      tb_no: 'tb_no', hn: 'hn', registered_date: 'registered_date',
+      hn: 'hn', registered_date: 'registered_date',
       icd10: 'icd10', xpert_result: 'xpert_result',
       detected_place: 'detected_place', treatment_place: 'treatment_place',
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
@@ -268,7 +268,7 @@ export default function NewPatientPage() {
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">จังหวัด</label>
                   <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                    value={form.province} onChange={e => { set('province', e.target.value); setForm(p => ({ ...p, district: '', subdistrict: '' })) }}>
+                    value={form.province} onChange={e => setForm(p => ({ ...p, province: e.target.value, district: '', subdistrict: '' }))}>
                     <option value="">-- เลือก --</option>
                     {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -277,7 +277,7 @@ export default function NewPatientPage() {
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">อำเภอ</label>
                   {districts.length > 0
                     ? <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                        value={form.district} onChange={e => { set('district', e.target.value); set('subdistrict', '') }}>
+                        value={form.district} onChange={e => setForm(p => ({ ...p, district: e.target.value, subdistrict: '' }))}>
                         <option value="">-- เลือก --</option>
                         {districts.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>

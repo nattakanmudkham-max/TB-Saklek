@@ -211,7 +211,6 @@ export default function EditPatientPage() {
       full_name, is_ip, is_ep, risk_group, address,
       fiscal_year: parseInt(form.fiscal_year),
       age: form.age ? parseInt(form.age) : null,
-      tb_no: form.tb_no || null,
       hn: form.hn || null,
       registered_date: form.registered_date || null,
       icd10: form.icd10 || null,
@@ -330,7 +329,7 @@ export default function EditPatientPage() {
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">จังหวัด</label>
                   <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                    value={form.province} onChange={e => { set('province', e.target.value); setForm(p => ({ ...p, district: '', subdistrict: '' })) }}>
+                    value={form.province} onChange={e => setForm(p => ({ ...p, province: e.target.value, district: '', subdistrict: '' }))}>
                     <option value="">-- เลือก --</option>
                     {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
@@ -339,7 +338,7 @@ export default function EditPatientPage() {
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">อำเภอ</label>
                   {districts.length > 0
                     ? <select className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                        value={form.district} onChange={e => { set('district', e.target.value); set('subdistrict', '') }}>
+                        value={form.district} onChange={e => setForm(p => ({ ...p, district: e.target.value, subdistrict: '' }))}>
                         <option value="">-- เลือก --</option>
                         {districts.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
