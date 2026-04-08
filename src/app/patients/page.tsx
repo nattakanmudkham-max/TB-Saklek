@@ -126,7 +126,7 @@ export default function PatientsPage() {
 
             {/* Patient type */}
             <select value={filterType} onChange={e => setFilterType(e.target.value)} style={selectStyle}>
-              <option value="">ประเภท (ทั้งหมด)</option>
+              <option value="">ประเภทผู้ป่วย (ทั้งหมด)</option>
               {['NEW', 'Relapse', 'Transfer In', 'Treatment after failure', 'Treatment after loss to follow up'].map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -173,7 +173,7 @@ export default function PatientsPage() {
                   { label: '', w: 110 },
                 ].map(h => (
                   <th key={h.label} style={{
-                    textAlign: 'left', padding: '10px 12px',
+                    textAlign: h.label === 'ชื่อ-สกุล' ? 'left' : 'center', padding: '10px 12px',
                     fontSize: 11, fontWeight: 700, color: '#64748b',
                     letterSpacing: 0.5, textTransform: 'uppercase',
                     width: h.w, whiteSpace: 'nowrap',
