@@ -1,17 +1,15 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
   required?: boolean
 }
-
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string
   options: { value: string; label: string }[]
   required?: boolean
 }
-
 interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string
 }
@@ -58,7 +56,79 @@ export function FormTextArea({ label, ...props }: TextAreaProps) {
   )
 }
 
-// แปลง ISO (YYYY-MM-DD ค.ศ.) → DD/MM/YYYY พ.ศ.
+// SearchableSelect — Combobox with live filter
+export function SearchableSelect({ label, options, value, onChange, required }: {
+  label: string
+  options: string[]
+  value: string
+  onChange: (v: string) => void
+  required?: boolean
+}) {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false); setQuery('')
+      }
+    }
+    document.addEventListener('mousedown', onDown)
+    return () => document.removeEventListener('mousedown', onDown)
+  }, [])
+
+  const filtered = query
+    ? options.filter(o => o.toLowerCase().includes(query.toLowerCase()))
+    : options
+
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+        {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
+      </label>
+      <div ref={ref} style={{ position: 'relative' }}>
+        <input
+          type="text"
+          value={open ? query : value}
+          placeholder={value || '-- พิมพ์เพื่อค้นหา --'}
+          onChange={e => setQuery(e.target.value)}
+          onFocus={() => { setOpen(true); setQuery('') }}
+          className={inputClass}
+          style={{ cursor: open ? 'text' : 'pointer', paddingRight: 28 }}
+          required={required && !value}
+        />
+        <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 10, pointerEvents: 'none' }}>▼</span>
+        {open && (
+          <div style={{
+            position: 'absolute', top: 'calc(100% + 3px)', left: 0, right: 0,
+            maxHeight: 220, overflowY: 'auto', background: '#fff',
+            border: '1px solid #bfdbfe', borderRadius: 10, zIndex: 9999,
+            boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
+          }}>
+            {filtered.length === 0
+              ? <div style={{ padding: '10px 14px', color: '#94a3b8', fontSize: 13 }}>ไม่พบข้อมูล</div>
+              : filtered.map(opt => (
+                <div
+                  key={opt}
+                  onMouseDown={() => { onChange(opt); setOpen(false); setQuery('') }}
+                  style={{
+                    padding: '9px 14px', fontSize: 13, cursor: 'pointer',
+                    background: opt === value ? '#eff6ff' : 'transparent',
+                    color: opt === value ? '#2563eb' : '#334155',
+                    fontWeight: opt === value ? 600 : 400,
+                    borderBottom: '1px solid #f1f5f9',
+                  }}
+                >{opt}</div>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// แปลง ISO → DD/MM/YYYY พ.ศ.
 function isoToThai(iso: string): string {
   if (!iso) return ''
   const [y, m, d] = iso.split('-')
@@ -66,7 +136,7 @@ function isoToThai(iso: string): string {
   return `${d}/${m}/${parseInt(y) + 543}`
 }
 
-// แปลง DD/MM/YYYY พ.ศ. → ISO (YYYY-MM-DD ค.ศ.)
+// แปลง DD/MM/YYYY พ.ศ. → ISO
 function thaiToIso(thai: string): string {
   const parts = thai.replace(/[^\d/]/g, '').split('/')
   if (parts.length !== 3) return ''
@@ -78,7 +148,7 @@ function thaiToIso(thai: string): string {
 
 interface ThaiDateProps {
   label: string
-  value: string  // ISO ค.ศ.
+  value: string
   onChange: (isoValue: string) => void
   required?: boolean
 }
@@ -86,9 +156,7 @@ interface ThaiDateProps {
 export function FormDateThai({ label, value, onChange, required }: ThaiDateProps) {
   const [display, setDisplay] = useState(() => isoToThai(value))
 
-  useEffect(() => {
-    setDisplay(isoToThai(value))
-  }, [value])
+  useEffect(() => { setDisplay(isoToThai(value)) }, [value])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value
@@ -98,7 +166,6 @@ export function FormDateThai({ label, value, onChange, required }: ThaiDateProps
   }
 
   function handleBlur() {
-    // reformat on blur if valid
     const iso = thaiToIso(display)
     if (iso) setDisplay(isoToThai(iso))
   }

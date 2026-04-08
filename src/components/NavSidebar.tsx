@@ -40,8 +40,8 @@ export default function NavSidebar() {
             backdropFilter: 'blur(8px)',
           }}>🏥</div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 17, letterSpacing: 0.3 }}>TB-Saklek</div>
-            <div style={{ fontSize: 11, color: '#93c5fd', marginTop: 2, fontWeight: 400 }}>โรงพยาบาลสากเหล็ก</div>
+            <div style={{ fontWeight: 700, fontSize: 21, letterSpacing: 0.3 }}>TB-Saklek</div>
+            <div style={{ fontSize: 13, color: '#93c5fd', marginTop: 2, fontWeight: 500 }}>โรงพยาบาลสากเหล็ก</div>
           </div>
         </div>
       </div>
@@ -96,13 +96,14 @@ export default function NavSidebar() {
         padding: '14px 20px',
         borderTop: '1px solid rgba(255,255,255,0.1)',
         fontSize: 11,
-        color: 'rgba(255,255,255,0.45)',
+        lineHeight: 1.6,
+        color: 'rgba(255,255,255,0.5)',
         display: 'flex',
         alignItems: 'center',
         gap: 6,
       }}>
-        <span>📆</span>
-        <span>ปีงบประมาณ 2568</span>
+        <span>🏥</span>
+        <span>กลุ่มงานปฐมภูมิและองค์รวม<br />โรงพยาบาลสากเหล็ก</span>
       </div>
 
       <style>{`

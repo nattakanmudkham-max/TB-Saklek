@@ -170,10 +170,10 @@ export default function PatientsPage() {
                   { label: 'วันเริ่มรักษา', w: 110 },
                   { label: 'ประเภทผู้ป่วย', w: 90 },
                   { label: 'ผลการรักษา', w: 140 },
-                  { label: '', w: 110 },
+                  { label: 'การจัดการ', w: 110 },
                 ].map(h => (
                   <th key={h.label} style={{
-                    textAlign: h.label === 'ชื่อ-สกุล' ? 'left' : 'center', padding: '10px 12px',
+                    textAlign: 'center', padding: '10px 12px',
                     fontSize: 11, fontWeight: 700, color: '#64748b',
                     letterSpacing: 0.5, textTransform: 'uppercase',
                     width: h.w, whiteSpace: 'nowrap',
@@ -205,7 +205,7 @@ export default function PatientsPage() {
                       {p.hn ? String(Math.round(parseFloat(String(p.hn)))).padStart(9, '0') : '-'}
                     </td>
                     <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.registered_date)}</td>
-                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap' }}>{p.full_name}</td>
+                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'center' }}>{p.full_name}</td>
                     <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.age ?? '-'}</td>
                     <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.icd10 || '-'}</td>
                     <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>

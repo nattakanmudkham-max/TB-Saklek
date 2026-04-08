@@ -1,37 +1,134 @@
 'use client'
-import { useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { FormInput, FormSelect, FormTextArea, FormDateThai, SectionTitle } from '@/components/FormComponents'
+import { FormInput, FormSelect, FormTextArea, FormDateThai, SearchableSelect } from '@/components/FormComponents'
+import { THAI_HOSPITALS } from '@/data/thai_hospitals'
 
-const FISCAL_YEARS = [2569, 2568, 2567, 2566, 2565, 2564, 2563, 2562, 2561].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
-const PATIENT_TYPES = ['NEW', 'Relapse', 'Transfer In', 'Treatment after failure', 'Treatment after loss to follow up'].map(v => ({ value: v, label: v }))
-const RESULTS = ['รักษาหาย', 'รักษาครบ(Completed)', 'เสียชีวิต(Died)', 'โอนออก(Transfered out)', 'ขาดยา', 'ล้มเหลว'].map(v => ({ value: v, label: v }))
-const AFB_RESULTS = ['MTB detected', 'MTB Detected Low', 'MTB not detected', 'Neg', '1+', '2+', '3+', 'Error'].map(v => ({ value: v, label: v }))
-const CXR_RESULTS = ['ปกติ', 'ผิดปกติ', 'สงสัย TB', 'ไม่ได้ CXR'].map(v => ({ value: v, label: v }))
+// ─── Constants ───────────────────────────────────────────────────────────────
+const FISCAL_YEARS = Array.from({ length: 15 }, (_, i) => 2561 + i).reverse()
+  .map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
+
+const ICD10_OPTIONS = [
+  { value: 'A150', label: 'A150: วัณโรคปอด ยืนยันด้วยการตรวจเสมหะโดยใช้กล้องจุลทรรศน์' },
+  { value: 'A151', label: 'A151: วัณโรคปอด ยืนยันด้วยการเพาะเชื้อเท่านั้น' },
+  { value: 'A152', label: 'A152: วัณโรคปอด ยืนยันด้วยการตรวจทางพยาธิวิทยา' },
+  { value: 'A153', label: 'A153: วัณโรคปอด ยืนยันด้วยวิธีอื่นที่ไม่ใช่การเพาะเชื้อ' },
+  { value: 'A154', label: 'A154: วัณโรคต่อมน้ำเหลืองในทรวงอก' },
+  { value: 'A155', label: 'A155: วัณโรคกล่องเสียง หลอดลม และหลอดลมใหญ่' },
+  { value: 'A156', label: 'A156: วัณโรคเยื่อหุ้มปอด' },
+  { value: 'A157', label: 'A157: วัณโรคระบบหายใจระยะแรก' },
+  { value: 'A158', label: 'A158: วัณโรคระบบหายใจอื่นๆ' },
+  { value: 'A159', label: 'A159: วัณโรคระบบหายใจ ไม่ระบุรายละเอียด' },
+  { value: 'A160', label: 'A160: วัณโรคปอด ผลตรวจเสมหะและชิ้นเนื้อเป็นลบ' },
+  { value: 'A161', label: 'A161: วัณโรคปอด ไม่ได้ตรวจเสมหะหรือชิ้นเนื้อ' },
+  { value: 'A162', label: 'A162: วัณโรคปอด ไม่ระบุว่าตรวจยืนยันหรือไม่' },
+  { value: 'A163', label: 'A163: วัณโรคของต่อมน้ำเหลืองที่ขั้วปอด' },
+  { value: 'A164', label: 'A164: วัณโรคของกล่องเสียง ท่อลม และหลอดลม' },
+  { value: 'A165', label: 'A165: วัณโรคเยื่อหุ้มปอด' },
+  { value: 'A167', label: 'A167: วัณโรคระบบทางเดินหายใจส่วนต้น' },
+  { value: 'A168', label: 'A168: วัณโรคระบบทางเดินหายใจอื่นๆ' },
+  { value: 'A169', label: 'A169: วัณโรคระบบทางเดินหายใจ ไม่ระบุรายละเอียด' },
+  { value: 'A170', label: 'A170: เยื่อหุ้มสมองอักเสบจากวัณโรค' },
+  { value: 'A171', label: 'A171: วัณโรคก้อนสมองบริเวณเยื่อหุ้มสมอง' },
+  { value: 'A178', label: 'A178: วัณโรคระบบประสาทอื่นๆ' },
+  { value: 'A179', label: 'A179: วัณโรคระบบประสาทที่ไม่ระบุรายละเอียด' },
+  { value: 'A180', label: 'A180: วัณโรคกระดูกและข้อ' },
+  { value: 'A181', label: 'A181: วัณโรคระบบสืบพันธุ์และทางเดินปัสสาวะ' },
+  { value: 'A182', label: 'A182: วัณโรคต่อมน้ำเหลืองส่วนปลาย' },
+  { value: 'A183', label: 'A183: วัณโรคลำไส้ ช่องท้อง และต่อมน้ำเหลืองในช่องท้อง' },
+  { value: 'A184', label: 'A184: วัณโรคผิวหนังและเนื้อเยื่อใต้ผิวหนัง' },
+  { value: 'A185', label: 'A185: วัณโรคตา' },
+  { value: 'A186', label: 'A186: วัณโรคหู' },
+  { value: 'A187', label: 'A187: วัณโรคต่อมหมวกไต' },
+  { value: 'A188', label: 'A188: วัณโรคของอวัยวะอื่นๆ ที่ระบุ' },
+  { value: 'A189', label: 'A189: วัณโรคของอวัยวะอื่นๆ ไม่ระบุรายละเอียด' },
+  { value: 'A190', label: 'A190: วัณโรคแพร่กระจายเฉียบพลันในบริเวณที่ระบุเพียงแห่งเดียว' },
+  { value: 'A191', label: 'A191: วัณโรคแพร่กระจายเฉียบพลันในหลายบริเวณ' },
+  { value: 'A192', label: 'A192: วัณโรคแพร่กระจายเฉียบพลันชนิดไม่ระบุรายละเอียด' },
+  { value: 'A198', label: 'A198: วัณโรคแพร่กระจายแบบอื่น' },
+  { value: 'A199', label: 'A199: วัณโรคแพร่กระจายชนิดไม่ระบุรายละเอียด' },
+]
+
+const LUNG_TYPES = [
+  { value: 'IP', label: 'ในปอด (IP)' },
+  { value: 'EP', label: 'นอกปอด (EP)' },
+  { value: 'IP/EP', label: 'ในปอด (IP) และนอกปอด (EP)' },
+]
+
+const PATIENT_TYPES = [
+  { value: 'NEW', label: 'ผู้ป่วยรายใหม่ (New)' },
+  { value: 'Relapse', label: 'ผู้ป่วยกลับเป็นซ้ำ (Relapse)' },
+  { value: 'RF', label: 'ผู้ป่วยกลับมารักษาต่อ (RF)' },
+  { value: 'Failure', label: 'ผู้ป่วยรักษาล้มเหลว (Failure)' },
+  { value: 'Transfer-in', label: 'ผู้ป่วยย้ายมา (Transfer-in)' },
+  { value: 'Other', label: 'ผู้ป่วยอื่นๆ (Other)' },
+]
+
+const OUTCOMES = ['รักษาหาย', 'รักษาครบ(Completed)', 'เสียชีวิต(Died)', 'โอนออก(Transfered out)', 'ขาดยา', 'ล้มเหลว']
+  .map(v => ({ value: v, label: v }))
+
+const CXR_MONTHS = Array.from({ length: 12 }, (_, i) => ({
+  value: `CXR เดือนที่ ${i + 1}`, label: `CXR เดือนที่ ${i + 1}`
+}))
+const AFB_MONTHS = Array.from({ length: 12 }, (_, i) => ({
+  value: `AFB เดือนที่ ${i + 1}`, label: `AFB เดือนที่ ${i + 1}`
+}))
+
 const TITLES = ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'].map(v => ({ value: v, label: v }))
-const MEDICAL_RIGHTS = ['สวัสดิการข้าราชการ', 'ประกันสังคม', 'บัตรทอง/30 บาท', 'ชำระเอง', 'อื่นๆ'].map(v => ({ value: v, label: v }))
+const MEDICAL_RIGHTS = ['สวัสดิการข้าราชการ', 'ประกันสังคม', 'บัตรทอง/30 บาท', 'ชำระเอง', 'อื่นๆ']
+  .map(v => ({ value: v, label: v }))
 const NATIONALITIES = ['ไทย', 'พม่า', 'ลาว', 'กัมพูชา', 'เวียดนาม', 'จีน', 'อื่นๆ'].map(v => ({ value: v, label: v }))
 const POPULATIONS = ['ไทย', 'ต่างด้าว', 'แรงงานต่างชาติ'].map(v => ({ value: v, label: v }))
-const SCREENING_TYPES = ['Active', 'Passive'].map(v => ({ value: v, label: v }))
 
+const STEPS = ['ข้อมูลทะเบียน', 'ข้อมูลผู้ป่วย', 'การวินิจฉัยและตรวจ', 'การรักษา', 'ผลระหว่างการรักษา', 'ผู้ดูแลและติดต่อ']
+
+// Section header component
+function SectionHeader({ num, title, color, border, textColor }: {
+  num: number; title: string; color: string; border: string; textColor: string
+}) {
+  return (
+    <div style={{ background: color, borderBottom: `2px solid ${border}`, padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 14 }}>
+      <div style={{ width: 32, height: 32, borderRadius: '50%', background: textColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{num}</div>
+      <span style={{ fontSize: 16, fontWeight: 700, color: textColor }}>{title}</span>
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function NewPatientPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
+  const [activeStep, setActiveStep] = useState(0)
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          const idx = sectionRefs.current.findIndex(r => r === e.target)
+          if (idx >= 0) setActiveStep(idx)
+        }
+      }),
+      { threshold: 0.25 }
+    )
+    sectionRefs.current.forEach(r => r && observer.observe(r))
+    return () => observer.disconnect()
+  }, [])
+
+  function goTo(idx: number) {
+    sectionRefs.current[idx]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const [form, setForm] = useState({
-    fiscal_year: '2568',
-    tb_no: '', hn: '', registered_date: '', screening_type: '',
-    title: '', first_name: '', last_name: '', id_card: '',
-    birth_date: '', age: '',
+    fiscal_year: '2568', tb_no: '', hn: '', registered_date: '', screening_type: '',
+    title: '', first_name: '', last_name: '', id_card: '', birth_date: '', age: '',
     population_type: '', nationality: '', medical_right: '',
-    address: '', village_no: '', province: '', district: '', subdistrict: '',
-    icd10: '', xpert_result: '',
-    is_ip: 'false', is_ep: 'false',
-    detected_place: '', treatment_place: '',
-    treatment_start_date: '', patient_type: '', risk_group: '',
-    result_m2: '', result_m3: '', result_m5: '', result_m6: '',
-    result_m7: '', result_m9: '', result_m10: '', result_m12: '',
+    address: '', village_no: '', subdistrict: '', district: '', province: '',
+    icd10: '', xpert_result: '', lung_type: '',
+    detected_place: '', treatment_place: '', treatment_start_date: '', patient_type: '', risk_group: '',
+    cxr_result: '', cxr_date: '', sputum_result: '', sputum_lab_no: '', sputum_date: '',
     treatment_outcome: '', caregiver_name: '', phone: '', notes: '',
   })
 
@@ -44,21 +141,22 @@ export default function NewPatientPage() {
     setSaving(true); setMsg('')
 
     const full_name = [form.title, form.first_name, form.last_name].filter(Boolean).join(' ') || undefined
+    const is_ip = form.lung_type === 'IP' || form.lung_type === 'IP/EP'
+    const is_ep = form.lung_type === 'EP' || form.lung_type === 'IP/EP'
 
-    // Only include non-empty values to avoid schema errors on optional columns
-    const raw: Record<string, unknown> = { full_name }
-    const skip = new Set(['title', 'first_name', 'last_name'])
+    const raw: Record<string, unknown> = { full_name, is_ip, is_ep }
+    const skip = new Set(['title', 'first_name', 'last_name', 'lung_type', 'cxr_result', 'sputum_result'])
     for (const [k, v] of Object.entries(form)) {
-      if (skip.has(k)) continue
-      if (v === '') continue
+      if (skip.has(k) || v === '') continue
       raw[k] = v
     }
+    if (form.cxr_result) raw.result_m2 = form.cxr_result
+    if (form.sputum_result) raw.result_m3 = form.sputum_result
+
     const payload = {
       ...raw,
       fiscal_year: parseInt(form.fiscal_year),
       age: form.age ? parseInt(form.age) : undefined,
-      is_ip: form.is_ip === 'true',
-      is_ep: form.is_ep === 'true',
     }
 
     const { error } = await supabase.from('tb_patients').insert(payload)
@@ -72,68 +170,97 @@ export default function NewPatientPage() {
       {/* Header */}
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 13, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
+          <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 13, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
           <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, background: '#fee2e2', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🫁</div>
-            <h1 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>เพิ่มผู้ป่วยวัณโรค</h1>
+            <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>เพิ่มผู้ป่วยวัณโรค</h1>
           </div>
         </div>
       </div>
 
-      <div style={{ padding: '28px 32px', maxWidth: 980 }}>
+      {/* Progress Bar */}
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '14px 32px', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0, overflowX: 'auto' }}>
+          {STEPS.map((step, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
+              <button
+                type="button"
+                onClick={() => goTo(i)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 7, padding: '6px 10px',
+                  borderRadius: 8, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
+                  background: i === activeStep ? '#eff6ff' : 'transparent',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <div style={{
+                  width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 12, fontWeight: 700, flexShrink: 0,
+                  background: i < activeStep ? '#22c55e' : i === activeStep ? '#2563eb' : '#e2e8f0',
+                  color: i <= activeStep ? '#fff' : '#94a3b8',
+                }}>
+                  {i < activeStep ? '✓' : i + 1}
+                </div>
+                <span style={{ fontSize: 12, fontWeight: i === activeStep ? 700 : 400, color: i === activeStep ? '#2563eb' : i < activeStep ? '#22c55e' : '#64748b' }}>
+                  {step}
+                </span>
+              </button>
+              {i < STEPS.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: i < activeStep ? '#22c55e' : '#e2e8f0', margin: '0 4px', minWidth: 20 }} />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: '24px 32px', maxWidth: 1000 }}>
         <form onSubmit={handleSubmit}>
 
-          {/* ส่วนที่ 1: ข้อมูลส่วนบุคคล */}
-          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div style={{ background: '#fef2f2', borderBottom: '2px solid #fecaca', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#b91c1c' }}>ส่วนที่ 1 ข้อมูลส่วนบุคคล</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600 }}>ประเภทคัดกรอง</span>
-                {SCREENING_TYPES.map(t => (
-                  <label key={t.value} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, cursor: 'pointer', color: '#334155' }}>
-                    <input type="radio" name="screening_type" value={t.value}
-                      checked={form.screening_type === t.value}
-                      onChange={e => set('screening_type', e.target.value)}
-                      style={{ accentColor: '#2563eb' }} />
-                    {t.label}
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div style={{ padding: '20px' }}>
-              <div className="grid grid-cols-4 gap-4">
+          {/* ── ส่วน 1: ข้อมูลทะเบียน ── */}
+          <div ref={el => { sectionRefs.current[0] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <SectionHeader num={1} title="ข้อมูลทะเบียน" color="#fef2f2" border="#fecaca" textColor="#b91c1c" />
+            <div style={{ padding: '24px' }}>
+              <div className="grid grid-cols-5 gap-4">
                 <FormSelect label="ปีงบประมาณ" options={FISCAL_YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
                 <FormInput label="รหัส TB No." value={form.tb_no} onChange={e => set('tb_no', e.target.value)} placeholder="เช่น 682797800001" />
                 <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
                 <FormDateThai label="วันที่ขึ้นทะเบียน (พ.ศ.)" value={form.registered_date} onChange={v => set('registered_date', v)} />
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">ประเภทคัดกรอง</label>
+                  <div style={{ display: 'flex', gap: 16, padding: '9px 0' }}>
+                    {['Active', 'Passive'].map(t => (
+                      <label key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 14, cursor: 'pointer' }}>
+                        <input type="radio" name="screening_type" value={t} checked={form.screening_type === t} onChange={e => set('screening_type', e.target.value)} style={{ accentColor: '#2563eb' }} />
+                        {t}
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
 
-              <div style={{ marginTop: 16 }} className="grid grid-cols-5 gap-4">
+          {/* ── ส่วน 2: ข้อมูลผู้ป่วย ── */}
+          <div ref={el => { sectionRefs.current[1] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <SectionHeader num={2} title="ข้อมูลผู้ป่วย" color="#fff7ed" border="#fed7aa" textColor="#c2410c" />
+            <div style={{ padding: '24px' }}>
+              <div className="grid grid-cols-5 gap-4">
                 <FormSelect label="คำนำหน้า" options={TITLES} value={form.title} onChange={e => set('title', e.target.value)} />
-                <div className="col-span-2">
-                  <FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} required placeholder="ชื่อจริง" />
-                </div>
-                <div className="col-span-2">
-                  <FormInput label="นามสกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} placeholder="นามสกุล" />
-                </div>
+                <div className="col-span-2"><FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} required placeholder="ชื่อจริง" /></div>
+                <div className="col-span-2"><FormInput label="นามสกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} /></div>
               </div>
-
               <div style={{ marginTop: 16 }} className="grid grid-cols-4 gap-4">
                 <FormInput label="เลขบัตรประชาชน" value={form.id_card} onChange={e => set('id_card', e.target.value)} placeholder="X-XXXX-XXXXX-XX-X" />
                 <FormDateThai label="วันเกิด (พ.ศ.)" value={form.birth_date} onChange={v => set('birth_date', v)} />
                 <FormInput label="อายุ (ปี)" type="number" value={form.age} onChange={e => set('age', e.target.value)} min="0" max="150" />
                 <FormSelect label="สิทธิ์การรักษา" options={MEDICAL_RIGHTS} value={form.medical_right} onChange={e => set('medical_right', e.target.value)} />
               </div>
-
               <div style={{ marginTop: 16 }} className="grid grid-cols-4 gap-4">
                 <FormSelect label="ประชากร" options={POPULATIONS} value={form.population_type} onChange={e => set('population_type', e.target.value)} />
                 <FormSelect label="สัญชาติ" options={NATIONALITIES} value={form.nationality} onChange={e => set('nationality', e.target.value)} />
-                <div className="col-span-2">
-                  <FormInput label="ที่อยู่" value={form.address} onChange={e => set('address', e.target.value)} placeholder="บ้านเลขที่ ซอย ถนน" />
-                </div>
+                <div className="col-span-2"><FormInput label="ที่อยู่" value={form.address} onChange={e => set('address', e.target.value)} placeholder="บ้านเลขที่ ซอย ถนน" /></div>
               </div>
-
               <div style={{ marginTop: 16 }} className="grid grid-cols-4 gap-4">
                 <FormInput label="หมู่ที่" value={form.village_no} onChange={e => set('village_no', e.target.value)} placeholder="เช่น 1" />
                 <FormInput label="ตำบล" value={form.subdistrict} onChange={e => set('subdistrict', e.target.value)} placeholder="เช่น สากเหล็ก" />
@@ -143,65 +270,60 @@ export default function NewPatientPage() {
             </div>
           </div>
 
-          {/* ส่วนที่ 2: การวินิจฉัยและตรวจ */}
-          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div style={{ background: '#eff6ff', borderBottom: '2px solid #bfdbfe', padding: '12px 20px' }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#1d4ed8' }}>ส่วนที่ 2 การวินิจฉัยและตรวจ</span>
-            </div>
-            <div style={{ padding: '20px' }}>
-              <div className="grid grid-cols-4 gap-4">
-                <FormInput label="การวินิจฉัย (ICD-10)" value={form.icd10} onChange={e => set('icd10', e.target.value)} placeholder="เช่น A150, A151" />
-                <FormSelect label="ผล X-pert MTB/RIF" options={AFB_RESULTS} value={form.xpert_result} onChange={e => set('xpert_result', e.target.value)} />
-                <FormSelect label="IP (ในปอด)" options={[{value:'true',label:'ใช่'},{value:'false',label:'ไม่ใช่'}]} value={form.is_ip} onChange={e => set('is_ip', e.target.value)} />
-                <FormSelect label="EP (นอกปอด)" options={[{value:'true',label:'ใช่'},{value:'false',label:'ไม่ใช่'}]} value={form.is_ep} onChange={e => set('is_ep', e.target.value)} />
+          {/* ── ส่วน 3: การวินิจฉัยและตรวจ ── */}
+          <div ref={el => { sectionRefs.current[2] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <SectionHeader num={3} title="การวินิจฉัยและตรวจ" color="#eff6ff" border="#bfdbfe" textColor="#1d4ed8" />
+            <div style={{ padding: '24px' }}>
+              <div className="grid grid-cols-3 gap-4">
+                <FormSelect label="การวินิจฉัย (ICD-10)" options={ICD10_OPTIONS} value={form.icd10} onChange={e => set('icd10', e.target.value)} />
+                <FormInput label="ผลการวินิจฉัย" value={form.xpert_result} onChange={e => set('xpert_result', e.target.value)} placeholder="เช่น MTB detected, Neg, 1+, 2+" />
+                <FormSelect label="ประเภทปอด (IP/EP)" options={LUNG_TYPES} value={form.lung_type} onChange={e => set('lung_type', e.target.value)} />
               </div>
             </div>
           </div>
 
-          {/* ส่วนที่ 3: การรักษา */}
-          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div style={{ background: '#f0fdf4', borderBottom: '2px solid #bbf7d0', padding: '12px 20px' }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>ส่วนที่ 3 การรักษา</span>
-            </div>
-            <div style={{ padding: '20px' }}>
-              <div className="grid grid-cols-4 gap-4">
-                <FormInput label="สถานที่ตรวจพบ" value={form.detected_place} onChange={e => set('detected_place', e.target.value)} placeholder="เช่น รพ.สากเหล็ก" />
-                <FormInput label="สถานที่รักษา" value={form.treatment_place} onChange={e => set('treatment_place', e.target.value)} placeholder="เช่น รพ.พิจิตร" />
+          {/* ── ส่วน 4: การรักษา ── */}
+          <div ref={el => { sectionRefs.current[3] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <SectionHeader num={4} title="การรักษา" color="#f0fdf4" border="#bbf7d0" textColor="#15803d" />
+            <div style={{ padding: '24px' }}>
+              <div className="grid grid-cols-2 gap-4">
+                <SearchableSelect label="สถานที่ตรวจพบ" options={THAI_HOSPITALS} value={form.detected_place} onChange={v => set('detected_place', v)} />
+                <SearchableSelect label="สถานที่รักษา" options={THAI_HOSPITALS} value={form.treatment_place} onChange={v => set('treatment_place', v)} />
+              </div>
+              <div style={{ marginTop: 16 }} className="grid grid-cols-3 gap-4">
                 <FormInput label="วันที่เริ่มรักษา" type="date" value={form.treatment_start_date} onChange={e => set('treatment_start_date', e.target.value)} />
                 <FormSelect label="ประเภทผู้ป่วย" options={PATIENT_TYPES} value={form.patient_type} onChange={e => set('patient_type', e.target.value)} />
-              </div>
-              <div style={{ marginTop: 16 }} className="grid grid-cols-2 gap-4">
-                <FormInput label="กลุ่มเสี่ยง" value={form.risk_group} onChange={e => set('risk_group', e.target.value)} placeholder="เช่น DM, HT, ผู้สูงอายุ" />
+                <FormInput label="โรคประจำตัว" value={form.risk_group} onChange={e => set('risk_group', e.target.value)} placeholder="เช่น DM, HT, ผู้สูงอายุ" />
               </div>
             </div>
           </div>
 
-          {/* ส่วนที่ 4: ผลระหว่างการรักษา */}
-          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div style={{ background: '#fefce8', borderBottom: '2px solid #fde68a', padding: '12px 20px' }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#854d0e' }}>ส่วนที่ 4 ผลระหว่างการรักษา</span>
-            </div>
-            <div style={{ padding: '20px' }}>
-              <div className="grid grid-cols-4 gap-4">
-                <FormSelect label="ผลเดือนที่ 2 (M2)" options={CXR_RESULTS} value={form.result_m2} onChange={e => set('result_m2', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 3 (M3)" options={CXR_RESULTS} value={form.result_m3} onChange={e => set('result_m3', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 5 (M5)" options={CXR_RESULTS} value={form.result_m5} onChange={e => set('result_m5', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 6 (M6)" options={CXR_RESULTS} value={form.result_m6} onChange={e => set('result_m6', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 7 (M7)" options={CXR_RESULTS} value={form.result_m7} onChange={e => set('result_m7', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 9 (M9)" options={CXR_RESULTS} value={form.result_m9} onChange={e => set('result_m9', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 10 (M10)" options={CXR_RESULTS} value={form.result_m10} onChange={e => set('result_m10', e.target.value)} />
-                <FormSelect label="ผลเดือนที่ 12 (M12)" options={CXR_RESULTS} value={form.result_m12} onChange={e => set('result_m12', e.target.value)} />
-                <FormSelect label="ผลการรักษา" options={RESULTS} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
+          {/* ── ส่วน 5: ผลระหว่างการรักษา ── */}
+          <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
+            <div style={{ padding: '24px' }}>
+              {/* ผลCXR */}
+              <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 16 }}>
+                <FormSelect label="ผล CXR (เดือนที่)" options={CXR_MONTHS} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
+                <FormDateThai label="วันที่ CXR (พ.ศ.)" value={form.cxr_date} onChange={v => set('cxr_date', v)} />
+              </div>
+              {/* ผลเสมหะ */}
+              <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 16 }}>
+                <FormSelect label="ผลเสมหะ (เดือนที่)" options={AFB_MONTHS} value={form.sputum_result} onChange={e => set('sputum_result', e.target.value)} />
+                <FormInput label="เลข Lab TB." value={form.sputum_lab_no} onChange={e => set('sputum_lab_no', e.target.value)} placeholder="หมายเลขตัวอย่าง" />
+                <FormDateThai label="วันที่ตรวจเสมหะ (พ.ศ.)" value={form.sputum_date} onChange={v => set('sputum_date', v)} />
+              </div>
+              {/* ผลการรักษา */}
+              <div className="grid grid-cols-3 gap-4">
+                <FormSelect label="ผลการรักษา" options={OUTCOMES} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
               </div>
             </div>
           </div>
 
-          {/* ส่วนที่ 5: ผู้ดูแลและติดต่อ */}
-          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div style={{ background: '#f5f3ff', borderBottom: '2px solid #ddd6fe', padding: '12px 20px' }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#6d28d9' }}>ส่วนที่ 5 ผู้ดูแลและติดต่อ</span>
-            </div>
-            <div style={{ padding: '20px' }}>
+          {/* ── ส่วน 6: ผู้ดูแลและติดต่อ ── */}
+          <div ref={el => { sectionRefs.current[5] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <SectionHeader num={6} title="ผู้ดูแลและติดต่อ" color="#f5f3ff" border="#ddd6fe" textColor="#6d28d9" />
+            <div style={{ padding: '24px' }}>
               <div className="grid grid-cols-3 gap-4">
                 <FormInput label="ญาติผู้ดูแล" value={form.caregiver_name} onChange={e => set('caregiver_name', e.target.value)} />
                 <FormInput label="เบอร์โทรศัพท์" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="0XX-XXXXXXX" />
@@ -216,11 +338,11 @@ export default function NewPatientPage() {
             <div style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 10, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}` }}>{msg}</div>
           )}
 
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
+          <div style={{ display: 'flex', gap: 10, paddingBottom: 40 }}>
+            <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '12px 28px', borderRadius: 10, fontSize: 15, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
               {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
             </button>
-            <button type="button" onClick={() => router.back()} style={{ background: '#fff', color: '#475569', padding: '10px 20px', borderRadius: 10, fontSize: 14, border: '1px solid #e2e8f0', cursor: 'pointer' }}>ยกเลิก</button>
+            <button type="button" onClick={() => router.back()} style={{ background: '#fff', color: '#475569', padding: '12px 22px', borderRadius: 10, fontSize: 15, border: '1px solid #e2e8f0', cursor: 'pointer' }}>ยกเลิก</button>
           </div>
         </form>
       </div>
