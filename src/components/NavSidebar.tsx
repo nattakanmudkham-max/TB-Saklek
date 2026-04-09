@@ -1,6 +1,5 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 function CalendarIconNav({ active }: { active: boolean }) {
@@ -79,17 +78,54 @@ export default function NavSidebar() {
       {/* Logo */}
       <div style={{ padding: '24px 20px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 120, height: 120,
-            borderRadius: '50%',
-            overflow: 'hidden',
-            flexShrink: 0,
-            border: '2.5px solid rgba(255,255,255,0.3)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-            background: '#fff',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <Image src="/hospital-logo.png" alt="โรงพยาบาลสากเหล็ก" width={220} height={120} quality={100} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
+          <div style={{ width: 120, height: 120, flexShrink: 0 }}>
+            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="bgGrad" cx="50%" cy="40%" r="60%">
+                  <stop offset="0%" stopColor="#1e3a5f"/>
+                  <stop offset="100%" stopColor="#0f2240"/>
+                </radialGradient>
+                <radialGradient id="goldGrad" cx="50%" cy="0%" r="100%">
+                  <stop offset="0%" stopColor="#f5d97a"/>
+                  <stop offset="100%" stopColor="#b8862a"/>
+                </radialGradient>
+              </defs>
+              {/* Outer ring */}
+              <circle cx="60" cy="60" r="59" fill="url(#bgGrad)" stroke="url(#goldGrad)" strokeWidth="2.5"/>
+              {/* Inner decorative ring */}
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(205,158,60,0.3)" strokeWidth="1"/>
+              {/* Laurel left */}
+              <g stroke="#c9a84c" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.85">
+                <path d="M28 75 Q22 68 25 60"/>
+                <path d="M25 60 Q19 53 23 45"/>
+                <ellipse cx="24" cy="72" rx="5" ry="3" transform="rotate(-40 24 72)" fill="#c9a84c" stroke="none" opacity="0.7"/>
+                <ellipse cx="21" cy="61" rx="5" ry="3" transform="rotate(-50 21 61)" fill="#c9a84c" stroke="none" opacity="0.7"/>
+                <ellipse cx="20" cy="50" rx="5" ry="3" transform="rotate(-60 20 50)" fill="#c9a84c" stroke="none" opacity="0.6"/>
+                <ellipse cx="22" cy="40" rx="5" ry="3" transform="rotate(-55 22 40)" fill="#c9a84c" stroke="none" opacity="0.6"/>
+              </g>
+              {/* Laurel right */}
+              <g stroke="#c9a84c" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.85">
+                <path d="M92 75 Q98 68 95 60"/>
+                <path d="M95 60 Q101 53 97 45"/>
+                <ellipse cx="96" cy="72" rx="5" ry="3" transform="rotate(40 96 72)" fill="#c9a84c" stroke="none" opacity="0.7"/>
+                <ellipse cx="99" cy="61" rx="5" ry="3" transform="rotate(50 99 61)" fill="#c9a84c" stroke="none" opacity="0.7"/>
+                <ellipse cx="100" cy="50" rx="5" ry="3" transform="rotate(60 100 50)" fill="#c9a84c" stroke="none" opacity="0.6"/>
+                <ellipse cx="98" cy="40" rx="5" ry="3" transform="rotate(55 98 40)" fill="#c9a84c" stroke="none" opacity="0.6"/>
+              </g>
+              {/* Tree trunk */}
+              <rect x="57" y="68" width="6" height="14" rx="2" fill="#c9a84c" opacity="0.9"/>
+              {/* Tree canopy layers */}
+              <polygon points="60,22 48,42 72,42" fill="#c9a84c" opacity="0.95"/>
+              <polygon points="60,32 45,55 75,55" fill="#b8862a" opacity="0.85"/>
+              <polygon points="60,44 43,65 77,65" fill="#c9a84c" opacity="0.9"/>
+              {/* Medical cross on trunk */}
+              <rect x="55.5" y="73" width="9" height="3" rx="1" fill="#0f2240"/>
+              <rect x="58.5" y="70.5" width="3" height="8" rx="1" fill="#0f2240"/>
+              {/* Bottom text arc background */}
+              <path d="M 25 88 Q 60 105 95 88" stroke="url(#goldGrad)" strokeWidth="1" fill="none" opacity="0.5"/>
+              {/* SL initials small */}
+              <text x="60" y="100" textAnchor="middle" fill="#f5d97a" fontSize="9" fontWeight="700" fontFamily="serif" letterSpacing="3">SAK LEK</text>
+            </svg>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontWeight: 800, fontSize: 22, letterSpacing: 0.3, lineHeight: 1.2 }}>TB-Saklek</div>
