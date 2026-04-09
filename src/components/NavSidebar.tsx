@@ -3,12 +3,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navItems = [
-  { href: '/', label: 'หน้าหลัก', icon: '🏠' },
-  { href: '/patients', label: 'ทะเบียนผู้ป่วย TB', icon: '🫁' },
-  { href: '/staff-screening', label: 'คัดกรองเจ้าหน้าที่', icon: '👤' },
-  { href: '/contacts', label: 'ผู้สัมผัสร่วมบ้าน', icon: '👥' },
-  { href: '/ltbi', label: 'วัณโรคระยะแฝง', icon: '🧪' },
-  { href: '/appointments', label: 'ตารางนัดรับยา', icon: '📅' },
+  { href: '/',               label: 'หน้าหลัก',          icon: '🏥' },
+  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: '🫁' },
+  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️' },
+  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '🩺' },
+  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬' },
+  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: '💊' },
 ]
 
 export default function NavSidebar() {
@@ -16,8 +16,8 @@ export default function NavSidebar() {
 
   return (
     <aside style={{
-      width: 260,
-      background: 'linear-gradient(180deg, #1a3357 0%, #1e3a5f 100%)',
+      width: 300,
+      background: 'linear-gradient(180deg, #0f2444 0%, #1a3a6e 100%)',
       color: 'white',
       display: 'flex',
       flexDirection: 'column',
@@ -26,29 +26,30 @@ export default function NavSidebar() {
       left: 0,
       height: '100vh',
       zIndex: 10,
-      boxShadow: '4px 0 24px rgba(0,0,0,0.15)',
+      boxShadow: '4px 0 32px rgba(0,0,0,0.2)',
     }}>
       {/* Logo */}
-      <div style={{ padding: '24px 20px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ padding: '28px 24px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{
-            width: 44, height: 44,
+            width: 54, height: 54,
             background: 'rgba(255,255,255,0.15)',
-            borderRadius: 12,
+            border: '1.5px solid rgba(255,255,255,0.2)',
+            borderRadius: 14,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 22,
-            backdropFilter: 'blur(8px)',
+            fontSize: 26,
+            flexShrink: 0,
           }}>🏥</div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 21, letterSpacing: 0.3 }}>TB-Saklek</div>
-            <div style={{ fontSize: 13, color: '#93c5fd', marginTop: 2, fontWeight: 500 }}>โรงพยาบาลสากเหล็ก</div>
+            <div style={{ fontWeight: 800, fontSize: 26, letterSpacing: 0.3, lineHeight: 1.2 }}>TB-Saklek</div>
+            <div style={{ fontSize: 14, color: '#93c5fd', marginTop: 3, fontWeight: 500 }}>โรงพยาบาลสากเหล็ก</div>
           </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: '12px 12px', overflowY: 'auto' }}>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', fontWeight: 600, letterSpacing: 1, padding: '8px 8px 6px', textTransform: 'uppercase' }}>
+      <nav style={{ flex: 1, padding: '16px 14px', overflowY: 'auto' }}>
+        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700, letterSpacing: 1.5, padding: '8px 10px 10px', textTransform: 'uppercase' }}>
           เมนูหลัก
         </div>
         {navItems.map((item) => {
@@ -62,25 +63,25 @@ export default function NavSidebar() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 10,
-                padding: '9px 12px',
-                borderRadius: 10,
-                marginBottom: 2,
-                fontSize: 14,
+                gap: 13,
+                padding: '11px 14px',
+                borderRadius: 12,
+                marginBottom: 4,
+                fontSize: 16,
                 color: isActive ? '#fff' : 'rgba(255,255,255,0.75)',
                 textDecoration: 'none',
-                fontWeight: isActive ? 600 : 400,
+                fontWeight: isActive ? 700 : 400,
                 background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
                 borderLeft: isActive ? '3px solid #60a5fa' : '3px solid transparent',
                 transition: 'all 0.15s ease',
               }}
               className="nav-link"
             >
-              <span style={{ fontSize: 16, minWidth: 20, textAlign: 'center' }}>{item.icon}</span>
+              <span style={{ fontSize: 20, minWidth: 26, textAlign: 'center' }}>{item.icon}</span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {isActive && (
                 <span style={{
-                  width: 6, height: 6,
+                  width: 7, height: 7,
                   background: '#60a5fa',
                   borderRadius: '50%',
                   flexShrink: 0,
@@ -93,16 +94,16 @@ export default function NavSidebar() {
 
       {/* Footer */}
       <div style={{
-        padding: '14px 20px',
+        padding: '16px 22px',
         borderTop: '1px solid rgba(255,255,255,0.1)',
-        fontSize: 11,
-        lineHeight: 1.6,
-        color: 'rgba(255,255,255,0.5)',
+        fontSize: 12,
+        lineHeight: 1.7,
+        color: 'rgba(255,255,255,0.45)',
         display: 'flex',
         alignItems: 'center',
-        gap: 6,
+        gap: 8,
       }}>
-        <span>🏥</span>
+        <span style={{ fontSize: 16 }}>🏥</span>
         <span>กลุ่มงานปฐมภูมิและองค์รวม<br />โรงพยาบาลสากเหล็ก</span>
       </div>
 

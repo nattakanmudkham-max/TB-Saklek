@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ margin: 0, background: '#f1f5f9' }}>
         <div style={{ display: 'flex', minHeight: '100vh' }}>
           <NavSidebar />
-          <main style={{ flex: 1, marginLeft: 260, minHeight: '100vh', background: '#f1f5f9' }}>
+          <main style={{ flex: 1, marginLeft: 300, minHeight: '100vh', background: '#f1f5f9' }}>
             {children}
           </main>
         </div>

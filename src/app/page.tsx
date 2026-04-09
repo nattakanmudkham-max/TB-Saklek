@@ -13,7 +13,7 @@ const modules = [
   },
   {
     href: "/staff-screening",
-    icon: "👤",
+    icon: "👨‍⚕️",
     title: "คัดกรองเจ้าหน้าที่",
     desc: "ทะเบียนคัดกรองวัณโรคเจ้าหน้าที่โรงพยาบาลสากเหล็ก",
     accent: "#2563eb",
@@ -23,7 +23,7 @@ const modules = [
   },
   {
     href: "/contacts",
-    icon: "👥",
+    icon: "🩺",
     title: "ผู้สัมผัสร่วมบ้าน",
     desc: "ทะเบียนผู้สัมผัส/ใกล้ชิดผู้ป่วย ผล CXR / GeneXpert / IGRA",
     accent: "#d97706",
@@ -33,7 +33,7 @@ const modules = [
   },
   {
     href: "/ltbi",
-    icon: "🧪",
+    icon: "🔬",
     title: "วัณโรคระยะแฝง (LTBI)",
     desc: "ทะเบียนรักษาผู้ที่ IGRA ผิดปกติ บันทึกวันเริ่มรักษา",
     accent: "#7c3aed",
@@ -43,7 +43,7 @@ const modules = [
   },
   {
     href: "/appointments",
-    icon: "📅",
+    icon: "💊",
     title: "ตารางนัดรับยา",
     desc: "บันทึกวันนัดรับยา สูตรยา และปริมาณยาแต่ละเดือน",
     accent: "#059669",
@@ -95,35 +95,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Stats */}
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-            {[
-              { label: 'โมดูลระบบ', value: '5', icon: '📦', color: '#bfdbfe' },
-              { label: 'ปีงบประมาณ', value: '2568', icon: '📆', color: '#bbf7d0' },
-              { label: 'โรงพยาบาล', value: 'สากเหล็ก', icon: '🏥', color: '#fde68a' },
-              { label: 'จังหวัด', value: 'พิจิตร', icon: '📍', color: '#ddd6fe' },
-            ].map(s => (
-              <div key={s.label} style={{
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.14)',
-                borderRadius: 14,
-                padding: '16px 24px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-                backdropFilter: 'blur(8px)',
-                minWidth: 160,
-              }}>
-                <div style={{ width: 42, height: 42, background: 'rgba(255,255,255,0.1)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
-                  {s.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: '#ffffff', lineHeight: 1.1 }}>{s.value}</div>
-                  <div style={{ fontSize: 12, color: s.color, marginTop: 3, fontWeight: 500 }}>{s.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
