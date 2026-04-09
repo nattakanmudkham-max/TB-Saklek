@@ -108,7 +108,8 @@ export default function StaffScreeningPage() {
 
             {/* Year */}
             <select value={year} onChange={e => setYear(e.target.value)} style={selectStyle}>
-              {[2569, 2568, 2567, 2566].map(y => <option key={y} value={y}>ปีงบ {y}</option>)}
+              <option value="">ปีงบ (ทั้งหมด)</option>
+              {[2575,2574,2573,2572,2571,2570,2569,2568,2567,2566,2565].map(y => <option key={y} value={y}>ปีงบ {y}</option>)}
             </select>
 
             {/* CXR Result filter */}

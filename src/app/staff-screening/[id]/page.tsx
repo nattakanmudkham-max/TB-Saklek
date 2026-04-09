@@ -23,8 +23,8 @@ const SectionCard = ({ children, header }: { children: React.ReactNode; header: 
   </div>
 )
 
-const FieldGrid = ({ children }: { children: React.ReactNode }) => (
-  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
+const FieldGrid = ({ children, cols = 2 }: { children: React.ReactNode; cols?: number }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: '16px 24px' }}>
     {children}
   </div>
 )
@@ -144,7 +144,7 @@ export default function EditStaffPage() {
         </div>
       </div>
 
-      <div style={{ padding: '28px 32px', maxWidth: 900 }}>
+      <div style={{ padding: '28px 40px', maxWidth: 1200 }}>
         <form onSubmit={handleSubmit}>
 
           {/* Section 1: ข้อมูลทั่วไป */}
@@ -162,9 +162,10 @@ export default function EditStaffPage() {
               <div style={{ marginLeft: 'auto', background: '#dbeafe', color: '#1e40af', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #bfdbfe' }}>ขั้นตอนที่ 1</div>
             </div>
           }>
-            <FieldGrid>
+            <FieldGrid cols={3}>
               <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
               <FormInput label="HN (เลขประจำตัวผู้ป่วย)" value={form.hn} onChange={e => set('hn', e.target.value)} placeholder="เช่น 000012345" />
+              <div />
             </FieldGrid>
           </SectionCard>
 
@@ -183,9 +184,8 @@ export default function EditStaffPage() {
               <div style={{ marginLeft: 'auto', background: '#dcfce7', color: '#15803d', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #86efac' }}>ขั้นตอนที่ 2</div>
             </div>
           }>
-            <FieldGrid>
+            <FieldGrid cols={3}>
               <FormSelect label="คำนำหน้า" options={['นาย','นาง','นางสาว','ดร.','ผศ.','รศ.'].map(v=>({value:v,label:v}))} value={form.prefix} onChange={e => set('prefix', e.target.value)} />
-              <div />
               <FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} />
               <FormInput label="สกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} />
               <div style={{ gridColumn: '1 / -1' }}>
@@ -196,6 +196,7 @@ export default function EditStaffPage() {
               </div>
               <FormInput label="ตำแหน่ง" value={form.position} onChange={e => set('position', e.target.value)} />
               <FormSelect label="ประเภท" options={TYPES} value={form.staff_type} onChange={e => set('staff_type', e.target.value)} />
+              <div />
               <div style={{ gridColumn: '1 / -1' }}>
                 <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
               </div>
@@ -217,9 +218,10 @@ export default function EditStaffPage() {
               <div style={{ marginLeft: 'auto', background: '#fef9c3', color: '#92400e', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #fde68a' }}>ขั้นตอนที่ 3</div>
             </div>
           }>
-            <FieldGrid>
+            <FieldGrid cols={3}>
               <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
               <FormSelect label="ผล CXR" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
+              <div />
               <div style={{ gridColumn: '1 / -1' }}>
                 <FormTextArea label="หมายเหตุ / บันทึกเพิ่มเติม" value={form.notes} onChange={e => set('notes', e.target.value)} />
               </div>
