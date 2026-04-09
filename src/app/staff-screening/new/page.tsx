@@ -98,22 +98,22 @@ export default function NewStaffPage() {
         </div>
       </div>
 
-      <div style={{ padding: '28px 40px', maxWidth: 1200 }}>
+      <div style={{ padding: '28px 40px' }}>
         <form onSubmit={handleSubmit}>
 
           {/* Section 1: ข้อมูลทั่วไป */}
           <SectionCard header={
-            <div style={{ background: 'linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%)', padding: '14px 24px', borderBottom: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 34, height: 34, background: '#bfdbfe', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round">
+            <div style={{ background: 'linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%)', padding: '20px 28px', borderBottom: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 60, height: 60, background: '#bfdbfe', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round">
                   <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
                 </svg>
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1e40af' }}>ข้อมูลทั่วไป</div>
-                <div style={{ fontSize: 11, color: '#60a5fa' }}>General Information</div>
+                <div style={{ fontSize: 42, fontWeight: 800, color: '#1e40af' }}>ข้อมูลทั่วไป</div>
+                <div style={{ fontSize: 20, color: '#60a5fa' }}>General Information</div>
               </div>
-              <div style={{ marginLeft: 'auto', background: '#dbeafe', color: '#1e40af', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #bfdbfe' }}>ขั้นตอนที่ 1</div>
+              <div style={{ marginLeft: 'auto', background: '#dbeafe', color: '#1e40af', fontSize: 16, fontWeight: 700, padding: '6px 16px', borderRadius: 20, border: '1px solid #bfdbfe', whiteSpace: 'nowrap' }}>ขั้นตอนที่ 1</div>
             </div>
           }>
             <FieldGrid cols={3}>
@@ -125,17 +125,17 @@ export default function NewStaffPage() {
 
           {/* Section 2: ข้อมูลเจ้าหน้าที่ */}
           <SectionCard header={
-            <div style={{ background: 'linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%)', padding: '14px 24px', borderBottom: '1px solid #86efac', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 34, height: 34, background: '#bbf7d0', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="2" strokeLinecap="round">
+            <div style={{ background: 'linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%)', padding: '20px 28px', borderBottom: '1px solid #86efac', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 60, height: 60, background: '#bbf7d0', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="2" strokeLinecap="round">
                   <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
                 </svg>
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>ข้อมูลเจ้าหน้าที่</div>
-                <div style={{ fontSize: 11, color: '#4ade80' }}>Staff Information</div>
+                <div style={{ fontSize: 42, fontWeight: 800, color: '#15803d' }}>ข้อมูลเจ้าหน้าที่</div>
+                <div style={{ fontSize: 20, color: '#4ade80' }}>Staff Information</div>
               </div>
-              <div style={{ marginLeft: 'auto', background: '#dcfce7', color: '#15803d', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #86efac' }}>ขั้นตอนที่ 2</div>
+              <div style={{ marginLeft: 'auto', background: '#dcfce7', color: '#15803d', fontSize: 16, fontWeight: 700, padding: '6px 16px', borderRadius: 20, border: '1px solid #86efac', whiteSpace: 'nowrap' }}>ขั้นตอนที่ 2</div>
             </div>
           }>
             <FieldGrid cols={3}>
@@ -156,17 +156,17 @@ export default function NewStaffPage() {
 
           {/* Section 3: ผลการคัดกรอง */}
           <SectionCard header={
-            <div style={{ background: 'linear-gradient(90deg, #fefce8 0%, #fef9c3 100%)', padding: '14px 24px', borderBottom: '1px solid #fde68a', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 34, height: 34, background: '#fde68a', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="2" strokeLinecap="round">
+            <div style={{ background: 'linear-gradient(90deg, #fefce8 0%, #fef9c3 100%)', padding: '20px 28px', borderBottom: '1px solid #fde68a', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 60, height: 60, background: '#fde68a', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="2" strokeLinecap="round">
                   <path d="M9 12l2 2 4-4"/><rect x="3" y="3" width="18" height="18" rx="2"/>
                 </svg>
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>ผลการคัดกรอง</div>
-                <div style={{ fontSize: 11, color: '#d97706' }}>Screening Results</div>
+                <div style={{ fontSize: 42, fontWeight: 800, color: '#92400e' }}>ผลการคัดกรอง</div>
+                <div style={{ fontSize: 20, color: '#d97706' }}>Screening Results</div>
               </div>
-              <div style={{ marginLeft: 'auto', background: '#fef9c3', color: '#92400e', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #fde68a' }}>ขั้นตอนที่ 3</div>
+              <div style={{ marginLeft: 'auto', background: '#fef9c3', color: '#92400e', fontSize: 16, fontWeight: 700, padding: '6px 16px', borderRadius: 20, border: '1px solid #fde68a', whiteSpace: 'nowrap' }}>ขั้นตอนที่ 3</div>
             </div>
           }>
             <FieldGrid cols={3}>
