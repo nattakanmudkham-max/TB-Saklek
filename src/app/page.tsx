@@ -105,44 +105,6 @@ export default function HomePage() {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(170deg, #f0f4ff 0%, #f8fafc 50%, #f1f5f9 100%)' }}>
 
-      {/* ── Hero ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0f2444 0%, #1a3a6e 60%, #1e4a8a 100%)',
-        padding: '56px 48px 64px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Decorative circles */}
-        <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -80, right: 120, width: 220, height: 220, borderRadius: '50%', background: 'rgba(255,255,255,0.03)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: 20, right: 200, width: 120, height: 120, borderRadius: '50%', background: 'rgba(96,165,250,0.08)', pointerEvents: 'none' }} />
-
-        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
-            <div style={{
-              width: 72, height: 72,
-              background: 'rgba(255,255,255,0.12)',
-              border: '1.5px solid rgba(255,255,255,0.2)',
-              borderRadius: 20,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 36, flexShrink: 0,
-              backdropFilter: 'blur(10px)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-            }}>🏥</div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#93c5fd', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
-                ระบบสารสนเทศวัณโรค
-              </div>
-              <h1 style={{ fontSize: 42, fontWeight: 800, margin: 0, color: '#ffffff', letterSpacing: -0.5, lineHeight: 1.15 }}>
-                ระบบทะเบียนวัณโรค
-              </h1>
-              <p style={{ color: '#93c5fd', margin: '10px 0 0', fontSize: 17, fontWeight: 400, letterSpacing: 0.2 }}>
-                โรงพยาบาลสากเหล็ก · อำเภอสากเหล็ก · จังหวัดพิจิตร
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* ── Module Grid ── */}
       <div style={{ padding: '44px 48px 60px', maxWidth: 1200, margin: '0 auto' }}>

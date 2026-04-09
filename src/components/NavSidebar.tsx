@@ -110,11 +110,11 @@ export default function NavSidebar() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 13,
-                padding: '11px 14px',
+                gap: 14,
+                padding: '13px 16px',
                 borderRadius: 12,
-                marginBottom: 4,
-                fontSize: 16,
+                marginBottom: 6,
+                fontSize: 18,
                 color: isActive ? '#fff' : 'rgba(255,255,255,0.75)',
                 textDecoration: 'none',
                 fontWeight: isActive ? 700 : 400,
@@ -124,7 +124,7 @@ export default function NavSidebar() {
               }}
               className="nav-link"
             >
-              <span style={{ fontSize: 20, minWidth: 26, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: 24, minWidth: 30, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {item.useLung
                   ? <LungIconNav active={isActive} />
                   : item.useCalendar

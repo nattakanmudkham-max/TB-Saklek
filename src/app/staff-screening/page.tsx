@@ -6,6 +6,18 @@ import { supabase } from '@/lib/supabase'
 interface Staff {
   id: string; fiscal_year: number; seq: number; hn: string
   full_name: string; department: string; cxr_date: string; cxr_result: string
+  birth_date: string
+}
+
+function calcAge(isoDate: string): number | null {
+  if (!isoDate) return null
+  const birth = new Date(isoDate)
+  if (isNaN(birth.getTime())) return null
+  const today = new Date()
+  let age = today.getFullYear() - birth.getFullYear()
+  const m = today.getMonth() - birth.getMonth()
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--
+  return age >= 0 ? age : null
 }
 
 function toThaiBE(iso: string): string {
@@ -180,6 +192,7 @@ export default function StaffScreeningPage() {
                 </td></tr>
               ) : filtered.map((d, i) => {
                 const cc = cxrColor(d.cxr_result)
+                const age = calcAge(d.birth_date)
                 return (
                   <tr key={d.id} style={{
                     borderBottom: '1px solid #f1f5f9',
@@ -190,7 +203,14 @@ export default function StaffScreeningPage() {
                     <td style={{ padding: '11px 10px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
                     </td>
-                    <td style={{ padding: '11px 10px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left', fontSize: 13 }}>{d.full_name}</td>
+                    <td style={{ padding: '11px 10px', textAlign: 'left', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 13 }}>{d.full_name}</div>
+                      {age !== null && (
+                        <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                          อายุ <span style={{ fontWeight: 700, color: '#2563eb' }}>{age}</span> ปี
+                        </div>
+                      )}
+                    </td>
                     <td style={{ padding: '11px 12px', color: '#0f172a', fontSize: 13, fontWeight: 600 }}>{d.department || '-'}</td>
                     <td style={{ padding: '9px 10px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
                       {toThaiBE(d.cxr_date)}
