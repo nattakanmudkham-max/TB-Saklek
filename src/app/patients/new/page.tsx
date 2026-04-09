@@ -348,11 +348,68 @@ export default function NewPatientPage() {
           {/* ส่วน 5: ผลระหว่างการรักษา */}
           <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
-            <div style={{ padding: '24px' }}>
-              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '14px 18px', marginBottom: 16, fontSize: 13, color: '#1d4ed8', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 18 }}>🧪</span>
-                <span>รายการผล Lab (Smear, Xpert, Culture ฯลฯ) สามารถเพิ่มได้ในหน้า <b>แก้ไขข้อมูล</b> หลังจากบันทึกผู้ป่วยแล้ว</span>
+            <div style={{ padding: '16px 24px' }}>
+              {/* Note */}
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#1d4ed8', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>💡</span>
+                <span>บันทึกผู้ป่วยก่อน แล้วจะสามารถเพิ่มรายการ CXR และ Lab ได้ทันที</span>
               </div>
+
+              {/* ─── CXR Table (empty, disabled) ─── */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+                <button type="button" disabled style={{ background: '#f87171', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'not-allowed', opacity: 0.5 }}>
+                  + เพิ่มรายการ CXR
+                </button>
+              </div>
+              <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #cbd5e1', marginBottom: 20 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 620 }}>
+                  <thead>
+                    <tr style={{ background: '#1e3a5f', color: '#fff' }}>
+                      {['ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','แก้ไข','ลบ'].map(h => (
+                        <th key={h} style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td colSpan={8} style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: 12 }}>บันทึกผู้ป่วยก่อนเพื่อเพิ่มรายการ CXR</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* ─── Lab Table (empty, disabled) ─── */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+                <button type="button" disabled style={{ background: '#f87171', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'not-allowed', opacity: 0.5 }}>
+                  + เพิ่มรายการ LAB
+                </button>
+              </div>
+              <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #cbd5e1', marginBottom: 16 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 860 }}>
+                  <thead>
+                    <tr style={{ background: '#1e3a5f', color: '#fff' }}>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>แก้ไข</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>ลำดับ</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>Lab No.</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>วันที่ตรวจ</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>สาเหตุการตรวจ</th>
+                      <th colSpan={5} style={{ padding: '9px 10px', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11 }}>Lab Result</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11 }}>ร.พ.ส่งตรวจ</th>
+                      <th style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>ลบ</th>
+                    </tr>
+                    <tr style={{ background: '#2d5a8e', color: '#cbd5e1' }}>
+                      <th colSpan={5} />
+                      {['Smear','Molecular','Xpert MTB/RIF','Culture','DST'].map(h => (
+                        <th key={h} style={{ padding: '6px 8px', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, textAlign: 'center' }}>{h}</th>
+                      ))}
+                      <th colSpan={2} />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td colSpan={12} style={{ textAlign: 'center', padding: '20px', color: '#94a3b8', fontSize: 12 }}>บันทึกผู้ป่วยก่อนเพื่อเพิ่มรายการ Lab</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* ผลการรักษา */}
               <div style={{ maxWidth: 280 }}>
                 <FormSelect label="ผลการรักษา" options={OUTCOMES} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
               </div>
