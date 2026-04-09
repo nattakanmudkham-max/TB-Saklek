@@ -6,7 +6,7 @@ const navItems = [
   { href: '/',               label: 'หน้าหลัก',          icon: '🏥' },
   { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: '🫁' },
   { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️' },
-  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '🩺' },
+  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦' },
   { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬' },
   { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: '💊' },
 ]
@@ -94,17 +94,18 @@ export default function NavSidebar() {
 
       {/* Footer */}
       <div style={{
-        padding: '16px 22px',
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        fontSize: 12,
+        padding: '18px 22px',
+        borderTop: '1px solid rgba(255,255,255,0.15)',
+        fontSize: 15,
         lineHeight: 1.7,
-        color: 'rgba(255,255,255,0.45)',
+        color: '#ffffff',
         display: 'flex',
         alignItems: 'center',
-        gap: 8,
+        gap: 10,
+        background: 'rgba(0,0,0,0.15)',
       }}>
-        <span style={{ fontSize: 16 }}>🏥</span>
-        <span>กลุ่มงานปฐมภูมิและองค์รวม<br />โรงพยาบาลสากเหล็ก</span>
+        <span style={{ fontSize: 22, flexShrink: 0 }}>🏥</span>
+        <span style={{ fontWeight: 500 }}>กลุ่มงานปฐมภูมิและองค์รวม<br />โรงพยาบาลสากเหล็ก</span>
       </div>
 
       <style>{`

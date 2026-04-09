@@ -23,7 +23,7 @@ const modules = [
   },
   {
     href: "/contacts",
-    icon: "🩺",
+    icon: "👨‍👩‍👧‍👦",
     title: "ผู้สัมผัสร่วมบ้าน",
     desc: "ทะเบียนผู้สัมผัส/ใกล้ชิดผู้ป่วย ผล CXR / GeneXpert / IGRA",
     accent: "#d97706",
