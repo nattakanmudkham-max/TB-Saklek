@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { FormInput, FormSelect, FormTextArea, FormDateThai, SearchableSelect } from '@/components/FormComponents'
@@ -194,7 +194,6 @@ export default function EditPatientPage() {
   const [deleting, setDeleting] = useState(false)
   const [msg, setMsg] = useState('')
   const [activeStep, setActiveStep] = useState(0)
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
 
   // Lab results state
   const [labRows, setLabRows] = useState<LabResult[]>([])
@@ -224,18 +223,6 @@ export default function EditPatientPage() {
     treatment_outcome: '', caregiver_name: '', phone: '', notes: '',
   })
 
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) {
-          const i = sectionRefs.current.findIndex(r => r === e.target)
-          if (i >= 0) setActiveStep(i)
-        }
-      }), { threshold: 0.25 }
-    )
-    sectionRefs.current.forEach(r => r && obs.observe(r))
-    return () => obs.disconnect()
-  }, [loading])
 
   useEffect(() => {
     async function load() {
@@ -328,7 +315,7 @@ export default function EditPatientPage() {
   const districts = DISTRICTS_BY_PROVINCE[form.province] ?? []
   const subdistricts = SUBDISTRICTS_BY_DISTRICT[form.district] ?? []
 
-  function goTo(i: number) { sectionRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+  function goTo(i: number) { setActiveStep(i); window.scrollTo({ top: 0, behavior: 'smooth' }) }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setSaving(true); setMsg('')
@@ -484,7 +471,7 @@ export default function EditPatientPage() {
         <form onSubmit={handleSubmit}>
 
           {/* ส่วน 1 */}
-          <div ref={el => { sectionRefs.current[0] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+          {activeStep === 0 && <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={1} title="ข้อมูลทะเบียน" color="#fef2f2" border="#fecaca" textColor="#b91c1c" />
             <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-4 gap-4">
@@ -494,10 +481,10 @@ export default function EditPatientPage() {
                 <FormDateThai label="วันที่ขึ้นทะเบียน (พ.ศ.)" value={form.registered_date} onChange={v => set('registered_date', v)} />
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* ส่วน 2 */}
-          <div ref={el => { sectionRefs.current[1] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+          {activeStep === 1 && <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={2} title="ข้อมูลผู้ป่วย" color="#fff7ed" border="#fed7aa" textColor="#c2410c" />
             <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-5 gap-4">
@@ -553,10 +540,10 @@ export default function EditPatientPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* ส่วน 3 */}
-          <div ref={el => { sectionRefs.current[2] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+          {activeStep === 2 && <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={3} title="การวินิจฉัยและตรวจ" color="#eff6ff" border="#bfdbfe" textColor="#1d4ed8" />
             <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-3 gap-4">
@@ -565,10 +552,10 @@ export default function EditPatientPage() {
                 <FormSelect label="ประเภทปอด (IP/EP)" options={LUNG_TYPES} value={form.lung_type} onChange={e => set('lung_type', e.target.value)} />
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* ส่วน 4 */}
-          <div ref={el => { sectionRefs.current[3] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+          {activeStep === 3 && <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={4} title="การรักษา" color="#f0fdf4" border="#bbf7d0" textColor="#15803d" />
             <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-2 gap-4">
@@ -598,10 +585,10 @@ export default function EditPatientPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* ส่วน 5 */}
-          <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+          {activeStep === 4 && <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
             <div style={{ padding: '20px 28px' }}>
               {/* ─── CXR Sub-section ─── */}
@@ -761,10 +748,10 @@ export default function EditPatientPage() {
                 <FormSelect label="ผลการรักษา" options={OUTCOMES} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* ส่วน 6 */}
-          <div ref={el => { sectionRefs.current[5] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+          {activeStep === 5 && <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={6} title="ผู้ดูแลและติดต่อ" color="#f5f3ff" border="#ddd6fe" textColor="#6d28d9" />
             <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-3 gap-4">
@@ -775,16 +762,45 @@ export default function EditPatientPage() {
                 <FormTextArea label="หมายเหตุ" value={form.notes} onChange={e => set('notes', e.target.value)} />
               </div>
             </div>
-          </div>
+          </div>}
 
           {msg && (
             <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '14px 24px', borderRadius: 12, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 13, fontWeight: 600, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}`, boxShadow: '0 4px 20px rgba(0,0,0,0.25)', maxWidth: 600, wordBreak: 'break-word', textAlign: 'center', cursor: 'pointer' }} onClick={() => setMsg('')}>{msg} <span style={{fontSize:11,opacity:0.6}}>(คลิกเพื่อปิด)</span></div>
           )}
-          <div style={{ display: 'flex', gap: 12, paddingBottom: 40 }}>
-            <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '14px 36px', borderRadius: 12, fontSize: 17, fontWeight: 700, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
-              {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
+
+          {/* Navigation buttons */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 40, marginTop: 8 }}>
+            <button
+              type="button"
+              onClick={() => goTo(activeStep - 1)}
+              style={{ background: activeStep === 0 ? 'transparent' : '#f1f5f9', color: '#475569', border: 'none', padding: '13px 26px', borderRadius: 12, fontSize: 16, cursor: activeStep === 0 ? 'default' : 'pointer', opacity: activeStep === 0 ? 0 : 1, fontWeight: 500 }}
+            >
+              ← ย้อนกลับ
             </button>
-            <button type="button" onClick={() => router.back()} style={{ background: '#fff', color: '#475569', padding: '14px 28px', borderRadius: 12, fontSize: 17, border: '1px solid #e2e8f0', cursor: 'pointer' }}>ยกเลิก</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {activeStep < STEPS.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => goTo(activeStep + 1)}
+                  style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', border: 'none', padding: '13px 32px', borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)', display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  ถัดไป →
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={saving}
+                  style={{ background: saving ? '#93c5fd' : 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', padding: '13px 36px', borderRadius: 12, fontSize: 16, fontWeight: 700, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)', display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  {saving ? '⏳ กำลังบันทึก...' : (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 12l4 4L16 6" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      บันทึกข้อมูล
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         </form>
       </div>
