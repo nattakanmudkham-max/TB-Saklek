@@ -81,56 +81,55 @@ export default function NavSidebar() {
           <div style={{ width: 120, height: 120, flexShrink: 0 }}>
             <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0d1b3e"/>
-                  <stop offset="100%" stopColor="#0a2540"/>
+                <linearGradient id="bgL" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#0c4a6e"/>
+                  <stop offset="100%" stopColor="#064e3b"/>
                 </linearGradient>
-                <linearGradient id="cyan1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#38bdf8"/>
-                  <stop offset="100%" stopColor="#818cf8"/>
+                <linearGradient id="crossL" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff"/>
+                  <stop offset="100%" stopColor="#bbf7d0"/>
                 </linearGradient>
-                <linearGradient id="cyan2" x1="100%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#67e8f9"/>
-                  <stop offset="100%" stopColor="#38bdf8"/>
+                <linearGradient id="ringL" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#7dd3fc"/>
+                  <stop offset="100%" stopColor="#6ee7b7"/>
                 </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                <filter id="glow2">
+                  <feGaussianBlur stdDeviation="1.8" result="blur"/>
                   <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                 </filter>
               </defs>
 
               {/* Base circle */}
-              <circle cx="60" cy="60" r="59" fill="url(#bg2)"/>
+              <circle cx="60" cy="60" r="59" fill="url(#bgL)"/>
 
-              {/* Outer arc ring */}
-              <circle cx="60" cy="60" r="55" fill="none" stroke="url(#cyan1)" strokeWidth="1" strokeDasharray="6 3" opacity="0.4"/>
+              {/* Outer dashed ring */}
+              <circle cx="60" cy="60" r="55" fill="none" stroke="url(#ringL)" strokeWidth="1" strokeDasharray="5 4" opacity="0.45"/>
 
-              {/* Rotating arc accents */}
-              <path d="M 60 10 A 50 50 0 0 1 107 77" stroke="url(#cyan1)" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7" filter="url(#glow)"/>
-              <path d="M 13 77 A 50 50 0 0 1 38 17" stroke="url(#cyan2)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5"/>
+              {/* Arc top — blue */}
+              <path d="M 18 42 A 50 50 0 0 1 102 42" stroke="#7dd3fc" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" filter="url(#glow2)"/>
+              {/* Arc bottom — green */}
+              <path d="M 22 78 A 50 50 0 0 0 98 78" stroke="#6ee7b7" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" filter="url(#glow2)"/>
 
-              {/* Hexagon center shape */}
-              <polygon points="60,28 78,38 78,58 60,68 42,58 42,38" fill="none" stroke="url(#cyan1)" strokeWidth="1.5" opacity="0.6"/>
+              {/* Circle ring behind cross */}
+              <circle cx="60" cy="52" r="22" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" strokeWidth="1"/>
 
-              {/* Medical cross — modern flat */}
-              <rect x="53" y="38" width="14" height="30" rx="4" fill="url(#cyan1)" opacity="0.15"/>
-              <rect x="45" y="46" width="30" height="14" rx="4" fill="url(#cyan1)" opacity="0.15"/>
-              <rect x="55" y="36" width="10" height="34" rx="3" fill="url(#cyan1)" filter="url(#glow)"/>
-              <rect x="43" y="48" width="34" height="10" rx="3" fill="url(#cyan1)" filter="url(#glow)"/>
+              {/* Medical cross */}
+              <rect x="55" y="34" width="10" height="36" rx="4" fill="url(#crossL)" filter="url(#glow2)"/>
+              <rect x="42" y="47" width="36" height="10" rx="4" fill="url(#crossL)" filter="url(#glow2)"/>
 
-              {/* Center dot */}
-              <circle cx="60" cy="53" r="5" fill="#0d1b3e"/>
-              <circle cx="60" cy="53" r="3" fill="url(#cyan2)" filter="url(#glow)"/>
+              {/* Center circle */}
+              <circle cx="60" cy="52" r="5" fill="url(#bgL)"/>
+              <circle cx="60" cy="52" r="3" fill="#6ee7b7" filter="url(#glow2)"/>
 
-              {/* Bottom label */}
-              <rect x="18" y="78" width="84" height="26" rx="9" fill="url(#cyan1)" opacity="0.12"/>
-              <text x="60" y="89" textAnchor="middle" fill="url(#cyan1)" fontSize="9" fontWeight="800" letterSpacing="2.5" fontFamily="system-ui, sans-serif">SAKLEK</text>
-              <text x="60" y="100" textAnchor="middle" fill="rgba(148,197,253,0.7)" fontSize="7" fontWeight="500" letterSpacing="3.5" fontFamily="system-ui, sans-serif">HOSPITAL</text>
+              {/* Corner accent dots */}
+              <circle cx="60" cy="12" r="2.5" fill="#7dd3fc" opacity="0.9" filter="url(#glow2)"/>
+              <circle cx="18" cy="78" r="2" fill="#6ee7b7" opacity="0.7"/>
+              <circle cx="102" cy="78" r="2" fill="#6ee7b7" opacity="0.7"/>
 
-              {/* Corner dots accent */}
-              <circle cx="60" cy="14" r="2.5" fill="#38bdf8" opacity="0.8" filter="url(#glow)"/>
-              <circle cx="14" cy="82" r="1.5" fill="#818cf8" opacity="0.6"/>
-              <circle cx="106" cy="82" r="1.5" fill="#818cf8" opacity="0.6"/>
+              {/* Bottom text pill */}
+              <rect x="16" y="79" width="88" height="27" rx="10" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" strokeWidth="1"/>
+              <text x="60" y="91" textAnchor="middle" fill="#ffffff" fontSize="9.5" fontWeight="800" letterSpacing="2.5" fontFamily="system-ui, sans-serif">SAKLEK</text>
+              <text x="60" y="102" textAnchor="middle" fill="#6ee7b7" fontSize="7" fontWeight="600" letterSpacing="4" fontFamily="system-ui, sans-serif">HOSPITAL</text>
             </svg>
           </div>
           <div style={{ textAlign: 'center' }}>
