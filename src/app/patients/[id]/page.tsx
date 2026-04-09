@@ -614,7 +614,7 @@ export default function EditPatientPage() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 620 }}>
                   <thead>
                     <tr style={{ background: '#1e3a5f', color: '#fff' }}>
-                      {['ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','แก้ไข','ลบ'].map(h => (
+                      {['แก้ไข','ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','ลบ'].map(h => (
                         <th key={h} style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>{h}</th>
                       ))}
                     </tr>
@@ -624,15 +624,15 @@ export default function EditPatientPage() {
                       <tr><td colSpan={8} style={{ textAlign: 'center', padding: '24px', color: '#94a3b8', fontSize: 13 }}>ยังไม่มีข้อมูล CXR — กด <b>+ เพิ่มรายการ CXR</b> เพื่อเพิ่ม</td></tr>
                     ) : cxrRows.map((row, i) => (
                       <tr key={row.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#f8fafc', opacity: deletingCxrId === row.id ? 0.5 : 1 }}>
+                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
+                          <button type="button" onClick={() => openEditCxr(row)} style={{ background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
+                        </td>
                         <td style={{ padding: '7px 8px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>{i + 1}</td>
                         <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap', color: '#475569' }}>{toThaiBE(row.test_date)}</td>
                         <td style={{ padding: '7px 8px', textAlign: 'center', color: row.cxr_result === 'Abnormal' ? '#dc2626' : row.cxr_result === 'Normal' ? '#15803d' : '#475569', fontWeight: row.cxr_result === 'Abnormal' ? 700 : 400 }}>{row.cxr_result || '-'}</td>
                         <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.abnormal_result || '-'}</td>
                         <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.xn || '-'}</td>
                         <td style={{ padding: '7px 10px', whiteSpace: 'nowrap', color: '#475569' }}>{row.hospital || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
-                          <button type="button" onClick={() => openEditCxr(row)} style={{ background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
-                        </td>
                         <td style={{ padding: '7px 8px', textAlign: 'center' }}>
                           <button type="button" onClick={() => deleteCxr(row.id)} disabled={deletingCxrId === row.id} style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', color: '#dc2626', fontSize: 13 }}>🗑</button>
                         </td>
