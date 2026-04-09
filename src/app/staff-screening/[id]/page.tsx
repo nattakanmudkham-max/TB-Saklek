@@ -113,8 +113,8 @@ export default function EditStaffPage() {
     }
     const { error } = await supabase.from('staff_screening').update(payload).eq('id', params.id)
     setSaving(false)
-    if (error) setMsg('❌ ' + error.message)
-    else setMsg('✅ บันทึกสำเร็จ')
+    if (error) { setMsg('❌ ' + error.message); return }
+    router.push('/staff-screening')
   }
 
   async function handleDelete() {
