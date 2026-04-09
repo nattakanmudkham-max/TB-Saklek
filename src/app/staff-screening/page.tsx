@@ -169,6 +169,7 @@ export default function StaffScreeningPage() {
                   { label: 'ปีงบ', w: 68 },
                   { label: 'HN', w: 105 },
                   { label: 'ชื่อ-สกุล', w: 210 },
+                  { label: 'อายุ', w: 60 },
                   { label: 'กลุ่มงาน / แผนก', w: 230 },
                   { label: 'วันที่ CXR', w: 115 },
                   { label: 'ผล CXR', w: 105 },
@@ -184,9 +185,9 @@ export default function StaffScreeningPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" style={{ display: 'block', margin: '0 auto 10px' }}><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                   ไม่พบข้อมูล
                 </td></tr>
@@ -203,13 +204,12 @@ export default function StaffScreeningPage() {
                     <td style={{ padding: '11px 10px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
                     </td>
-                    <td style={{ padding: '11px 10px', textAlign: 'left', whiteSpace: 'nowrap' }}>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: 13 }}>{d.full_name}</div>
-                      {age !== null && (
-                        <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
-                          อายุ <span style={{ fontWeight: 700, color: '#2563eb' }}>{age}</span> ปี
-                        </div>
-                      )}
+                    <td style={{ padding: '11px 10px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left', fontSize: 13 }}>{d.full_name}</td>
+                    <td style={{ padding: '11px 10px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      {age !== null
+                        ? <span style={{ fontWeight: 700, color: '#2563eb', fontSize: 13 }}>{age}</span>
+                        : <span style={{ color: '#cbd5e1', fontSize: 12 }}>-</span>
+                      }
                     </td>
                     <td style={{ padding: '11px 12px', color: '#0f172a', fontSize: 13, fontWeight: 600 }}>{d.department || '-'}</td>
                     <td style={{ padding: '9px 10px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
