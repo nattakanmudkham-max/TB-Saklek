@@ -134,7 +134,7 @@ export default function NavSidebar() {
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontWeight: 800, fontSize: 22, letterSpacing: 0.3, lineHeight: 1.2 }}>TB-Saklek</div>
-            <div style={{ fontSize: 13, color: '#93c5fd', marginTop: 3, fontWeight: 500 }}>โรงพยาบาลสากเหล็ก</div>
+            <div style={{ fontSize: 13, color: '#ffffff', marginTop: 3, fontWeight: 500 }}>โรงพยาบาลสากเหล็ก</div>
           </div>
         </div>
       </div>
