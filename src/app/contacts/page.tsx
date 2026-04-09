@@ -47,10 +47,14 @@ export default function ContactsPage() {
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '20px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{
-              width: 44, height: 44, background: '#fef9c3', borderRadius: 12,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-            }}>👥</div>
+            <div style={{ width: 44, height: 44, background: '#fef9c3', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                <circle cx="14" cy="13" r="6" fill="#fde68a" stroke="#d97706" strokeWidth="2"/>
+                <circle cx="26" cy="13" r="6" fill="#fde68a" stroke="#d97706" strokeWidth="2"/>
+                <path d="M2 35 C2 27 22 27 22 35" stroke="#d97706" strokeWidth="2" strokeLinecap="round" fill="#fde68a"/>
+                <path d="M18 35 C18 27 38 27 38 35" stroke="#d97706" strokeWidth="2" strokeLinecap="round" fill="#fde68a"/>
+              </svg>
+            </div>
             <div>
               <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>ทะเบียนผู้สัมผัสร่วมบ้าน</h1>
               <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>ผู้สัมผัส/ใกล้ชิดผู้ป่วยวัณโรค</p>

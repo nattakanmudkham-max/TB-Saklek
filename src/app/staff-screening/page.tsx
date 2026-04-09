@@ -42,10 +42,14 @@ export default function StaffScreeningPage() {
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '20px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{
-              width: 44, height: 44, background: '#dbeafe', borderRadius: 12,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-            }}>👤</div>
+            <div style={{ width: 44, height: 44, background: '#dbeafe', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="13" r="7" fill="#bfdbfe" stroke="#2563eb" strokeWidth="2"/>
+                <path d="M6 35 C6 26 34 26 34 35" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" fill="#bfdbfe"/>
+                <rect x="28" y="22" width="10" height="3" rx="1.5" fill="#2563eb"/>
+                <rect x="31.5" y="19" width="3" height="10" rx="1.5" fill="#2563eb"/>
+              </svg>
+            </div>
             <div>
               <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>คัดกรองวัณโรคเจ้าหน้าที่</h1>
               <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>โรงพยาบาลสากเหล็ก</p>

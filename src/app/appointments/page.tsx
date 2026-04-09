@@ -36,10 +36,20 @@ export default function AppointmentsPage() {
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '20px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{
-              width: 44, height: 44, background: '#dcfce7', borderRadius: 12,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-            }}>📅</div>
+            <div style={{ width: 44, height: 44, background: '#dcfce7', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                <rect x="4" y="9" width="32" height="28" rx="4" fill="#bbf7d0" stroke="#059669" strokeWidth="2"/>
+                <rect x="4" y="9" width="32" height="10" rx="4" fill="#059669" stroke="#059669" strokeWidth="2"/>
+                <rect x="4" y="15" width="32" height="4" fill="#059669"/>
+                <rect x="13" y="4" width="3" height="10" rx="1.5" fill="#059669"/>
+                <rect x="24" y="4" width="3" height="10" rx="1.5" fill="#059669"/>
+                <rect x="10" y="24" width="4" height="4" rx="1" fill="#059669" opacity="0.7"/>
+                <rect x="18" y="24" width="4" height="4" rx="1" fill="#059669" opacity="0.7"/>
+                <rect x="26" y="24" width="4" height="4" rx="1" fill="#059669" opacity="0.7"/>
+                <rect x="10" y="30" width="4" height="4" rx="1" fill="#059669" opacity="0.7"/>
+                <rect x="18" y="30" width="4" height="4" rx="1" fill="#059669" opacity="0.7"/>
+              </svg>
+            </div>
             <div>
               <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>ตารางนัดรับยาวัณโรค</h1>
               <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>สูตรยา วันนัด และการติดตาม</p>

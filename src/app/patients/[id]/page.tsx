@@ -450,7 +450,9 @@ export default function EditPatientPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 10, padding: '9px 18px', fontSize: 15, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🫁</div>
+              <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><path d="M20 4 L20 14" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round"/><path d="M20 14 L13 19" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/><path d="M20 14 L27 19" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/><path d="M13 19 C6 19 4 23 4 27 C4 32 7.5 37 12 37 C14.5 37 16.5 35 16.5 32 L16.5 19 Z" fill="#fca5a5" stroke="#dc2626" strokeWidth="1.8" strokeLinejoin="round"/><path d="M27 19 C34 19 36 23 36 27 C36 32 32.5 37 28 37 C25.5 37 23.5 35 23.5 32 L23.5 19 Z" fill="#fca5a5" stroke="#dc2626" strokeWidth="1.8" strokeLinejoin="round"/></svg>
+              </div>
               <div>
                 <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', margin: 0 }}>แก้ไขข้อมูลผู้ป่วย</h1>
                 <p style={{ fontSize: 14, color: '#94a3b8', margin: '2px 0 0' }}>{displayName}</p>

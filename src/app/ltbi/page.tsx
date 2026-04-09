@@ -35,10 +35,15 @@ export default function LTBIPage() {
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '20px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{
-              width: 44, height: 44, background: '#f3e8ff', borderRadius: 12,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-            }}>🧪</div>
+            <div style={{ width: 44, height: 44, background: '#f3e8ff', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                <rect x="16" y="4" width="8" height="2" rx="1" fill="#7c3aed"/>
+                <rect x="18" y="4" width="4" height="14" rx="2" fill="#ddd6fe" stroke="#7c3aed" strokeWidth="1.5"/>
+                <path d="M14 18 L10 34 C10 36 12 38 16 38 L24 38 C28 38 30 36 30 34 L26 18 Z" fill="#ede9fe" stroke="#7c3aed" strokeWidth="1.8"/>
+                <circle cx="18" cy="28" r="2.5" fill="#7c3aed" opacity="0.7"/>
+                <circle cx="23" cy="32" r="1.8" fill="#7c3aed" opacity="0.5"/>
+              </svg>
+            </div>
             <div>
               <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>วัณโรคระยะแฝง (LTBI)</h1>
               <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>ผู้สัมผัสที่ IGRA ผิดปกติ และได้รับการรักษา</p>
