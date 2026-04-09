@@ -447,7 +447,7 @@ export default function EditPatientPage() {
               </div>
               <div>
                 <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', margin: 0 }}>แก้ไขข้อมูลผู้ป่วย</h1>
-                <p style={{ fontSize: 14, color: '#94a3b8', margin: '2px 0 0' }}>{displayName}</p>
+                <p style={{ fontSize: 17, fontWeight: 700, color: '#1e40af', margin: '3px 0 0', letterSpacing: 0.2 }}>{displayName}</p>
               </div>
             </div>
           </div>
