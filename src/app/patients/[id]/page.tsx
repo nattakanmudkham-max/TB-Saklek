@@ -164,11 +164,17 @@ function calcAge(iso: string) {
   return { years: y, months: m }
 }
 
+const SECTION_ICONS = ['📋','👤','🔬','💊','📊','📞']
+
 function SectionHeader({ num, title, color, border, textColor }: { num: number; title: string; color: string; border: string; textColor: string }) {
+  const icon = SECTION_ICONS[num - 1] ?? String(num)
   return (
-    <div style={{ background: color, borderBottom: `2px solid ${border}`, padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 14 }}>
-      <div style={{ width: 32, height: 32, borderRadius: '50%', background: textColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{num}</div>
-      <span style={{ fontSize: 16, fontWeight: 700, color: textColor }}>{title}</span>
+    <div style={{ background: color, borderBottom: `2px solid ${border}`, padding: '24px 36px', display: 'flex', alignItems: 'center', gap: 18 }}>
+      <div style={{ width: 60, height: 60, borderRadius: 18, background: textColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0, boxShadow: `0 4px 12px ${textColor}40` }}>{icon}</div>
+      <div>
+        <div style={{ fontSize: 12, color: textColor, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 3 }}>ส่วนที่ {num}</div>
+        <span style={{ fontSize: 26, fontWeight: 800, color: '#0f172a', letterSpacing: -0.5 }}>{title}</span>
+      </div>
     </div>
   )
 }
@@ -437,49 +443,48 @@ export default function EditPatientPage() {
   const displayName = [form.title, form.first_name, form.last_name].filter(Boolean).join(' ') || form.first_name
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #f0f4ff 0%, #f8fafc 60%)' }}>
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 13, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
-            <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 36, height: 36, background: '#fee2e2', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🫁</div>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 10, padding: '9px 18px', fontSize: 15, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🫁</div>
               <div>
-                <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>แก้ไขข้อมูลผู้ป่วย</h1>
-                <p style={{ fontSize: 12, color: '#94a3b8', margin: '2px 0 0' }}>{displayName}</p>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', margin: 0 }}>แก้ไขข้อมูลผู้ป่วย</h1>
+                <p style={{ fontSize: 14, color: '#94a3b8', margin: '2px 0 0' }}>{displayName}</p>
               </div>
             </div>
           </div>
-          <button onClick={handleDelete} disabled={deleting} style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>🗑 ลบข้อมูล</button>
+          <button onClick={handleDelete} disabled={deleting} style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '10px 20px', borderRadius: 10, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>🗑 ลบข้อมูล</button>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '14px 32px', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto' }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px', position: 'sticky', top: 61, zIndex: 50 }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'flex-start' }}>
           {STEPS.map((step, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
-              <button type="button" onClick={() => goTo(i)} style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', background: i === activeStep ? '#eff6ff' : 'transparent' }}>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0, background: i < activeStep ? '#22c55e' : i === activeStep ? '#2563eb' : '#e2e8f0', color: i <= activeStep ? '#fff' : '#94a3b8' }}>
-                  {i < activeStep ? '✓' : i + 1}
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', flex: i < STEPS.length - 1 ? 1 : 'none' }}>
+              <button type="button" onClick={() => goTo(i)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '4px 8px', borderRadius: 10, border: 'none', cursor: 'pointer', background: 'transparent' }}>
+                <div style={{ width: 42, height: 42, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, flexShrink: 0, background: i < activeStep ? '#22c55e' : i === activeStep ? '#2563eb' : '#e2e8f0', color: i <= activeStep ? '#fff' : '#94a3b8', boxShadow: i === activeStep ? '0 0 0 4px rgba(37,99,235,0.2)' : 'none', transition: 'all 0.2s' }}>
+                  {i < activeStep ? '✓' : SECTION_ICONS[i]}
                 </div>
-                <span style={{ fontSize: 12, fontWeight: i === activeStep ? 700 : 400, color: i === activeStep ? '#2563eb' : i < activeStep ? '#22c55e' : '#64748b' }}>{step}</span>
+                <span style={{ fontSize: 12, fontWeight: i === activeStep ? 700 : 400, color: i === activeStep ? '#2563eb' : i < activeStep ? '#22c55e' : '#94a3b8', whiteSpace: 'nowrap', textAlign: 'center', maxWidth: 80 }}>{step}</span>
               </button>
-              {i < STEPS.length - 1 && <div style={{ flex: 1, height: 2, background: i < activeStep ? '#22c55e' : '#e2e8f0', margin: '0 4px', minWidth: 16 }} />}
+              {i < STEPS.length - 1 && <div style={{ flex: 1, height: 4, background: i < activeStep ? '#22c55e' : '#e2e8f0', margin: '23px 4px 0', borderRadius: 2, minWidth: 10, transition: 'background 0.3s' }} />}
             </div>
           ))}
         </div>
       </div>
 
-      <div style={{ padding: '24px 32px', maxWidth: 1000 }}>
+      <div style={{ padding: '28px 24px 80px', maxWidth: 1200, margin: '0 auto' }}>
         <form onSubmit={handleSubmit}>
 
           {/* ส่วน 1 */}
-          <div ref={el => { sectionRefs.current[0] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div ref={el => { sectionRefs.current[0] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={1} title="ข้อมูลทะเบียน" color="#fef2f2" border="#fecaca" textColor="#b91c1c" />
-            <div style={{ padding: '24px' }}>
+            <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-4 gap-4">
                 <FormSelect label="ปีงบประมาณ" options={FISCAL_YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
                 <FormInput label="รหัส TB No." value={form.tb_no} onChange={e => set('tb_no', e.target.value)} />
@@ -490,9 +495,9 @@ export default function EditPatientPage() {
           </div>
 
           {/* ส่วน 2 */}
-          <div ref={el => { sectionRefs.current[1] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div ref={el => { sectionRefs.current[1] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={2} title="ข้อมูลผู้ป่วย" color="#fff7ed" border="#fed7aa" textColor="#c2410c" />
-            <div style={{ padding: '24px' }}>
+            <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-5 gap-4">
                 <FormSelect label="คำนำหน้า" options={TITLES} value={form.title} onChange={e => set('title', e.target.value)} />
                 <div className="col-span-2"><FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} required /></div>
@@ -549,9 +554,9 @@ export default function EditPatientPage() {
           </div>
 
           {/* ส่วน 3 */}
-          <div ref={el => { sectionRefs.current[2] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div ref={el => { sectionRefs.current[2] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={3} title="การวินิจฉัยและตรวจ" color="#eff6ff" border="#bfdbfe" textColor="#1d4ed8" />
-            <div style={{ padding: '24px' }}>
+            <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-3 gap-4">
                 <FormSelect label="การวินิจฉัย (ICD-10)" options={ICD10_OPTIONS} value={form.icd10} onChange={e => set('icd10', e.target.value)} />
                 <FormInput label="ผลการวินิจฉัย" value={form.xpert_result} onChange={e => set('xpert_result', e.target.value)} placeholder="เช่น MTB detected, Neg, 1+" />
@@ -561,9 +566,9 @@ export default function EditPatientPage() {
           </div>
 
           {/* ส่วน 4 */}
-          <div ref={el => { sectionRefs.current[3] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div ref={el => { sectionRefs.current[3] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={4} title="การรักษา" color="#f0fdf4" border="#bbf7d0" textColor="#15803d" />
-            <div style={{ padding: '24px' }}>
+            <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-2 gap-4">
                 <SearchableSelect label="สถานที่ตรวจพบ" options={THAI_HOSPITALS} value={form.detected_place} onChange={v => set('detected_place', v)} />
                 <SearchableSelect label="สถานที่รักษา" options={THAI_HOSPITALS} value={form.treatment_place} onChange={v => set('treatment_place', v)} />
@@ -594,7 +599,7 @@ export default function EditPatientPage() {
           </div>
 
           {/* ส่วน 5 */}
-          <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
             <div style={{ padding: '16px 24px' }}>
               {/* ─── CXR Table ─── */}
@@ -705,9 +710,9 @@ export default function EditPatientPage() {
           </div>
 
           {/* ส่วน 6 */}
-          <div ref={el => { sectionRefs.current[5] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div ref={el => { sectionRefs.current[5] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={6} title="ผู้ดูแลและติดต่อ" color="#f5f3ff" border="#ddd6fe" textColor="#6d28d9" />
-            <div style={{ padding: '24px' }}>
+            <div style={{ padding: '32px 36px' }}>
               <div className="grid grid-cols-3 gap-4">
                 <FormInput label="ญาติผู้ดูแล" value={form.caregiver_name} onChange={e => set('caregiver_name', e.target.value)} />
                 <FormInput label="เบอร์โทรศัพท์" value={form.phone} onChange={e => set('phone', e.target.value)} />
@@ -721,11 +726,11 @@ export default function EditPatientPage() {
           {msg && (
             <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '14px 24px', borderRadius: 12, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 13, fontWeight: 600, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}`, boxShadow: '0 4px 20px rgba(0,0,0,0.25)', maxWidth: 600, wordBreak: 'break-word', textAlign: 'center', cursor: 'pointer' }} onClick={() => setMsg('')}>{msg} <span style={{fontSize:11,opacity:0.6}}>(คลิกเพื่อปิด)</span></div>
           )}
-          <div style={{ display: 'flex', gap: 10, paddingBottom: 40 }}>
-            <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '12px 28px', borderRadius: 10, fontSize: 15, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
+          <div style={{ display: 'flex', gap: 12, paddingBottom: 40 }}>
+            <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '14px 36px', borderRadius: 12, fontSize: 17, fontWeight: 700, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
               {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
             </button>
-            <button type="button" onClick={() => router.back()} style={{ background: '#fff', color: '#475569', padding: '12px 22px', borderRadius: 10, fontSize: 15, border: '1px solid #e2e8f0', cursor: 'pointer' }}>ยกเลิก</button>
+            <button type="button" onClick={() => router.back()} style={{ background: '#fff', color: '#475569', padding: '14px 28px', borderRadius: 12, fontSize: 17, border: '1px solid #e2e8f0', cursor: 'pointer' }}>ยกเลิก</button>
           </div>
         </form>
       </div>

@@ -15,7 +15,7 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 const inputClass = `
-  w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white
+  w-full border border-gray-200 rounded-lg px-4 py-3 text-base bg-white
   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
   transition-all placeholder-gray-400
 `
@@ -23,7 +23,7 @@ const inputClass = `
 export function FormInput({ label, required, ...props }: InputProps) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
         {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
       </label>
       <input className={inputClass} required={required} {...props} />
@@ -34,7 +34,7 @@ export function FormInput({ label, required, ...props }: InputProps) {
 export function FormSelect({ label, options, required, ...props }: SelectProps) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
         {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
       </label>
       <select className={inputClass + ' cursor-pointer'} required={required} {...props}>
@@ -50,7 +50,7 @@ export function FormSelect({ label, options, required, ...props }: SelectProps) 
 export function FormTextArea({ label, ...props }: TextAreaProps) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">{label}</label>
+      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">{label}</label>
       <textarea className={inputClass} rows={3} {...props} />
     </div>
   )
@@ -84,7 +84,7 @@ export function SearchableSelect({ label, options, value, onChange, required }: 
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
         {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
       </label>
       <div ref={ref} style={{ position: 'relative' }}>
@@ -178,7 +178,7 @@ export function FormDateThai({ label, value, onChange, required }: ThaiDateProps
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+      <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
         {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
       </label>
       <div style={{ display: 'flex', gap: 4 }}>
