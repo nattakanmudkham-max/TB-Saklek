@@ -1,9 +1,27 @@
 import Link from "next/link";
 
+function LungIcon({ size = 36, color = "#dc2626", fill = "#fca5a5" }: { size?: number; color?: string; fill?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Trachea */}
+      <path d="M20 4 L20 14" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
+      {/* Left bronchus */}
+      <path d="M20 14 L13 19" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      {/* Right bronchus */}
+      <path d="M20 14 L27 19" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      {/* Left lung */}
+      <path d="M13 19 C6 19 4 23 4 27 C4 32 7.5 37 12 37 C14.5 37 16.5 35 16.5 32 L16.5 19 Z" fill={fill} stroke={color} strokeWidth="1.8" strokeLinejoin="round"/>
+      {/* Right lung */}
+      <path d="M27 19 C34 19 36 23 36 27 C36 32 32.5 37 28 37 C25.5 37 23.5 35 23.5 32 L23.5 19 Z" fill={fill} stroke={color} strokeWidth="1.8" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 const modules = [
   {
     href: "/patients",
-    icon: "🫁",
+    icon: null as null,
+    useLung: true,
     title: "ทะเบียนผู้ป่วย TB",
     desc: "บันทึก ค้นหา และติดตามผู้ป่วยวัณโรค แยกตามปีงบประมาณ",
     accent: "#dc2626",
@@ -14,6 +32,7 @@ const modules = [
   {
     href: "/staff-screening",
     icon: "👨‍⚕️",
+    useLung: false,
     title: "คัดกรองเจ้าหน้าที่",
     desc: "ทะเบียนคัดกรองวัณโรคเจ้าหน้าที่โรงพยาบาลสากเหล็ก",
     accent: "#2563eb",
@@ -24,6 +43,7 @@ const modules = [
   {
     href: "/contacts",
     icon: "👨‍👩‍👧‍👦",
+    useLung: false,
     title: "ผู้สัมผัสร่วมบ้าน",
     desc: "ทะเบียนผู้สัมผัส/ใกล้ชิดผู้ป่วย ผล CXR / GeneXpert / IGRA",
     accent: "#d97706",
@@ -34,6 +54,7 @@ const modules = [
   {
     href: "/ltbi",
     icon: "🔬",
+    useLung: false,
     title: "วัณโรคระยะแฝง (LTBI)",
     desc: "ทะเบียนรักษาผู้ที่ IGRA ผิดปกติ บันทึกวันเริ่มรักษา",
     accent: "#7c3aed",
@@ -44,6 +65,7 @@ const modules = [
   {
     href: "/appointments",
     icon: "💊",
+    useLung: false,
     title: "ตารางนัดรับยา",
     desc: "บันทึกวันนัดรับยา สูตรยา และปริมาณยาแต่ละเดือน",
     accent: "#059669",
@@ -70,8 +92,7 @@ export default function HomePage() {
         <div style={{ position: 'absolute', top: 20, right: 200, width: 120, height: 120, borderRadius: '50%', background: 'rgba(96,165,250,0.08)', pointerEvents: 'none' }} />
 
         <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative' }}>
-          {/* Title row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 22, marginBottom: 40 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
             <div style={{
               width: 72, height: 72,
               background: 'rgba(255,255,255,0.12)',
@@ -94,23 +115,11 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-
         </div>
       </div>
 
       {/* ── Module Grid ── */}
       <div style={{ padding: '44px 48px 60px', maxWidth: 1200, margin: '0 auto' }}>
-
-        {/* Section title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
-          <div style={{ width: 5, height: 32, background: 'linear-gradient(180deg, #2563eb, #7c3aed)', borderRadius: 4 }} />
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4 }}>เมนูหลัก</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#0f172a' }}>โมดูลระบบงาน</div>
-          </div>
-        </div>
-
-        {/* Cards */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
@@ -162,7 +171,12 @@ export default function HomePage() {
                   fontSize: 32,
                   marginBottom: 20,
                   boxShadow: `0 4px 14px ${m.accent}20`,
-                }}>{m.icon}</div>
+                }}>
+                  {m.useLung
+                    ? <LungIcon size={38} color={m.accent} fill={m.border} />
+                    : m.icon
+                  }
+                </div>
 
                 {/* Text */}
                 <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', margin: '0 0 10px', lineHeight: 1.3 }}>{m.title}</h2>
@@ -174,10 +188,8 @@ export default function HomePage() {
                   fontSize: 14, fontWeight: 700, color: m.accent,
                   background: m.bg, border: `1px solid ${m.border}`,
                   borderRadius: 10, padding: '9px 18px',
-                  transition: 'all 0.2s',
                 }}>
-                  เปิดโมดูล
-                  <span style={{ fontSize: 16 }}>→</span>
+                  เปิดโมดูล <span style={{ fontSize: 16 }}>→</span>
                 </div>
               </div>
             </Link>
@@ -191,11 +203,6 @@ export default function HomePage() {
       </div>
 
       <style>{`
-        .module-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 16px 40px rgba(0,0,0,0.12) !important;
-          border-color: #cbd5e1 !important;
-        }
         .module-card-wrap:hover .module-card {
           transform: translateY(-4px);
           box-shadow: 0 16px 40px rgba(0,0,0,0.12) !important;

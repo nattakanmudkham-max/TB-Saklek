@@ -2,13 +2,26 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+function LungIconNav({ active }: { active: boolean }) {
+  const color = active ? '#93c5fd' : 'rgba(255,255,255,0.75)'
+  return (
+    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+      <path d="M20 4 L20 14" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M20 14 L13 19" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      <path d="M20 14 L27 19" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      <path d="M13 19 C6 19 4 23 4 27 C4 32 7.5 37 12 37 C14.5 37 16.5 35 16.5 32 L16.5 19 Z" fill={active ? 'rgba(147,197,253,0.3)' : 'rgba(255,255,255,0.1)'} stroke={color} strokeWidth="1.8" strokeLinejoin="round"/>
+      <path d="M27 19 C34 19 36 23 36 27 C36 32 32.5 37 28 37 C25.5 37 23.5 35 23.5 32 L23.5 19 Z" fill={active ? 'rgba(147,197,253,0.3)' : 'rgba(255,255,255,0.1)'} stroke={color} strokeWidth="1.8" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 const navItems = [
-  { href: '/',               label: 'หน้าหลัก',          icon: '🏥' },
-  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: '🫁' },
-  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️' },
-  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦' },
-  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬' },
-  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: '💊' },
+  { href: '/',               label: 'หน้าหลัก',          icon: '🏥',      useLung: false },
+  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: null,      useLung: true  },
+  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️',    useLung: false },
+  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦',  useLung: false },
+  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬',      useLung: false },
+  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: '💊',      useLung: false },
 ]
 
 export default function NavSidebar() {
@@ -77,7 +90,9 @@ export default function NavSidebar() {
               }}
               className="nav-link"
             >
-              <span style={{ fontSize: 20, minWidth: 26, textAlign: 'center' }}>{item.icon}</span>
+              <span style={{ fontSize: 20, minWidth: 26, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {item.useLung ? <LungIconNav active={isActive} /> : item.icon}
+              </span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {isActive && (
                 <span style={{
