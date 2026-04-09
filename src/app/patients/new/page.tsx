@@ -150,7 +150,7 @@ export default function NewPatientPage() {
   const [deletingCxrId, setDeletingCxrId] = useState<string | null>(null)
 
   const [form, setForm] = useState({
-    fiscal_year: '2568', tb_no: '', hn: '', registered_date: '',
+    fiscal_year: '', tb_no: '', hn: '', registered_date: '',
     title: '', first_name: '', last_name: '', id_card: '', birth_date: '', age: '', age_months: '',
     population_type: '', nationality: '', medical_right: '',
     address: '', village_no: '', province: '', district: '', subdistrict: '',

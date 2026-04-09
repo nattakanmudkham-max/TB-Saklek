@@ -50,7 +50,7 @@ export default function NewStaffPage() {
   const [msg, setMsg] = useState('')
   const [hnMsg, setHnMsg] = useState('')
   const [form, setForm] = useState({
-    fiscal_year: '2568', hn: '', id_card: '',
+    fiscal_year: '', hn: '', id_card: '',
     prefix: '', first_name: '', last_name: '',
     position: '', staff_type: '', department: '',
     birth_date: '',
