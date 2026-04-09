@@ -186,10 +186,6 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* Footer note */}
-        <div style={{ marginTop: 48, textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>
-          ระบบทะเบียนวัณโรค · โรงพยาบาลสากเหล็ก · พัฒนาเพื่อการดูแลผู้ป่วยวัณโรค
-        </div>
       </div>
 
       <style>{`
