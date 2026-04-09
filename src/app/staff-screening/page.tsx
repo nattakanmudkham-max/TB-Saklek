@@ -131,25 +131,24 @@ export default function StaffScreeningPage() {
         </div>
 
         {/* Table */}
-        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse', minWidth: 860 }}>
+        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', minWidth: 860 }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+              <tr style={{ background: 'linear-gradient(90deg, #1e3a5f 0%, #1e40af 100%)' }}>
                 {[
                   { label: 'ลำดับ', w: 52 },
-                  { label: 'ปีงบ', w: 62 },
-                  { label: 'HN', w: 100 },
-                  { label: 'ชื่อ-สกุล', w: 200 },
-                  { label: 'กลุ่มงาน/แผนก', w: 220 },
-                  { label: 'วันที่ CXR', w: 110 },
-                  { label: 'ผล CXR', w: 100 },
-                  { label: 'การจัดการ', w: 90 },
+                  { label: 'ปีงบ', w: 68 },
+                  { label: 'HN', w: 105 },
+                  { label: 'ชื่อ-สกุล', w: 210 },
+                  { label: 'กลุ่มงาน / แผนก', w: 230 },
+                  { label: 'วันที่ CXR', w: 115 },
+                  { label: 'ผล CXR', w: 105 },
+                  { label: 'การจัดการ', w: 100 },
                 ].map(h => (
                   <th key={h.label} style={{
-                    textAlign: 'center', padding: '10px 10px',
-                    fontSize: 11, fontWeight: 700, color: '#64748b',
-                    letterSpacing: 0.3, textTransform: 'uppercase',
-                    width: h.w, whiteSpace: 'nowrap',
+                    textAlign: 'center', padding: '13px 12px',
+                    fontSize: 12, fontWeight: 700, color: '#e0f2fe',
+                    letterSpacing: 0.5, whiteSpace: 'nowrap',
                   }}>{h.label}</th>
                 ))}
               </tr>
@@ -167,15 +166,15 @@ export default function StaffScreeningPage() {
                 return (
                   <tr key={d.id} style={{
                     borderBottom: '1px solid #f1f5f9',
-                    background: i % 2 === 1 ? '#fafbfc' : '#fff',
+                    background: i % 2 === 1 ? '#f8fafc' : '#fff',
                   }} className="table-row">
-                    <td style={{ padding: '9px 10px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.seq}</td>
-                    <td style={{ padding: '9px 10px', color: '#475569', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.fiscal_year || '-'}</td>
-                    <td style={{ padding: '9px 10px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '11px 10px', color: '#94a3b8', fontSize: 12, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
+                    <td style={{ padding: '11px 10px', color: '#334155', fontSize: 13, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.fiscal_year || '-'}</td>
+                    <td style={{ padding: '11px 10px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
                     </td>
-                    <td style={{ padding: '9px 10px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left' }}>{d.full_name}</td>
-                    <td style={{ padding: '9px 10px', color: '#475569', fontSize: 12 }}>{d.department || '-'}</td>
+                    <td style={{ padding: '11px 10px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left', fontSize: 13 }}>{d.full_name}</td>
+                    <td style={{ padding: '11px 12px', color: '#0f172a', fontSize: 13, fontWeight: 600 }}>{d.department || '-'}</td>
                     <td style={{ padding: '9px 10px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
                       {toThaiBE(d.cxr_date)}
                     </td>
