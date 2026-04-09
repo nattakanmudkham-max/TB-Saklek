@@ -207,7 +207,7 @@ export default function StaffScreeningPage() {
                     <td style={{ padding: '11px 10px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left', fontSize: 13 }}>{d.full_name}</td>
                     <td style={{ padding: '11px 10px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {age !== null
-                        ? <span style={{ fontWeight: 700, color: '#2563eb', fontSize: 13 }}>{age}</span>
+                        ? <span style={{ fontWeight: 700, color: '#0f172a', fontSize: 13 }}>{age}</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 12 }}>-</span>
                       }
                     </td>
