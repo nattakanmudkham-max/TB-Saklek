@@ -137,12 +137,13 @@ export default function StaffScreeningPage() {
               <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                 {[
                   { label: 'ลำดับ', w: 52 },
+                  { label: 'ปีงบ', w: 62 },
                   { label: 'HN', w: 100 },
                   { label: 'ชื่อ-สกุล', w: 200 },
                   { label: 'กลุ่มงาน/แผนก', w: 220 },
                   { label: 'วันที่ CXR', w: 110 },
                   { label: 'ผล CXR', w: 100 },
-                  { label: 'การจัดการ', w: 80 },
+                  { label: 'การจัดการ', w: 90 },
                 ].map(h => (
                   <th key={h.label} style={{
                     textAlign: 'center', padding: '10px 10px',
@@ -155,9 +156,9 @@ export default function StaffScreeningPage() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
+                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
+                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" style={{ display: 'block', margin: '0 auto 10px' }}><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                   ไม่พบข้อมูล
                 </td></tr>
@@ -169,16 +170,12 @@ export default function StaffScreeningPage() {
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                   }} className="table-row">
                     <td style={{ padding: '9px 10px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.seq}</td>
+                    <td style={{ padding: '9px 10px', color: '#475569', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.fiscal_year || '-'}</td>
                     <td style={{ padding: '9px 10px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
                     </td>
                     <td style={{ padding: '9px 10px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left' }}>{d.full_name}</td>
-                    <td style={{ padding: '9px 10px', textAlign: 'center' }}>
-                      <span style={{
-                        background: '#eff6ff', color: '#1e40af', border: '1px solid #bfdbfe',
-                        padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
-                      }}>{d.department || '-'}</span>
-                    </td>
+                    <td style={{ padding: '9px 10px', color: '#475569', fontSize: 12 }}>{d.department || '-'}</td>
                     <td style={{ padding: '9px 10px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
                       {toThaiBE(d.cxr_date)}
                     </td>
