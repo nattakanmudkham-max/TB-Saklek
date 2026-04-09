@@ -301,39 +301,39 @@ export default function NewPatientPage() {
     <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #f0f4ff 0%, #f8fafc 60%)' }}>
 
       {/* ── Top Header ── */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth: 780, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 13, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 34, height: 34, background: '#fee2e2', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>🫁</div>
+      <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 10, padding: '9px 18px', fontSize: 15, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🫁</div>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', lineHeight: 1.3 }}>เพิ่มผู้ป่วยวัณโรค</div>
-                {form.first_name && <div style={{ fontSize: 11, color: '#64748b' }}>{[form.title, form.first_name, form.last_name].filter(Boolean).join(' ')}</div>}
+                <div style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', lineHeight: 1.3 }}>เพิ่มผู้ป่วยวัณโรค</div>
+                {form.first_name && <div style={{ fontSize: 14, color: '#64748b' }}>{[form.title, form.first_name, form.last_name].filter(Boolean).join(' ')}</div>}
               </div>
             </div>
           </div>
-          <div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, background: '#f8fafc', padding: '4px 12px', borderRadius: 20, border: '1px solid #e2e8f0' }}>
+          <div style={{ fontSize: 15, color: '#94a3b8', fontWeight: 600, background: '#f8fafc', padding: '6px 16px', borderRadius: 20, border: '1px solid #e2e8f0' }}>
             {step + 1} / {STEP_CONFIG.length}
           </div>
         </div>
       </div>
 
       {/* ── Step Progress ── */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #f1f5f9', padding: '14px 24px' }}>
-        <div style={{ maxWidth: 780, margin: '0 auto' }}>
+      <div style={{ background: '#fff', borderBottom: '1px solid #f1f5f9', padding: '20px 32px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             {STEP_CONFIG.map((s, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', flex: i < STEP_CONFIG.length - 1 ? 1 : 'none' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7 }}>
                   <button type="button" onClick={() => i < step && setStep(i)}
-                    style={{ width: 34, height: 34, borderRadius: '50%', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, cursor: i < step ? 'pointer' : 'default', flexShrink: 0, transition: 'all 0.2s', background: i < step ? '#22c55e' : i === step ? s.color : '#e2e8f0', color: i <= step ? '#fff' : '#94a3b8', boxShadow: i === step ? `0 0 0 3px ${s.color}30` : 'none' }}>
+                    style={{ width: 48, height: 48, borderRadius: '50%', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, cursor: i < step ? 'pointer' : 'default', flexShrink: 0, transition: 'all 0.2s', background: i < step ? '#22c55e' : i === step ? s.color : '#e2e8f0', color: i <= step ? '#fff' : '#94a3b8', boxShadow: i === step ? `0 0 0 4px ${s.color}30` : 'none' }}>
                     {i < step ? '✓' : s.icon}
                   </button>
-                  <span style={{ fontSize: 10, color: i === step ? s.color : i < step ? '#22c55e' : '#94a3b8', fontWeight: i === step ? 700 : 400, whiteSpace: 'nowrap', textAlign: 'center', maxWidth: 72 }}>{s.title}</span>
+                  <span style={{ fontSize: 12, color: i === step ? s.color : i < step ? '#22c55e' : '#94a3b8', fontWeight: i === step ? 700 : 400, whiteSpace: 'nowrap', textAlign: 'center', maxWidth: 90 }}>{s.title}</span>
                 </div>
                 {i < STEP_CONFIG.length - 1 && (
-                  <div style={{ flex: 1, height: 3, background: i < step ? '#22c55e' : '#e2e8f0', margin: '15px 4px 0', borderRadius: 2, minWidth: 8, transition: 'background 0.3s' }} />
+                  <div style={{ flex: 1, height: 4, background: i < step ? '#22c55e' : '#e2e8f0', margin: '22px 6px 0', borderRadius: 2, minWidth: 10, transition: 'background 0.3s' }} />
                 )}
               </div>
             ))}
@@ -342,23 +342,23 @@ export default function NewPatientPage() {
       </div>
 
       {/* ── Main Card ── */}
-      <div style={{ padding: '24px 16px 60px', maxWidth: 780, margin: '0 auto' }}>
+      <div style={{ padding: '28px 24px 80px', maxWidth: 1200, margin: '0 auto' }}>
         <form onSubmit={handleSubmit}>
-          <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
+          <div style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
 
             {/* Card Header */}
-            <div style={{ background: sc.bg, borderBottom: `2px solid ${sc.border}`, padding: '22px 28px', display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ width: 54, height: 54, borderRadius: 16, background: sc.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0, boxShadow: `0 4px 12px ${sc.color}40` }}>
+            <div style={{ background: sc.bg, borderBottom: `2px solid ${sc.border}`, padding: '28px 40px', display: 'flex', alignItems: 'center', gap: 20 }}>
+              <div style={{ width: 70, height: 70, borderRadius: 20, background: sc.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 34, flexShrink: 0, boxShadow: `0 4px 12px ${sc.color}40` }}>
                 {sc.icon}
               </div>
               <div>
-                <div style={{ fontSize: 11, color: sc.color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 3 }}>ขั้นตอนที่ {step + 1} จาก {STEP_CONFIG.length}</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: -0.5 }}>{sc.title}</div>
+                <div style={{ fontSize: 14, color: sc.color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 4 }}>ขั้นตอนที่ {step + 1} จาก {STEP_CONFIG.length}</div>
+                <div style={{ fontSize: 30, fontWeight: 800, color: '#0f172a', letterSpacing: -0.5 }}>{sc.title}</div>
               </div>
             </div>
 
             {/* Card Content */}
-            <div style={{ padding: '28px' }}>
+            <div style={{ padding: '36px 40px' }}>
 
               {/* ── Step 1: ข้อมูลทะเบียน ── */}
               {step === 0 && (
@@ -601,30 +601,30 @@ export default function NewPatientPage() {
             </div>
 
             {/* ── Card Footer: Navigation ── */}
-            <div style={{ padding: '16px 28px', background: '#f8fafc', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '22px 40px', background: '#f8fafc', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <button type="button" onClick={() => { setMsg(''); setStep(s => s - 1); window.scrollTo({ top: 0 }) }}
                 disabled={step === 0 || saving}
-                style={{ background: step === 0 ? 'transparent' : '#f1f5f9', color: '#475569', border: 'none', padding: '10px 20px', borderRadius: 10, fontSize: 14, cursor: (step === 0 || saving) ? 'default' : 'pointer', opacity: step === 0 ? 0 : 1, fontWeight: 500 }}>
+                style={{ background: step === 0 ? 'transparent' : '#f1f5f9', color: '#475569', border: 'none', padding: '13px 26px', borderRadius: 12, fontSize: 16, cursor: (step === 0 || saving) ? 'default' : 'pointer', opacity: step === 0 ? 0 : 1, fontWeight: 500 }}>
                 ← ย้อนกลับ
               </button>
               {saved && step === STEP_CONFIG.length - 1
-                ? <div style={{ display: 'flex', gap: 10 }}>
+                ? <div style={{ display: 'flex', gap: 12 }}>
                     <button type="button" onClick={() => router.push('/patients')}
-                      style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0', padding: '11px 22px', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                      style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0', padding: '13px 28px', borderRadius: 12, fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>
                       📋 กลับหน้าหลัก
                     </button>
                     <button type="submit" disabled={saving}
-                      style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '11px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
+                      style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '13px 38px', borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
                       {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
                     </button>
                   </div>
                 : step < STEP_CONFIG.length - 1
                 ? <button type="button" onClick={handleNext} disabled={saving}
-                    style={{ background: saving ? '#93c5fd' : sc.color, color: '#fff', border: 'none', padding: '11px 28px', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: `0 3px 10px ${sc.color}40`, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    style={{ background: saving ? '#93c5fd' : sc.color, color: '#fff', border: 'none', padding: '13px 36px', borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: `0 3px 10px ${sc.color}40`, display: 'flex', alignItems: 'center', gap: 8 }}>
                     {saving ? '⏳ กำลังบันทึก...' : 'ถัดไป →'}
                   </button>
                 : <button type="submit" disabled={saving}
-                    style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '11px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
+                    style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '13px 42px', borderRadius: 12, fontSize: 16, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
                     {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึกข้อมูล'}
                   </button>
               }
