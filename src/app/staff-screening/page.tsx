@@ -33,8 +33,17 @@ export default function StaffScreeningPage() {
   const [search, setSearch] = useState('')
   const [year, setYear] = useState('2568')
   const [filterResult, setFilterResult] = useState('')
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => { fetchData() }, [year])
+
+  async function handleDelete(id: string, name: string) {
+    if (!confirm(`ยืนยันการลบ "${name}" ?`)) return
+    setDeletingId(id)
+    await supabase.from('staff_screening').delete().eq('id', id)
+    setData(prev => prev.filter(d => d.id !== id))
+    setDeletingId(null)
+  }
 
   async function fetchData() {
     setLoading(true)
@@ -180,12 +189,24 @@ export default function StaffScreeningPage() {
                       }}>{d.cxr_result || '-'}</span>
                     </td>
                     <td style={{ padding: '9px 10px', textAlign: 'center' }}>
-                      <Link href={`/staff-screening/${d.id}`} style={{
-                        color: '#2563eb', fontSize: 11, fontWeight: 600,
-                        textDecoration: 'none', padding: '4px 10px',
-                        background: '#eff6ff', borderRadius: 6, whiteSpace: 'nowrap',
-                        border: '1px solid #bfdbfe',
-                      }}>แก้ไข</Link>
+                      <div style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
+                        <Link href={`/staff-screening/${d.id}`} style={{
+                          color: '#2563eb', fontSize: 11, fontWeight: 600,
+                          textDecoration: 'none', padding: '4px 10px',
+                          background: '#eff6ff', borderRadius: 6, whiteSpace: 'nowrap',
+                          border: '1px solid #bfdbfe',
+                        }}>แก้ไข</Link>
+                        <button
+                          onClick={() => handleDelete(d.id, d.full_name)}
+                          disabled={deletingId === d.id}
+                          style={{
+                            color: '#dc2626', fontSize: 11, fontWeight: 600,
+                            padding: '4px 10px', background: '#fef2f2',
+                            borderRadius: 6, border: '1px solid #fecaca',
+                            cursor: 'pointer', whiteSpace: 'nowrap',
+                          }}
+                        >ลบ</button>
+                      </div>
                     </td>
                   </tr>
                 )

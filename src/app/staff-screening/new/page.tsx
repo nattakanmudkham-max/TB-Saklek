@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { FormInput, FormSelect, FormTextArea, SectionTitle } from '@/components/FormComponents'
 
-const YEARS = [2568, 2567, 2566, 2565].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
+const YEARS = [2569, 2568, 2567, 2566, 2565].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
 const CXR = ['ปกติ', 'ผิดปกติ', 'สงสัย TB', 'ไม่ได้ CXR'].map(v => ({ value: v, label: v }))
 const TYPES = ['ข้าราชการ', 'พนักงานกระทรวง', 'ลูกจ้างชั่วคราว', 'จ้างเหมาบริการ'].map(v => ({ value: v, label: v }))
 const DEPTS = [
@@ -19,18 +19,29 @@ export default function NewStaffPage() {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
   const [form, setForm] = useState({
-    fiscal_year: '2568', seq: '', hn: '', prefix: '', first_name: '', last_name: '',
-    position: '', staff_type: '', department: '', cxr_date: '', cxr_result: '', notes: ''
+    fiscal_year: '2568', hn: '', id_card: '',
+    prefix: '', first_name: '', last_name: '',
+    position: '', staff_type: '', department: '',
+    cxr_date: '', cxr_result: '', notes: ''
   })
   const set = (f: string, v: string) => setForm(p => ({ ...p, [f]: v }))
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setSaving(true); setMsg('')
     const payload = {
-      ...form,
       fiscal_year: parseInt(form.fiscal_year),
-      seq: form.seq ? parseInt(form.seq) : null,
-      full_name: `${form.prefix}${form.first_name} ${form.last_name}`.trim()
+      hn: form.hn || null,
+      id_card: form.id_card || null,
+      prefix: form.prefix || null,
+      first_name: form.first_name || null,
+      last_name: form.last_name || null,
+      full_name: `${form.prefix}${form.prefix ? ' ' : ''}${form.first_name} ${form.last_name}`.trim(),
+      position: form.position || null,
+      staff_type: form.staff_type || null,
+      department: form.department || null,
+      cxr_date: form.cxr_date || null,
+      cxr_result: form.cxr_result || null,
+      notes: form.notes || null,
     }
     const { error } = await supabase.from('staff_screening').insert(payload)
     setSaving(false)
@@ -42,13 +53,25 @@ export default function NewStaffPage() {
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => router.back()} style={{
-            background: '#f1f5f9', border: 'none', borderRadius: 8,
-            padding: '7px 12px', fontSize: 13, color: '#475569', cursor: 'pointer',
-          }}>← กลับ</button>
+          <button onClick={() => router.push('/staff-screening')} style={{
+            display: 'flex', alignItems: 'center', gap: 7,
+            background: '#fff', border: '1.5px solid #e2e8f0', borderRadius: 10,
+            padding: '8px 16px', fontSize: 13, fontWeight: 600, color: '#475569', cursor: 'pointer',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+          }}>
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round"><path d="M12 5l-5 5 5 5"/></svg>
+            กลับหน้าหลัก
+          </button>
           <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 36, height: 36, background: '#dbeafe', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>👤</div>
+            <div style={{ width: 36, height: 36, background: '#dbeafe', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="13" r="7" fill="#bfdbfe" stroke="#2563eb" strokeWidth="2"/>
+                <path d="M6 35 C6 26 34 26 34 35" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" fill="#bfdbfe"/>
+                <rect x="28" y="22" width="10" height="3" rx="1.5" fill="#2563eb"/>
+                <rect x="31.5" y="19" width="3" height="10" rx="1.5" fill="#2563eb"/>
+              </svg>
+            </div>
             <h1 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>เพิ่มข้อมูลคัดกรองเจ้าหน้าที่</h1>
           </div>
         </div>
@@ -60,16 +83,20 @@ export default function NewStaffPage() {
             <div className="grid grid-cols-2 gap-5">
               <SectionTitle>ข้อมูลทั่วไป</SectionTitle>
               <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
-              <FormInput label="ลำดับที่" type="number" value={form.seq} onChange={e => set('seq', e.target.value)} />
               <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
 
               <SectionTitle>ข้อมูลเจ้าหน้าที่</SectionTitle>
               <FormSelect label="คำนำหน้า" options={['นาย','นาง','นางสาว','ดร.','ผศ.','รศ.'].map(v=>({value:v,label:v}))} value={form.prefix} onChange={e => set('prefix', e.target.value)} />
               <FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} required />
               <FormInput label="สกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} required />
+              <div className="col-span-full">
+                <FormInput label="หมายเลขบัตรประชาชน" value={form.id_card} onChange={e => set('id_card', e.target.value)} placeholder="X-XXXX-XXXXX-XX-X" />
+              </div>
               <FormInput label="ตำแหน่ง" value={form.position} onChange={e => set('position', e.target.value)} placeholder="เช่น พยาบาลวิชาชีพชำนาญการ" />
               <FormSelect label="ประเภท" options={TYPES} value={form.staff_type} onChange={e => set('staff_type', e.target.value)} />
-              <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
+              <div className="col-span-full">
+                <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
+              </div>
 
               <SectionTitle>ผลการคัดกรอง</SectionTitle>
               <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
@@ -97,7 +124,7 @@ export default function NewStaffPage() {
               }}>
                 {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
               </button>
-              <button type="button" onClick={() => router.back()} style={{
+              <button type="button" onClick={() => router.push('/staff-screening')} style={{
                 background: '#fff', color: '#475569', padding: '10px 20px', borderRadius: 10,
                 fontSize: 14, border: '1px solid #e2e8f0', cursor: 'pointer',
               }}>ยกเลิก</button>
