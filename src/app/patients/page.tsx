@@ -45,7 +45,9 @@ export default function PatientsPage() {
 
   async function fetchPatients() {
     setLoading(true)
-    let query = supabase.from('tb_patients').select('*').order('registered_date', { ascending: false })
+    let query = supabase.from('tb_patients').select('*')
+      .order('fiscal_year', { ascending: false })
+      .order('tb_no', { ascending: false, nullsFirst: false })
     if (year) query = query.eq('fiscal_year', parseInt(year))
     const { data } = await query
     setPatients(data || [])
