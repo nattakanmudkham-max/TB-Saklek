@@ -608,10 +608,16 @@ export default function NewPatientPage() {
                 ← ย้อนกลับ
               </button>
               {saved && step === STEP_CONFIG.length - 1
-                ? <button type="button" onClick={() => router.push('/patients')}
-                    style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0', padding: '11px 22px', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                    📋 กลับหน้ารายการ
-                  </button>
+                ? <div style={{ display: 'flex', gap: 10 }}>
+                    <button type="button" onClick={() => router.push('/patients')}
+                      style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0', padding: '11px 22px', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                      📋 กลับหน้าหลัก
+                    </button>
+                    <button type="submit" disabled={saving}
+                      style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '11px 32px', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 3px 10px rgba(37,99,235,0.35)' }}>
+                      {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
+                    </button>
+                  </div>
                 : step < STEP_CONFIG.length - 1
                 ? <button type="button" onClick={handleNext} disabled={saving}
                     style={{ background: saving ? '#93c5fd' : sc.color, color: '#fff', border: 'none', padding: '11px 28px', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', boxShadow: `0 3px 10px ${sc.color}40`, display: 'flex', alignItems: 'center', gap: 6 }}>
