@@ -125,10 +125,12 @@ export default function EditStaffPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 36, height: 36, background: '#dbeafe', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
-                  <circle cx="20" cy="13" r="7" fill="#bfdbfe" stroke="#2563eb" strokeWidth="2"/>
-                  <path d="M6 35 C6 26 34 26 34 35" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" fill="#bfdbfe"/>
-                  <rect x="28" y="22" width="10" height="3" rx="1.5" fill="#2563eb"/>
-                  <rect x="31.5" y="19" width="3" height="10" rx="1.5" fill="#2563eb"/>
+                  <circle cx="20" cy="10" r="6" fill="#bfdbfe" stroke="#2563eb" strokeWidth="2"/>
+                  <path d="M9 36 C9 26 31 26 31 36" fill="#bfdbfe" stroke="#2563eb" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M14 22 C13 26 13 30 17 31" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                  <path d="M26 22 C27 26 27 30 23 31" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                  <path d="M17 31 C17 34 23 34 23 31" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                  <circle cx="20" cy="34" r="2.5" fill="#2563eb"/>
                 </svg>
               </div>
               <div>

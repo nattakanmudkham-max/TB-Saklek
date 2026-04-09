@@ -21,6 +21,21 @@ function CalendarIconNav({ active }: { active: boolean }) {
   )
 }
 
+function DoctorIconNav({ active }: { active: boolean }) {
+  const color = active ? '#93c5fd' : 'rgba(255,255,255,0.75)'
+  const fill = active ? 'rgba(147,197,253,0.3)' : 'rgba(255,255,255,0.1)'
+  return (
+    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="10" r="6" fill={fill} stroke={color} strokeWidth="2"/>
+      <path d="M9 36 C9 26 31 26 31 36" fill={fill} stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      <path d="M14 22 C13 26 13 30 17 31" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none"/>
+      <path d="M26 22 C27 26 27 30 23 31" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none"/>
+      <path d="M17 31 C17 34 23 34 23 31" stroke={color} strokeWidth="2" strokeLinecap="round" fill="none"/>
+      <circle cx="20" cy="34" r="2.5" fill={color}/>
+    </svg>
+  )
+}
+
 function LungIconNav({ active }: { active: boolean }) {
   const color = active ? '#93c5fd' : 'rgba(255,255,255,0.75)'
   return (
@@ -35,12 +50,12 @@ function LungIconNav({ active }: { active: boolean }) {
 }
 
 const navItems = [
-  { href: '/',               label: 'หน้าหลัก',          icon: '🏥',      useLung: false, useCalendar: false },
-  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: null,      useLung: true,  useCalendar: false },
-  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️',    useLung: false, useCalendar: false },
-  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦',  useLung: false, useCalendar: false },
-  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬',      useLung: false, useCalendar: false },
-  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: null,      useLung: false, useCalendar: true  },
+  { href: '/',               label: 'หน้าหลัก',          icon: '🏥',      useLung: false, useCalendar: false, useDoctor: false },
+  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: null,      useLung: true,  useCalendar: false, useDoctor: false },
+  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: null,      useLung: false, useCalendar: false, useDoctor: true  },
+  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦',  useLung: false, useCalendar: false, useDoctor: false },
+  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬',      useLung: false, useCalendar: false, useDoctor: false },
+  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: null,      useLung: false, useCalendar: true,  useDoctor: false },
 ]
 
 export default function NavSidebar() {
@@ -114,6 +129,8 @@ export default function NavSidebar() {
                   ? <LungIconNav active={isActive} />
                   : item.useCalendar
                   ? <CalendarIconNav active={isActive} />
+                  : item.useDoctor
+                  ? <DoctorIconNav active={isActive} />
                   : item.icon
                 }
               </span>
