@@ -8,11 +8,23 @@ interface Staff {
   full_name: string; department: string; cxr_date: string; cxr_result: string
 }
 
+function toThaiBE(iso: string): string {
+  if (!iso) return '-'
+  const [y, m, d] = iso.split('-')
+  if (!y || !m || !d) return iso
+  return `${d}/${m}/${parseInt(y) + 543}`
+}
+
 const cxrColor = (v: string) => {
-  if (v === 'ปกติ') return { bg: '#dcfce7', text: '#15803d' }
-  if (v === 'ผิดปกติ') return { bg: '#fee2e2', text: '#b91c1c' }
-  if (v === 'สงสัย TB') return { bg: '#fef9c3', text: '#854d0e' }
-  return { bg: '#f1f5f9', text: '#475569' }
+  if (v === 'ปกติ') return { bg: '#dcfce7', text: '#15803d', border: '#86efac' }
+  if (v === 'ผิดปกติ') return { bg: '#fee2e2', text: '#b91c1c', border: '#fca5a5' }
+  if (v === 'สงสัย TB') return { bg: '#fef9c3', text: '#854d0e', border: '#fde68a' }
+  return { bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' }
+}
+
+const selectStyle: React.CSSProperties = {
+  border: '1px solid #e2e8f0', borderRadius: 10, padding: '8px 12px',
+  fontSize: 13, background: '#fff', color: '#334155', outline: 'none', cursor: 'pointer',
 }
 
 export default function StaffScreeningPage() {
@@ -20,10 +32,11 @@ export default function StaffScreeningPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [year, setYear] = useState('2568')
+  const [filterResult, setFilterResult] = useState('')
 
-  useEffect(() => { fetch() }, [year])
+  useEffect(() => { fetchData() }, [year])
 
-  async function fetch() {
+  async function fetchData() {
     setLoading(true)
     let q = supabase.from('staff_screening').select('*').order('seq')
     if (year) q = q.eq('fiscal_year', parseInt(year))
@@ -32,9 +45,13 @@ export default function StaffScreeningPage() {
     setLoading(false)
   }
 
-  const filtered = data.filter(d =>
-    d.full_name?.includes(search) || d.hn?.includes(search) || d.department?.includes(search)
-  )
+  const filtered = data.filter(d => {
+    const matchSearch = d.full_name?.includes(search) || d.hn?.includes(search) || d.department?.includes(search)
+    const matchResult = filterResult === '' || d.cxr_result === filterResult
+    return matchSearch && matchResult
+  })
+
+  const hasFilter = !!filterResult
 
   return (
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
@@ -59,65 +76,81 @@ export default function StaffScreeningPage() {
             background: '#2563eb', color: '#fff', padding: '9px 18px',
             borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none',
             boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
-          }}>
-            + เพิ่มรายการ
-          </Link>
+          }}>+ เพิ่มรายการ</Link>
         </div>
       </div>
 
-      <div style={{ padding: '24px 32px' }}>
-        {/* Filters */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center' }}>
-          <div style={{ position: 'relative', flex: 1, maxWidth: 340 }}>
-            <span style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#94a3b8' }}>🔍</span>
-            <input
-              placeholder="ค้นหาชื่อ / HN / แผนก"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{
-                width: '100%', border: '1px solid #e2e8f0', borderRadius: 10,
-                padding: '9px 12px 9px 34px', fontSize: 13, background: '#fff',
-                outline: 'none', color: '#334155',
-              }}
-            />
+      <div style={{ padding: '16px 20px' }}>
+        {/* Filter bar */}
+        <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e2e8f0', padding: '14px 16px', marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+            {/* Search */}
+            <div style={{ position: 'relative', minWidth: 240, flex: 1 }}>
+              <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }} width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round"><circle cx="9" cy="9" r="6"/><path d="M15 15l3 3"/></svg>
+              <input
+                placeholder="ค้นหาชื่อ / HN / แผนก"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{ width: '100%', border: '1px solid #e2e8f0', borderRadius: 10, padding: '8px 12px 8px 32px', fontSize: 13, background: '#f8fafc', outline: 'none', color: '#334155' }}
+              />
+            </div>
+
+            {/* Year */}
+            <select value={year} onChange={e => setYear(e.target.value)} style={selectStyle}>
+              {[2569, 2568, 2567, 2566].map(y => <option key={y} value={y}>ปีงบ {y}</option>)}
+            </select>
+
+            {/* CXR Result filter */}
+            <select value={filterResult} onChange={e => setFilterResult(e.target.value)} style={selectStyle}>
+              <option value="">ผล CXR (ทั้งหมด)</option>
+              <option value="ปกติ">ปกติ</option>
+              <option value="ผิดปกติ">ผิดปกติ</option>
+              <option value="สงสัย TB">สงสัย TB</option>
+            </select>
+
+            {hasFilter && (
+              <button onClick={() => setFilterResult('')} style={{
+                border: '1px solid #fecaca', borderRadius: 10, padding: '8px 12px',
+                fontSize: 12, background: '#fef2f2', color: '#dc2626', cursor: 'pointer', whiteSpace: 'nowrap',
+              }}>✕ ล้างตัวกรอง</button>
+            )}
+
+            <span style={{ fontSize: 12, color: '#94a3b8', marginLeft: 'auto', whiteSpace: 'nowrap' }}>
+              {filtered.length} / {data.length} รายการ
+            </span>
           </div>
-          <select
-            value={year}
-            onChange={e => setYear(e.target.value)}
-            style={{
-              border: '1px solid #e2e8f0', borderRadius: 10, padding: '9px 14px',
-              fontSize: 13, background: '#fff', color: '#334155', outline: 'none', cursor: 'pointer',
-            }}
-          >
-            {[2568, 2567, 2566].map(y => <option key={y} value={y}>ปีงบ {y}</option>)}
-          </select>
-          <span style={{ fontSize: 12, color: '#94a3b8', marginLeft: 4 }}>
-            {filtered.length} รายการ
-          </span>
         </div>
 
         {/* Table */}
-        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
+        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse', minWidth: 860 }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                {['ลำดับ', 'HN', 'ชื่อ-สกุล', 'กลุ่มงาน/แผนก', 'วันที่ CXR', 'ผล CXR', ''].map(h => (
-                  <th key={h} style={{
-                    textAlign: 'left', padding: '11px 14px',
+              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                {[
+                  { label: 'ลำดับ', w: 52 },
+                  { label: 'HN', w: 100 },
+                  { label: 'ชื่อ-สกุล', w: 200 },
+                  { label: 'กลุ่มงาน/แผนก', w: 220 },
+                  { label: 'วันที่ CXR', w: 110 },
+                  { label: 'ผล CXR', w: 100 },
+                  { label: 'การจัดการ', w: 80 },
+                ].map(h => (
+                  <th key={h.label} style={{
+                    textAlign: 'center', padding: '10px 10px',
                     fontSize: 11, fontWeight: 700, color: '#64748b',
-                    letterSpacing: 0.5, textTransform: 'uppercase',
-                  }}>{h}</th>
+                    letterSpacing: 0.3, textTransform: 'uppercase',
+                    width: h.w, whiteSpace: 'nowrap',
+                  }}>{h.label}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
-                  ⏳ กำลังโหลด...
-                </td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>⏳ กำลังโหลด...</td></tr>
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
-                  <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>ไม่พบข้อมูล
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" style={{ display: 'block', margin: '0 auto 10px' }}><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                  ไม่พบข้อมูล
                 </td></tr>
               ) : filtered.map((d, i) => {
                 const cc = cxrColor(d.cxr_result)
@@ -126,29 +159,32 @@ export default function StaffScreeningPage() {
                     borderBottom: '1px solid #f1f5f9',
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                   }} className="table-row">
-                    <td style={{ padding: '11px 14px', color: '#94a3b8', fontWeight: 600, fontSize: 12 }}>{d.seq}</td>
-                    <td style={{ padding: '11px 14px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, letterSpacing: 0.5 }}>
-                      {String(Math.round(parseFloat(d.hn))).padStart(9, '0')}
+                    <td style={{ padding: '9px 10px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.seq}</td>
+                    <td style={{ padding: '9px 10px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
                     </td>
-                    <td style={{ padding: '11px 14px', fontWeight: 600, color: '#0f172a' }}>{d.full_name}</td>
-                    <td style={{ padding: '11px 14px' }}>
+                    <td style={{ padding: '9px 10px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left' }}>{d.full_name}</td>
+                    <td style={{ padding: '9px 10px', textAlign: 'center' }}>
                       <span style={{
-                        background: '#f0f4ff', color: '#3730a3',
-                        padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
-                      }}>{d.department}</span>
+                        background: '#eff6ff', color: '#1e40af', border: '1px solid #bfdbfe',
+                        padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+                      }}>{d.department || '-'}</span>
                     </td>
-                    <td style={{ padding: '11px 14px', color: '#475569' }}>{d.cxr_date}</td>
-                    <td style={{ padding: '11px 14px' }}>
+                    <td style={{ padding: '9px 10px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
+                      {toThaiBE(d.cxr_date)}
+                    </td>
+                    <td style={{ padding: '9px 10px', textAlign: 'center' }}>
                       <span style={{
-                        background: cc.bg, color: cc.text,
-                        padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                        background: cc.bg, color: cc.text, border: `1px solid ${cc.border}`,
+                        padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, letterSpacing: 0.3,
                       }}>{d.cxr_result || '-'}</span>
                     </td>
-                    <td style={{ padding: '11px 14px' }}>
+                    <td style={{ padding: '9px 10px', textAlign: 'center' }}>
                       <Link href={`/staff-screening/${d.id}`} style={{
-                        color: '#2563eb', fontSize: 12, fontWeight: 600,
+                        color: '#2563eb', fontSize: 11, fontWeight: 600,
                         textDecoration: 'none', padding: '4px 10px',
-                        background: '#eff6ff', borderRadius: 6,
+                        background: '#eff6ff', borderRadius: 6, whiteSpace: 'nowrap',
+                        border: '1px solid #bfdbfe',
                       }}>แก้ไข</Link>
                     </td>
                   </tr>
