@@ -230,13 +230,13 @@ export default function NewPatientPage() {
     if (patientId) {
       const { error } = await supabase.from('tb_patients').update(payload).eq('id', patientId)
       setSaving(false)
-      if (error) { console.error(error); setMsg('❌ ' + error.message) }
-      else { setSaved(true); setMsg('✅ บันทึกสำเร็จ') }
+      if (error) { console.error(error); setMsg('❌ ' + error.message); return }
+      router.push(`/patients/${patientId}`)
     } else {
       const { data, error } = await supabase.from('tb_patients').insert(payload).select('id').single()
       setSaving(false)
-      if (error) { console.error(error); setMsg('❌ ' + error.message) }
-      else { setPatientId(data.id); setSaved(true); setMsg('✅ บันทึกสำเร็จ') }
+      if (error) { console.error(error); setMsg('❌ ' + error.message); return }
+      router.push(`/patients/${data.id}`)
     }
   }
 
