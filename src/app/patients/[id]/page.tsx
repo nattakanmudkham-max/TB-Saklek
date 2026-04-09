@@ -607,7 +607,7 @@ export default function EditPatientPage() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 620 }}>
                   <thead>
                     <tr style={{ background: '#1e3a5f', color: '#fff' }}>
-                      {['ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','ร.พ.ตรวจ','แก้ไข','ลบ'].map(h => (
+                      {['ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','แก้ไข','ลบ'].map(h => (
                         <th key={h} style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>{h}</th>
                       ))}
                     </tr>
@@ -762,7 +762,7 @@ export default function EditPatientPage() {
               <FormInput label="XN" value={cxrForm.xn} onChange={e => setCxrForm(p => ({ ...p, xn: e.target.value }))} placeholder="-" />
             </div>
             <div style={{ marginBottom: 20 }}>
-              <SearchableSelect label="ร.พ.ตรวจ" options={THAI_HOSPITALS} value={cxrForm.hospital} onChange={v => setCxrForm(p => ({ ...p, hospital: v }))} />
+              <SearchableSelect label="หน่วยงาน" options={THAI_HOSPITALS} value={cxrForm.hospital} onChange={v => setCxrForm(p => ({ ...p, hospital: v }))} />
             </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button type="button" onClick={() => setCxrModal(false)} style={{ background: '#f1f5f9', color: '#475569', border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>ยกเลิก</button>
