@@ -2,6 +2,25 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+function CalendarIconNav({ active }: { active: boolean }) {
+  const color = active ? '#93c5fd' : 'rgba(255,255,255,0.75)'
+  const fillColor = active ? 'rgba(147,197,253,0.3)' : 'rgba(255,255,255,0.1)'
+  return (
+    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+      <rect x="4" y="9" width="32" height="28" rx="4" fill={fillColor} stroke={color} strokeWidth="2"/>
+      <rect x="4" y="9" width="32" height="10" rx="4" fill={color} stroke={color} strokeWidth="2"/>
+      <rect x="4" y="15" width="32" height="4" fill={color}/>
+      <rect x="13" y="4" width="3" height="10" rx="1.5" fill={color}/>
+      <rect x="24" y="4" width="3" height="10" rx="1.5" fill={color}/>
+      <rect x="10" y="24" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="18" y="24" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="26" y="24" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="10" y="30" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="18" y="30" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+    </svg>
+  )
+}
+
 function LungIconNav({ active }: { active: boolean }) {
   const color = active ? '#93c5fd' : 'rgba(255,255,255,0.75)'
   return (
@@ -16,12 +35,12 @@ function LungIconNav({ active }: { active: boolean }) {
 }
 
 const navItems = [
-  { href: '/',               label: 'หน้าหลัก',          icon: '🏥',      useLung: false },
-  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: null,      useLung: true  },
-  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️',    useLung: false },
-  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦',  useLung: false },
-  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬',      useLung: false },
-  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: '💊',      useLung: false },
+  { href: '/',               label: 'หน้าหลัก',          icon: '🏥',      useLung: false, useCalendar: false },
+  { href: '/patients',       label: 'ทะเบียนผู้ป่วย TB',  icon: null,      useLung: true,  useCalendar: false },
+  { href: '/staff-screening',label: 'คัดกรองเจ้าหน้าที่', icon: '👨‍⚕️',    useLung: false, useCalendar: false },
+  { href: '/contacts',       label: 'ผู้สัมผัสร่วมบ้าน',  icon: '👨‍👩‍👧‍👦',  useLung: false, useCalendar: false },
+  { href: '/ltbi',           label: 'วัณโรคระยะแฝง',      icon: '🔬',      useLung: false, useCalendar: false },
+  { href: '/appointments',   label: 'ตารางนัดรับยา',      icon: null,      useLung: false, useCalendar: true  },
 ]
 
 export default function NavSidebar() {
@@ -91,7 +110,12 @@ export default function NavSidebar() {
               className="nav-link"
             >
               <span style={{ fontSize: 20, minWidth: 26, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {item.useLung ? <LungIconNav active={isActive} /> : item.icon}
+                {item.useLung
+                  ? <LungIconNav active={isActive} />
+                  : item.useCalendar
+                  ? <CalendarIconNav active={isActive} />
+                  : item.icon
+                }
               </span>
               <span style={{ flex: 1 }}>{item.label}</span>
               {isActive && (

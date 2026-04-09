@@ -1,5 +1,26 @@
 import Link from "next/link";
 
+function CalendarIcon({ size = 36, color = "#059669", fill = "#bbf7d0" }: { size?: number; color?: string; fill?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Calendar body */}
+      <rect x="4" y="9" width="32" height="28" rx="4" fill={fill} stroke={color} strokeWidth="2"/>
+      {/* Header bar */}
+      <rect x="4" y="9" width="32" height="10" rx="4" fill={color} stroke={color} strokeWidth="2"/>
+      <rect x="4" y="15" width="32" height="4" fill={color}/>
+      {/* Binding pins */}
+      <rect x="13" y="4" width="3" height="10" rx="1.5" fill={color}/>
+      <rect x="24" y="4" width="3" height="10" rx="1.5" fill={color}/>
+      {/* Grid dots */}
+      <rect x="10" y="24" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="18" y="24" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="26" y="24" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="10" y="30" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+      <rect x="18" y="30" width="4" height="4" rx="1" fill={color} opacity="0.7"/>
+    </svg>
+  )
+}
+
 function LungIcon({ size = 36, color = "#dc2626", fill = "#fca5a5" }: { size?: number; color?: string; fill?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,6 +43,7 @@ const modules = [
     href: "/patients",
     icon: null as null,
     useLung: true,
+    useCalendar: false,
     title: "ทะเบียนผู้ป่วย TB",
     desc: "บันทึก ค้นหา และติดตามผู้ป่วยวัณโรค แยกตามปีงบประมาณ",
     accent: "#dc2626",
@@ -33,6 +55,7 @@ const modules = [
     href: "/staff-screening",
     icon: "👨‍⚕️",
     useLung: false,
+    useCalendar: false,
     title: "คัดกรองเจ้าหน้าที่",
     desc: "ทะเบียนคัดกรองวัณโรคเจ้าหน้าที่โรงพยาบาลสากเหล็ก",
     accent: "#2563eb",
@@ -44,6 +67,7 @@ const modules = [
     href: "/contacts",
     icon: "👨‍👩‍👧‍👦",
     useLung: false,
+    useCalendar: false,
     title: "ผู้สัมผัสร่วมบ้าน",
     desc: "ทะเบียนผู้สัมผัส/ใกล้ชิดผู้ป่วย ผล CXR / GeneXpert / IGRA",
     accent: "#d97706",
@@ -55,6 +79,7 @@ const modules = [
     href: "/ltbi",
     icon: "🔬",
     useLung: false,
+    useCalendar: false,
     title: "วัณโรคระยะแฝง (LTBI)",
     desc: "ทะเบียนรักษาผู้ที่ IGRA ผิดปกติ บันทึกวันเริ่มรักษา",
     accent: "#7c3aed",
@@ -64,8 +89,9 @@ const modules = [
   },
   {
     href: "/appointments",
-    icon: "💊",
+    icon: null as null,
     useLung: false,
+    useCalendar: true,
     title: "ตารางนัดรับยา",
     desc: "บันทึกวันนัดรับยา สูตรยา และปริมาณยาแต่ละเดือน",
     accent: "#059669",
@@ -174,6 +200,8 @@ export default function HomePage() {
                 }}>
                   {m.useLung
                     ? <LungIcon size={38} color={m.accent} fill={m.border} />
+                    : m.useCalendar
+                    ? <CalendarIcon size={38} color={m.accent} fill={m.bg} />
                     : m.icon
                   }
                 </div>
