@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { FormInput, FormSelect, FormTextArea, SectionTitle } from '@/components/FormComponents'
+import { FormInput, FormSelect, FormTextArea } from '@/components/FormComponents'
 
-const YEARS = [2569, 2568, 2567, 2566, 2565].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
+const YEARS = [2575,2574,2573,2572,2571,2570,2569,2568,2567,2566,2565].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
 const CXR = ['ปกติ', 'ผิดปกติ', 'สงสัย TB', 'ไม่ได้ CXR'].map(v => ({ value: v, label: v }))
 const TYPES = ['ข้าราชการ', 'พนักงานกระทรวง', 'ลูกจ้างชั่วคราว', 'จ้างเหมาบริการ'].map(v => ({ value: v, label: v }))
 const DEPTS = [
@@ -13,6 +13,21 @@ const DEPTS = [
   'กลุ่มงานพยาธิวิทยา', 'กลุ่มงานเวชกรรมสังคม', 'กลุ่มงานประกันสุขภาพ',
   'กลุ่มงานบริหารทั่วไป', 'กลุ่มงานโภชนาการ'
 ].map(v => ({ value: v, label: v }))
+
+const SectionCard = ({ children, header }: { children: React.ReactNode; header: React.ReactNode }) => (
+  <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+    {header}
+    <div style={{ padding: '24px 28px' }}>
+      {children}
+    </div>
+  </div>
+)
+
+const FieldGrid = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
+    {children}
+  </div>
+)
 
 export default function EditStaffPage() {
   const router = useRouter()
@@ -93,6 +108,7 @@ export default function EditStaffPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
+      {/* Header */}
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -116,60 +132,126 @@ export default function EditStaffPage() {
                 </svg>
               </div>
               <div>
-                <h1 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: 0 }}>แก้ไขข้อมูลเจ้าหน้าที่</h1>
+                <h1 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: 0 }}>แก้ไขข้อมูลเจ้าหน้าที่</h1>
                 <p style={{ fontSize: 14, fontWeight: 700, color: '#1e40af', margin: '3px 0 0' }}>{displayName}</p>
               </div>
             </div>
           </div>
-          <button onClick={handleDelete} style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-            🗑 ลบข้อมูล
+          <button onClick={handleDelete} style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            ลบข้อมูล
           </button>
         </div>
       </div>
 
-      <div style={{ padding: '28px 32px', maxWidth: 760 }}>
+      <div style={{ padding: '28px 32px', maxWidth: 900 }}>
         <form onSubmit={handleSubmit}>
-          <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '28px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <div className="grid grid-cols-2 gap-5">
-              <SectionTitle>ข้อมูลทั่วไป</SectionTitle>
-              <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
-              <FormInput label="HN" value={form.hn} onChange={e => set('hn', e.target.value)} />
 
-              <SectionTitle>ข้อมูลเจ้าหน้าที่</SectionTitle>
+          {/* Section 1: ข้อมูลทั่วไป */}
+          <SectionCard header={
+            <div style={{ background: 'linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%)', padding: '14px 24px', borderBottom: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 34, height: 34, background: '#bfdbfe', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1e40af' }}>ข้อมูลทั่วไป</div>
+                <div style={{ fontSize: 11, color: '#60a5fa' }}>General Information</div>
+              </div>
+              <div style={{ marginLeft: 'auto', background: '#dbeafe', color: '#1e40af', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #bfdbfe' }}>ขั้นตอนที่ 1</div>
+            </div>
+          }>
+            <FieldGrid>
+              <FormSelect label="ปีงบประมาณ" options={YEARS} value={form.fiscal_year} onChange={e => set('fiscal_year', e.target.value)} required />
+              <FormInput label="HN (เลขประจำตัวผู้ป่วย)" value={form.hn} onChange={e => set('hn', e.target.value)} placeholder="เช่น 000012345" />
+            </FieldGrid>
+          </SectionCard>
+
+          {/* Section 2: ข้อมูลเจ้าหน้าที่ */}
+          <SectionCard header={
+            <div style={{ background: 'linear-gradient(90deg, #f0fdf4 0%, #dcfce7 100%)', padding: '14px 24px', borderBottom: '1px solid #86efac', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 34, height: 34, background: '#bbf7d0', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d' }}>ข้อมูลเจ้าหน้าที่</div>
+                <div style={{ fontSize: 11, color: '#4ade80' }}>Staff Information</div>
+              </div>
+              <div style={{ marginLeft: 'auto', background: '#dcfce7', color: '#15803d', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #86efac' }}>ขั้นตอนที่ 2</div>
+            </div>
+          }>
+            <FieldGrid>
               <FormSelect label="คำนำหน้า" options={['นาย','นาง','นางสาว','ดร.','ผศ.','รศ.'].map(v=>({value:v,label:v}))} value={form.prefix} onChange={e => set('prefix', e.target.value)} />
+              <div />
               <FormInput label="ชื่อ" value={form.first_name} onChange={e => set('first_name', e.target.value)} />
               <FormInput label="สกุล" value={form.last_name} onChange={e => set('last_name', e.target.value)} />
-              <div className="col-span-full">
+              <div style={{ gridColumn: '1 / -1' }}>
+                <FormInput label="ชื่อ-สกุล (เต็ม)" value={form.full_name} onChange={e => set('full_name', e.target.value)} />
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
                 <FormInput label="หมายเลขบัตรประชาชน" value={form.id_card} onChange={e => set('id_card', e.target.value)} placeholder="X-XXXX-XXXXX-XX-X" />
               </div>
               <FormInput label="ตำแหน่ง" value={form.position} onChange={e => set('position', e.target.value)} />
               <FormSelect label="ประเภท" options={TYPES} value={form.staff_type} onChange={e => set('staff_type', e.target.value)} />
-              <div className="col-span-full">
+              <div style={{ gridColumn: '1 / -1' }}>
                 <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
               </div>
-              <div className="col-span-full">
-                <FormInput label="ชื่อ-สกุล (เต็ม)" value={form.full_name} onChange={e => set('full_name', e.target.value)} />
-              </div>
+            </FieldGrid>
+          </SectionCard>
 
-              <SectionTitle>ผลการคัดกรอง</SectionTitle>
+          {/* Section 3: ผลการคัดกรอง */}
+          <SectionCard header={
+            <div style={{ background: 'linear-gradient(90deg, #fefce8 0%, #fef9c3 100%)', padding: '14px 24px', borderBottom: '1px solid #fde68a', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 34, height: 34, background: '#fde68a', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#92400e" strokeWidth="2" strokeLinecap="round">
+                  <path d="M9 12l2 2 4-4"/><rect x="3" y="3" width="18" height="18" rx="2"/>
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#92400e' }}>ผลการคัดกรอง</div>
+                <div style={{ fontSize: 11, color: '#d97706' }}>Screening Results</div>
+              </div>
+              <div style={{ marginLeft: 'auto', background: '#fef9c3', color: '#92400e', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20, border: '1px solid #fde68a' }}>ขั้นตอนที่ 3</div>
+            </div>
+          }>
+            <FieldGrid>
               <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
               <FormSelect label="ผล CXR" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
-              <div className="col-span-full">
-                <FormTextArea label="หมายเหตุ" value={form.notes} onChange={e => set('notes', e.target.value)} />
+              <div style={{ gridColumn: '1 / -1' }}>
+                <FormTextArea label="หมายเหตุ / บันทึกเพิ่มเติม" value={form.notes} onChange={e => set('notes', e.target.value)} />
               </div>
-            </div>
+            </FieldGrid>
+          </SectionCard>
 
-            {msg && (
-              <div style={{ marginTop: 20, padding: '12px 16px', borderRadius: 10, background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2', color: msg.includes('✅') ? '#15803d' : '#b91c1c', fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}` }}>{msg}</div>
-            )}
+          {msg && (
+            <div style={{
+              marginBottom: 20, padding: '12px 16px', borderRadius: 10,
+              background: msg.includes('✅') ? '#f0fdf4' : '#fef2f2',
+              color: msg.includes('✅') ? '#15803d' : '#b91c1c',
+              fontSize: 14, fontWeight: 500, border: `1px solid ${msg.includes('✅') ? '#bbf7d0' : '#fecaca'}`,
+            }}>{msg}</div>
+          )}
 
-            <div style={{ display: 'flex', gap: 10, marginTop: 28, paddingTop: 20, borderTop: '1px solid #f1f5f9' }}>
-              <button type="submit" disabled={saving} style={{ background: saving ? '#93c5fd' : '#2563eb', color: '#fff', padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 600, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
-                {saving ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
-              </button>
-              <button type="button" onClick={() => router.push('/staff-screening')} style={{ background: '#fff', color: '#475569', padding: '10px 20px', borderRadius: 10, fontSize: 14, border: '1px solid #e2e8f0', cursor: 'pointer' }}>ยกเลิก</button>
-            </div>
+          {/* Action buttons */}
+          <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e2e8f0', padding: '16px 24px', display: 'flex', gap: 10, alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <button type="submit" disabled={saving} style={{
+              background: saving ? '#93c5fd' : 'linear-gradient(90deg, #1d4ed8, #2563eb)',
+              color: '#fff', padding: '11px 28px', borderRadius: 10,
+              fontSize: 14, fontWeight: 700, border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
+              boxShadow: '0 2px 8px rgba(37,99,235,0.3)', display: 'flex', alignItems: 'center', gap: 7,
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              {saving ? 'กำลังบันทึก...' : 'บันทึกข้อมูล'}
+            </button>
+            <button type="button" onClick={() => router.push('/staff-screening')} style={{
+              background: '#fff', color: '#475569', padding: '11px 22px', borderRadius: 10,
+              fontSize: 14, border: '1.5px solid #e2e8f0', cursor: 'pointer', fontWeight: 600,
+            }}>ยกเลิก</button>
           </div>
+
         </form>
       </div>
     </div>

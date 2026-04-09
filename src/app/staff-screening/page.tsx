@@ -34,6 +34,7 @@ export default function StaffScreeningPage() {
   const [year, setYear] = useState('2568')
   const [filterResult, setFilterResult] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [filterDept, setFilterDept] = useState('')
 
   useEffect(() => { fetchData() }, [year])
 
@@ -57,10 +58,11 @@ export default function StaffScreeningPage() {
   const filtered = data.filter(d => {
     const matchSearch = d.full_name?.includes(search) || d.hn?.includes(search) || d.department?.includes(search)
     const matchResult = filterResult === '' || d.cxr_result === filterResult
-    return matchSearch && matchResult
+    const matchDept = filterDept === '' || d.department === filterDept
+    return matchSearch && matchResult && matchDept
   })
 
-  const hasFilter = !!filterResult
+  const hasFilter = !!filterResult || !!filterDept
 
   return (
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
@@ -115,10 +117,21 @@ export default function StaffScreeningPage() {
               <option value="ปกติ">ปกติ</option>
               <option value="ผิดปกติ">ผิดปกติ</option>
               <option value="สงสัย TB">สงสัย TB</option>
+              <option value="ไม่ได้ CXR">ไม่ได้ CXR</option>
+            </select>
+
+            {/* Department filter */}
+            <select value={filterDept} onChange={e => setFilterDept(e.target.value)} style={selectStyle}>
+              <option value="">กลุ่มงาน (ทั้งหมด)</option>
+              {['กลุ่มการแพทย์','กลุ่มการพยาบาล','กลุ่มงานการพยาบาล','กลุ่มงานบริการปฐมภูมิและองค์รวม',
+                'กลุ่มงานเภสัชกรรม','กลุ่มงานทันตกรรม','กลุ่มงานกายภาพบำบัด','กลุ่มงานรังสีวิทยา',
+                'กลุ่มงานพยาธิวิทยา','กลุ่มงานเวชกรรมสังคม','กลุ่มงานประกันสุขภาพ',
+                'กลุ่มงานบริหารทั่วไป','กลุ่มงานโภชนาการ'
+              ].map(d => <option key={d} value={d}>{d}</option>)}
             </select>
 
             {hasFilter && (
-              <button onClick={() => setFilterResult('')} style={{
+              <button onClick={() => { setFilterResult(''); setFilterDept('') }} style={{
                 border: '1px solid #fecaca', borderRadius: 10, padding: '8px 12px',
                 fontSize: 12, background: '#fef2f2', color: '#dc2626', cursor: 'pointer', whiteSpace: 'nowrap',
               }}>✕ ล้างตัวกรอง</button>
