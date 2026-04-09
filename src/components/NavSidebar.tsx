@@ -80,14 +80,16 @@ export default function NavSidebar() {
       <div style={{ padding: '24px 20px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
           <div style={{
-            width: 110, height: 110,
+            width: 120, height: 120,
             borderRadius: '50%',
             overflow: 'hidden',
             flexShrink: 0,
             border: '2.5px solid rgba(255,255,255,0.3)',
             boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+            background: '#fff',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <Image src="/hospital-logo.png" alt="โรงพยาบาลสากเหล็ก" width={110} height={110} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+            <Image src="/hospital-logo.png" alt="โรงพยาบาลสากเหล็ก" width={220} height={120} quality={100} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontWeight: 800, fontSize: 22, letterSpacing: 0.3, lineHeight: 1.2 }}>TB-Saklek</div>
