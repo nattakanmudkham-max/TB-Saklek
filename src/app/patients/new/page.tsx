@@ -36,6 +36,7 @@ const DB_COLS = new Set([
   'treatment_outcome','caregiver_name','phone','notes',
   'id_card','birth_date','province','district','subdistrict','village_no',
   'population_type','nationality','medical_right','cxr_date','sputum_lab_no','sputum_date',
+  'hiv_tested','hiv_test_date','hiv_result',
 ])
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -154,6 +155,7 @@ export default function NewPatientPage() {
     population_type: '', nationality: '', medical_right: '',
     address: '', village_no: '', province: '', district: '', subdistrict: '',
     icd10: '', xpert_result: '', lung_type: '',
+    hiv_tested: '', hiv_test_date: '', hiv_result: '',
     detected_place: '', treatment_place: '', treatment_start_date: '', patient_type: '',
     risk_has: '', risk_group: '',
     treatment_outcome: '', caregiver_name: '', phone: '', notes: '',
@@ -188,6 +190,7 @@ export default function NewPatientPage() {
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
       treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',
       phone: 'phone', notes: 'notes',
+      hiv_tested: 'hiv_tested', hiv_test_date: 'hiv_test_date', hiv_result: 'hiv_result',
     }
     for (const [fk, dbk] of Object.entries(fieldMap)) {
       const v = form[fk as keyof typeof form]
@@ -442,6 +445,34 @@ export default function NewPatientPage() {
                   <div className="grid grid-cols-2 gap-5">
                     <FormInput label="ผลการวินิจฉัย" value={form.xpert_result} onChange={e => set('xpert_result', e.target.value)} placeholder="เช่น MTB detected, Neg, 1+" />
                     <FormSelect label="ประเภทปอด (IP/EP)" options={LUNG_TYPES} value={form.lung_type} onChange={e => set('lung_type', e.target.value)} />
+                  </div>
+
+                  {/* HIV */}
+                  <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 20 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                      <div style={{ width: 32, height: 32, background: '#fdf2f8', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#be185d" strokeWidth="2" strokeLinecap="round">
+                          <path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/>
+                          <path d="M12 8v4M12 16h.01"/>
+                        </svg>
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#be185d' }}>ผลการตรวจ HIV</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-5">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">ได้รับการตรวจ HIV</label>
+                        <div style={{ display: 'flex', gap: 20, alignItems: 'center', height: 46 }}>
+                          {['ได้รับการตรวจ', 'ไม่ได้รับการตรวจ', 'ปฏิเสธการตรวจ'].map(v => (
+                            <label key={v} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, whiteSpace: 'nowrap' }}>
+                              <input type="radio" name="hiv_tested" value={v} checked={form.hiv_tested === v} onChange={e => set('hiv_tested', e.target.value)} style={{ accentColor: '#be185d' }} />
+                              {v}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <FormInput label="วันที่ตรวจ HIV" type="date" value={form.hiv_test_date} onChange={e => set('hiv_test_date', e.target.value)} />
+                      <FormSelect label="ผลการตรวจ HIV" options={['Positive','Negative','Indeterminate'].map(v=>({value:v,label:v}))} value={form.hiv_result} onChange={e => set('hiv_result', e.target.value)} />
+                    </div>
                   </div>
                 </div>
               )}
