@@ -100,7 +100,6 @@ export default function EditStaffPage() {
       position: form.position || null,
       staff_type: form.staff_type || null,
       department: form.department || null,
-      birth_date: form.birth_date || null,
       cxr_date: form.cxr_date || null,
       cxr_result: form.cxr_result || null,
       notes: form.notes || null,
