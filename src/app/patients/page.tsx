@@ -82,7 +82,15 @@ export default function PatientsPage() {
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '20px 32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>🫁</div>
+            <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                <path d="M20 4 L20 14" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round"/>
+                <path d="M20 14 L13 19" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M20 14 L27 19" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M13 19 C6 19 4 23 4 27 C4 32 7.5 37 12 37 C14.5 37 16.5 35 16.5 32 L16.5 19 Z" fill="#fca5a5" stroke="#dc2626" strokeWidth="1.8" strokeLinejoin="round"/>
+                <path d="M27 19 C34 19 36 23 36 27 C36 32 32.5 37 28 37 C25.5 37 23.5 35 23.5 32 L23.5 19 Z" fill="#fca5a5" stroke="#dc2626" strokeWidth="1.8" strokeLinejoin="round"/>
+              </svg>
+            </div>
             <div>
               <h1 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>ทะเบียนผู้ป่วยวัณโรค</h1>
               <p style={{ fontSize: 13, color: '#64748b', margin: '2px 0 0' }}>โรงพยาบาลสากเหล็ก</p>
