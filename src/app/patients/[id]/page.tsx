@@ -435,7 +435,12 @@ export default function EditPatientPage() {
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '18px 32px', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button onClick={() => router.back()} style={{ background: '#f1f5f9', border: 'none', borderRadius: 10, padding: '9px 18px', fontSize: 15, color: '#475569', cursor: 'pointer' }}>← กลับ</button>
+            <button onClick={() => router.push('/patients')} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', border: '1.5px solid #e2e8f0', borderRadius: 12, padding: '9px 18px', fontSize: 14, fontWeight: 600, color: '#475569', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', transition: 'all 0.15s' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#f8fafc'; (e.currentTarget as HTMLButtonElement).style.borderColor = '#cbd5e1' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; (e.currentTarget as HTMLButtonElement).style.borderColor = '#e2e8f0' }}>
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5l-5 5 5 5"/></svg>
+              กลับหน้าหลัก
+            </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{ width: 44, height: 44, background: '#fee2e2', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><path d="M20 4 L20 14" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round"/><path d="M20 14 L13 19" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/><path d="M20 14 L27 19" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/><path d="M13 19 C6 19 4 23 4 27 C4 32 7.5 37 12 37 C14.5 37 16.5 35 16.5 32 L16.5 19 Z" fill="#fca5a5" stroke="#dc2626" strokeWidth="1.8" strokeLinejoin="round"/><path d="M27 19 C34 19 36 23 36 27 C36 32 32.5 37 28 37 C25.5 37 23.5 35 23.5 32 L23.5 19 Z" fill="#fca5a5" stroke="#dc2626" strokeWidth="1.8" strokeLinejoin="round"/></svg>
