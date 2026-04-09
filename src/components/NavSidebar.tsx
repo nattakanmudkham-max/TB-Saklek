@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 function CalendarIconNav({ active }: { active: boolean }) {
@@ -80,13 +81,13 @@ export default function NavSidebar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{
             width: 54, height: 54,
-            background: 'rgba(255,255,255,0.15)',
-            border: '1.5px solid rgba(255,255,255,0.2)',
             borderRadius: 14,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 26,
+            overflow: 'hidden',
             flexShrink: 0,
-          }}>🏥</div>
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Image src="/hospital-logo.png" alt="โรงพยาบาลสากเหล็ก" width={54} height={54} style={{ objectFit: 'cover', borderRadius: 14 }} />
+          </div>
           <div>
             <div style={{ fontWeight: 800, fontSize: 26, letterSpacing: 0.3, lineHeight: 1.2 }}>TB-Saklek</div>
             <div style={{ fontSize: 14, color: '#93c5fd', marginTop: 3, fontWeight: 500 }}>โรงพยาบาลสากเหล็ก</div>
