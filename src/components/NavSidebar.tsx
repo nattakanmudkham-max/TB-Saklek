@@ -123,8 +123,9 @@ export default function NavSidebar() {
               <circle cx="60" cy="53" r="3" fill="url(#cyan2)" filter="url(#glow)"/>
 
               {/* Bottom label */}
-              <rect x="22" y="80" width="76" height="18" rx="9" fill="url(#cyan1)" opacity="0.12"/>
-              <text x="60" y="92" textAnchor="middle" fill="url(#cyan1)" fontSize="8.5" fontWeight="700" letterSpacing="2" fontFamily="system-ui, sans-serif">SAK LEK</text>
+              <rect x="18" y="78" width="84" height="26" rx="9" fill="url(#cyan1)" opacity="0.12"/>
+              <text x="60" y="89" textAnchor="middle" fill="url(#cyan1)" fontSize="9" fontWeight="800" letterSpacing="2.5" fontFamily="system-ui, sans-serif">SAKLEK</text>
+              <text x="60" y="100" textAnchor="middle" fill="rgba(148,197,253,0.7)" fontSize="7" fontWeight="500" letterSpacing="3.5" fontFamily="system-ui, sans-serif">HOSPITAL</text>
 
               {/* Corner dots accent */}
               <circle cx="60" cy="14" r="2.5" fill="#38bdf8" opacity="0.8" filter="url(#glow)"/>
