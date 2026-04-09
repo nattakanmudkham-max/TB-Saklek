@@ -79,8 +79,6 @@ const PATIENT_TYPES = [
 const OUTCOMES = ['กำลังรักษา','รักษาหาย','รักษาครบ(Completed)','เสียชีวิต(Died)','โอนออก(Transfered out)','ขาดยา','ล้มเหลว']
   .map(v => ({ value: v, label: v }))
 
-const CXR_MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: `CXR เดือนที่ ${i + 1}`, label: `CXR เดือนที่ ${i + 1}` }))
-const AFB_MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: `AFB เดือนที่ ${i + 1}`, label: `AFB เดือนที่ ${i + 1}` }))
 const TITLES = ['นาย', 'นาง', 'นางสาว', 'เด็กชาย', 'เด็กหญิง'].map(v => ({ value: v, label: v }))
 const MEDICAL_RIGHTS = ['สวัสดิการข้าราชการ', 'ประกันสังคม', 'บัตรทอง/30 บาท', 'ชำระเอง', 'อื่นๆ'].map(v => ({ value: v, label: v }))
 const NATIONALITIES = ['ไทย', 'พม่า', 'ลาว', 'กัมพูชา', 'เวียดนาม', 'จีน', 'อื่นๆ'].map(v => ({ value: v, label: v }))
@@ -138,7 +136,6 @@ export default function NewPatientPage() {
     icd10: '', xpert_result: '', lung_type: '',
     detected_place: '', treatment_place: '', treatment_start_date: '', patient_type: '',
     risk_has: '', risk_group: '',
-    cxr_result: '', cxr_date: '', sputum_result: '', sputum_lab_no: '', sputum_date: '',
     treatment_outcome: '', caregiver_name: '', phone: '', notes: '',
   })
 
@@ -165,8 +162,6 @@ export default function NewPatientPage() {
     const payload: Record<string, unknown> = { full_name, is_ip, is_ep }
     if (risk_group !== undefined) payload.risk_group = risk_group
     if (address) payload.address = address
-    if (form.cxr_result) payload.result_m2 = form.cxr_result
-    if (form.sputum_result) payload.result_m3 = form.sputum_result
 
     // Save all confirmed DB columns
     const fieldMap: Record<string, string> = {
@@ -178,7 +173,6 @@ export default function NewPatientPage() {
       detected_place: 'detected_place', treatment_place: 'treatment_place',
       treatment_start_date: 'treatment_start_date', patient_type: 'patient_type',
       treatment_outcome: 'treatment_outcome', caregiver_name: 'caregiver_name',
-      cxr_date: 'cxr_date', sputum_lab_no: 'sputum_lab_no', sputum_date: 'sputum_date',
       phone: 'phone', notes: 'notes',
     }
     for (const [fk, dbk] of Object.entries(fieldMap)) {
@@ -188,10 +182,10 @@ export default function NewPatientPage() {
     payload.fiscal_year = parseInt(form.fiscal_year)
     if (form.age) payload.age = parseInt(form.age)
 
-    const { error } = await supabase.from('tb_patients').insert(payload)
+    const { data: inserted, error } = await supabase.from('tb_patients').insert(payload).select('id').single()
     setSaving(false)
     if (error) { console.error('INSERT error:', error); setMsg('❌ ' + error.message) }
-    else { setMsg('✅ บันทึกสำเร็จ'); setTimeout(() => router.push('/patients'), 1200) }
+    else { setMsg('✅ บันทึกสำเร็จ — กำลังไปหน้าแก้ไขเพื่อเพิ่มรายการ Lab...'); setTimeout(() => router.push(`/patients/${inserted.id}`), 1200) }
   }
 
   return (
@@ -355,16 +349,11 @@ export default function NewPatientPage() {
           <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
             <div style={{ padding: '24px' }}>
-              <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 16 }}>
-                <FormSelect label="ผล CXR (เดือนที่)" options={CXR_MONTHS} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
-                <FormDateThai label="วันที่ CXR (พ.ศ.)" value={form.cxr_date} onChange={v => set('cxr_date', v)} />
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '14px 18px', marginBottom: 16, fontSize: 13, color: '#1d4ed8', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 18 }}>🧪</span>
+                <span>รายการผล Lab (Smear, Xpert, Culture ฯลฯ) สามารถเพิ่มได้ในหน้า <b>แก้ไขข้อมูล</b> หลังจากบันทึกผู้ป่วยแล้ว</span>
               </div>
-              <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 16 }}>
-                <FormSelect label="ผลเสมหะ (เดือนที่)" options={AFB_MONTHS} value={form.sputum_result} onChange={e => set('sputum_result', e.target.value)} />
-                <FormInput label="เลข Lab TB." value={form.sputum_lab_no} onChange={e => set('sputum_lab_no', e.target.value)} placeholder="หมายเลขตัวอย่าง" />
-                <FormDateThai label="วันที่ตรวจเสมหะ (พ.ศ.)" value={form.sputum_date} onChange={v => set('sputum_date', v)} />
-              </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div style={{ maxWidth: 280 }}>
                 <FormSelect label="ผลการรักษา" options={OUTCOMES} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
               </div>
             </div>

@@ -96,7 +96,7 @@ export default function PatientsPage() {
         </div>
       </div>
 
-      <div style={{ padding: '20px 32px' }}>
+      <div style={{ padding: '16px 20px' }}>
         {/* Filter bar */}
         <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e2e8f0', padding: '14px 16px', marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -113,7 +113,7 @@ export default function PatientsPage() {
             {/* Year */}
             <select value={year} onChange={e => setYear(e.target.value)} style={selectStyle}>
               <option value="">ทุกปีงบ</option>
-              {[2569, 2568, 2567, 2566, 2565, 2564, 2563, 2562, 2561].map(y => (
+              {Array.from({ length: 15 }, (_, i) => 2575 - i).map(y => (
                 <option key={y} value={y}>ปีงบ {y}</option>
               ))}
             </select>
@@ -157,29 +157,29 @@ export default function PatientsPage() {
 
         {/* Table */}
         <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse', minWidth: 1400 }}>
+          <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse', minWidth: 1150 }}>
             <thead>
               <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
                 {[
-                  { label: 'ลำดับ', w: 52 },
-                  { label: 'ปีงบ', w: 70 },
-                  { label: 'TB No.', w: 110 },
-                  { label: 'HN', w: 90 },
-                  { label: 'วันที่ขึ้นทะเบียน', w: 120 },
-                  { label: 'ชื่อ-สกุล', w: 180 },
-                  { label: 'อายุ', w: 52 },
-                  { label: 'ICD-10', w: 75 },
-                  { label: 'ประเภทปอด', w: 160 },
-                  { label: 'สถานที่รักษา', w: 130 },
-                  { label: 'วันเริ่มรักษา', w: 110 },
-                  { label: 'ประเภทผู้ป่วย', w: 90 },
-                  { label: 'ผลการรักษา', w: 130 },
-                  { label: 'การจัดการ', w: 100 },
+                  { label: 'ลำดับ', w: 42 },
+                  { label: 'ปีงบ', w: 55 },
+                  { label: 'TB No.', w: 90 },
+                  { label: 'HN', w: 88 },
+                  { label: 'วันที่ขึ้นทะเบียน', w: 100 },
+                  { label: 'ชื่อ-สกุล', w: 160 },
+                  { label: 'อายุ', w: 42 },
+                  { label: 'ICD-10', w: 62 },
+                  { label: 'ประเภทปอด', w: 82 },
+                  { label: 'สถานที่รักษา', w: 105 },
+                  { label: 'วันเริ่มรักษา', w: 95 },
+                  { label: 'ประเภทผู้ป่วย', w: 78 },
+                  { label: 'ผลการรักษา', w: 108 },
+                  { label: 'การจัดการ', w: 86 },
                 ].map(h => (
                   <th key={h.label} style={{
-                    textAlign: 'center', padding: '10px 12px',
+                    textAlign: 'center', padding: '8px 6px',
                     fontSize: 11, fontWeight: 700, color: '#64748b',
-                    letterSpacing: 0.5, textTransform: 'uppercase',
+                    letterSpacing: 0.3, textTransform: 'uppercase',
                     width: h.w, whiteSpace: 'nowrap',
                   }}>{h.label}</th>
                 ))}
@@ -201,56 +201,56 @@ export default function PatientsPage() {
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                     opacity: isDeleting ? 0.5 : 1,
                   }} className="table-row">
-                    <td style={{ padding: '10px 12px', color: '#94a3b8', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
-                    <td style={{ padding: '10px 12px', color: '#475569', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '7px 6px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
+                    <td style={{ padding: '7px 6px', color: '#475569', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.fiscal_year ? `${p.fiscal_year}` : '-'}
                     </td>
-                    <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '7px 6px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.tb_no ? String(Math.round(parseFloat(String(p.tb_no)))) : '-'}
                     </td>
-                    <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '7px 6px', fontFamily: 'monospace', fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.hn ? String(p.hn).padStart(9, '0') : '-'}
                     </td>
-                    <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.registered_date)}</td>
-                    <td style={{ padding: '10px 12px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'center' }}>{p.full_name}</td>
-                    <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.age ?? '-'}</td>
-                    <td style={{ padding: '10px 12px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.icd10 || '-'}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '7px 6px', color: '#64748b', fontSize: 11, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.registered_date)}</td>
+                    <td style={{ padding: '7px 6px', fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left' }}>{p.full_name}</td>
+                    <td style={{ padding: '7px 6px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.age ?? '-'}</td>
+                    <td style={{ padding: '7px 6px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap' }}>{p.icd10 || '-'}</td>
+                    <td style={{ padding: '7px 4px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.is_ip && p.is_ep
-                        ? <span style={{ background: '#ede9fe', color: '#7c3aed', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>ในปอด (IP) / นอกปอด (EP)</span>
+                        ? <span style={{ background: '#ede9fe', color: '#7c3aed', padding: '2px 6px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>IP/EP</span>
                         : p.is_ip
-                        ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>ในปอด (IP)</span>
+                        ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 6px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>IP</span>
                         : p.is_ep
-                        ? <span style={{ background: '#ffedd5', color: '#c2410c', padding: '2px 8px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>นอกปอด (EP)</span>
+                        ? <span style={{ background: '#ffedd5', color: '#c2410c', padding: '2px 6px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>EP</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
                     </td>
-                    <td style={{ padding: '10px 12px', color: '#475569', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap', maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <td style={{ padding: '7px 6px', color: '#475569', fontSize: 11, textAlign: 'center', whiteSpace: 'nowrap', maxWidth: 105, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {p.treatment_place || '-'}
                     </td>
-                    <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 12, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.treatment_start_date)}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '7px 6px', color: '#64748b', fontSize: 11, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.treatment_start_date)}</td>
+                    <td style={{ padding: '7px 4px', textAlign: 'center' }}>
                       {p.patient_type
-                        ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 7px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>{p.patient_type}</span>
+                        ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 5px', borderRadius: 5, fontSize: 10, fontWeight: 700, display: 'inline-block', maxWidth: 76, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }} title={p.patient_type}>{p.patient_type}</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
                     </td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                      <span style={{ background: oc.bg, color: oc.text, padding: '2px 7px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>
+                    <td style={{ padding: '7px 4px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      <span style={{ background: oc.bg, color: oc.text, padding: '2px 5px', borderRadius: 5, fontSize: 10, fontWeight: 700 }}>
                         {p.treatment_outcome || '-'}
                       </span>
                     </td>
-                    <td style={{ padding: '10px 12px' }}>
-                      <div style={{ display: 'flex', gap: 6 }}>
+                    <td style={{ padding: '7px 6px' }}>
+                      <div style={{ display: 'flex', gap: 4 }}>
                         <Link href={`/patients/${p.id}`} style={{
-                          color: '#2563eb', fontSize: 12, fontWeight: 600,
-                          textDecoration: 'none', padding: '4px 10px',
+                          color: '#2563eb', fontSize: 11, fontWeight: 600,
+                          textDecoration: 'none', padding: '3px 8px',
                           background: '#eff6ff', borderRadius: 6, whiteSpace: 'nowrap',
                         }}>แก้ไข</Link>
                         <button
                           onClick={() => handleDelete(p.id, p.full_name)}
                           disabled={isDeleting}
                           style={{
-                            color: '#dc2626', fontSize: 12, fontWeight: 600,
-                            padding: '4px 10px', background: '#fef2f2',
+                            color: '#dc2626', fontSize: 11, fontWeight: 600,
+                            padding: '3px 8px', background: '#fef2f2',
                             borderRadius: 6, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
                           }}
                         >ลบ</button>

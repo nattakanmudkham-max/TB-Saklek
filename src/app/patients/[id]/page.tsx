@@ -6,6 +6,25 @@ import { FormInput, FormSelect, FormTextArea, FormDateThai, SearchableSelect } f
 import { THAI_HOSPITALS } from '@/data/thai_hospitals'
 import { PROVINCES, DISTRICTS_BY_PROVINCE, SUBDISTRICTS_BY_DISTRICT } from '@/data/thai_geography'
 
+interface LabResult {
+  id: string; patient_id: string; lab_no: string; test_date: string
+  test_reason: string; smear_1: string; smear_2: string; smear_3: string
+  molecular: string; xpert: string; culture: string; dst: string; hospital: string
+}
+const DEFAULT_LAB = {
+  lab_no: '', test_date: '', test_reason: '',
+  smear_1: '', smear_2: '', smear_3: '',
+  molecular: '', xpert: '', culture: '', dst: '',
+  hospital: 'โรงพยาบาลสากเหล็ก',
+}
+
+function toThaiBE(iso: string): string {
+  if (!iso) return '-'
+  const [y, m, d] = iso.split('-')
+  if (!y || !m || !d) return iso
+  return `${d}/${m}/${parseInt(y) + 543}`
+}
+
 const FISCAL_YEARS = Array.from({ length: 15 }, (_, i) => 2561 + i).reverse()
   .map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
 
@@ -65,8 +84,6 @@ const PATIENT_TYPES = [
 ]
 const OUTCOMES = ['กำลังรักษา','รักษาหาย','รักษาครบ(Completed)','เสียชีวิต(Died)','โอนออก(Transfered out)','ขาดยา','ล้มเหลว']
   .map(v => ({ value: v, label: v }))
-const CXR_MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: `CXR เดือนที่ ${i + 1}`, label: `CXR เดือนที่ ${i + 1}` }))
-const AFB_MONTHS = Array.from({ length: 12 }, (_, i) => ({ value: `AFB เดือนที่ ${i + 1}`, label: `AFB เดือนที่ ${i + 1}` }))
 const TITLES = ['นาย','นาง','นางสาว','เด็กชาย','เด็กหญิง'].map(v => ({ value: v, label: v }))
 const MEDICAL_RIGHTS = ['สวัสดิการข้าราชการ','ประกันสังคม','บัตรทอง/30 บาท','ชำระเอง','อื่นๆ'].map(v => ({ value: v, label: v }))
 const NATIONALITIES = ['ไทย','พม่า','ลาว','กัมพูชา','เวียดนาม','จีน','อื่นๆ'].map(v => ({ value: v, label: v }))
@@ -162,6 +179,14 @@ export default function EditPatientPage() {
   const [activeStep, setActiveStep] = useState(0)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
 
+  // Lab results state
+  const [labRows, setLabRows] = useState<LabResult[]>([])
+  const [labModal, setLabModal] = useState(false)
+  const [editingLabId, setEditingLabId] = useState<string | null>(null)
+  const [labForm, setLabForm] = useState(DEFAULT_LAB)
+  const [savingLab, setSavingLab] = useState(false)
+  const [deletingLabId, setDeletingLabId] = useState<string | null>(null)
+
   const [form, setForm] = useState({
     fiscal_year: '2568', tb_no: '', hn: '', registered_date: '',
     title: '', first_name: '', last_name: '', id_card: '', birth_date: '', age: '', age_months: '',
@@ -253,6 +278,11 @@ export default function EditPatientPage() {
           notes: data.notes ?? '',
         })
       }
+      // Fetch lab results
+      const { data: labs } = await supabase.from('tb_lab_results')
+        .select('*').eq('patient_id', params.id).order('test_date', { ascending: false })
+      setLabRows(labs || [])
+
       setLoading(false)
     }
     load()
@@ -318,6 +348,32 @@ export default function EditPatientPage() {
     setDeleting(true)
     await supabase.from('tb_patients').delete().eq('id', params.id)
     router.push('/patients')
+  }
+
+  function openAddLab() { setEditingLabId(null); setLabForm(DEFAULT_LAB); setLabModal(true) }
+  function openEditLab(row: LabResult) {
+    setEditingLabId(row.id)
+    setLabForm({ lab_no: row.lab_no || '', test_date: row.test_date || '', test_reason: row.test_reason || '', smear_1: row.smear_1 || '', smear_2: row.smear_2 || '', smear_3: row.smear_3 || '', molecular: row.molecular || '', xpert: row.xpert || '', culture: row.culture || '', dst: row.dst || '', hospital: row.hospital || 'โรงพยาบาลสากเหล็ก' })
+    setLabModal(true)
+  }
+  async function saveLab() {
+    setSavingLab(true)
+    const payload = { patient_id: params.id, lab_no: labForm.lab_no || null, test_date: labForm.test_date || null, test_reason: labForm.test_reason || null, smear_1: labForm.smear_1 || null, smear_2: labForm.smear_2 || null, smear_3: labForm.smear_3 || null, molecular: labForm.molecular || null, xpert: labForm.xpert || null, culture: labForm.culture || null, dst: labForm.dst || null, hospital: labForm.hospital || null }
+    if (editingLabId) {
+      const { error } = await supabase.from('tb_lab_results').update(payload).eq('id', editingLabId)
+      if (!error) setLabRows(prev => prev.map(r => r.id === editingLabId ? { ...r, ...labForm, id: editingLabId, patient_id: params.id } : r))
+    } else {
+      const { data, error } = await supabase.from('tb_lab_results').insert(payload).select().single()
+      if (!error && data) setLabRows(prev => [data, ...prev])
+    }
+    setSavingLab(false); setLabModal(false)
+  }
+  async function deleteLab(id: string) {
+    if (!confirm('ลบรายการนี้?')) return
+    setDeletingLabId(id)
+    await supabase.from('tb_lab_results').delete().eq('id', id)
+    setLabRows(prev => prev.filter(r => r.id !== id))
+    setDeletingLabId(null)
   }
 
   if (loading) return (
@@ -486,17 +542,70 @@ export default function EditPatientPage() {
           {/* ส่วน 5 */}
           <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', marginBottom: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
-            <div style={{ padding: '24px' }}>
-              <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 16 }}>
-                <FormSelect label="ผล CXR (เดือนที่)" options={CXR_MONTHS} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
-                <FormDateThai label="วันที่ CXR (พ.ศ.)" value={form.cxr_date} onChange={v => set('cxr_date', v)} />
+            <div style={{ padding: '16px 24px' }}>
+              {/* Toolbar */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                <button type="button" onClick={openAddLab} style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(220,38,38,0.3)' }}>
+                  + เพิ่มรายการ LAB
+                </button>
               </div>
-              <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 16 }}>
-                <FormSelect label="ผลเสมหะ (เดือนที่)" options={AFB_MONTHS} value={form.sputum_result} onChange={e => set('sputum_result', e.target.value)} />
-                <FormInput label="เลข Lab TB." value={form.sputum_lab_no} onChange={e => set('sputum_lab_no', e.target.value)} placeholder="หมายเลขตัวอย่าง" />
-                <FormDateThai label="วันที่ตรวจเสมหะ (พ.ศ.)" value={form.sputum_date} onChange={v => set('sputum_date', v)} />
+              {/* Lab table */}
+              <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #cbd5e1' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 860 }}>
+                  <thead>
+                    <tr style={{ background: '#1e3a5f', color: '#fff' }}>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>แก้ไข</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>ลำดับ</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>Lab No.</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>วันที่ตรวจ</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>สาเหตุการตรวจ</th>
+                      <th colSpan={5} style={{ padding: '9px 10px', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11 }}>Lab Result</th>
+                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11 }}>ร.พ.ส่งตรวจ</th>
+                      <th style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>ลบ</th>
+                    </tr>
+                    <tr style={{ background: '#2d5a8e', color: '#cbd5e1' }}>
+                      <th colSpan={5} />
+                      {['Smear','Molecular','Xpert MTB/RIF','Culture','DST'].map(h => (
+                        <th key={h} style={{ padding: '6px 8px', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, textAlign: 'center' }}>{h}</th>
+                      ))}
+                      <th colSpan={2} />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {labRows.length === 0 ? (
+                      <tr><td colSpan={12} style={{ textAlign: 'center', padding: '28px', color: '#94a3b8', fontSize: 13 }}>ยังไม่มีข้อมูล Lab — กด <b>+ เพิ่มรายการ LAB</b> เพื่อเพิ่ม</td></tr>
+                    ) : labRows.map((row, i) => (
+                      <tr key={row.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#f8fafc', opacity: deletingLabId === row.id ? 0.5 : 1 }}>
+                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
+                          <button type="button" onClick={() => openEditLab(row)} style={{ background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
+                        </td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>{i + 1}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', fontFamily: 'monospace', color: '#334155' }}>{row.lab_no || '-'}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap', color: '#475569' }}>{toThaiBE(row.test_date)}</td>
+                        <td style={{ padding: '7px 8px', whiteSpace: 'nowrap', color: '#334155', fontWeight: 500 }}>{row.test_reason || '-'}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                          {[row.smear_1, row.smear_2, row.smear_3].map((s, j) => (
+                            <span key={j}>
+                              {j > 0 && <span style={{ color: '#cbd5e1' }}> | </span>}
+                              <span style={{ color: s && s !== 'ไม่ได้ส่ง' && s !== '-' ? (s === 'Neg' ? '#15803d' : '#dc2626') : '#94a3b8' }}>{s || '-'}</span>
+                            </span>
+                          ))}
+                        </td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.molecular || '-'}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap', color: row.xpert?.toLowerCase().includes('detected') ? '#dc2626' : '#475569', fontWeight: row.xpert?.toLowerCase().includes('detected') ? 700 : 400 }}>{row.xpert || '-'}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.culture || '-'}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.dst || '-'}</td>
+                        <td style={{ padding: '7px 10px', whiteSpace: 'nowrap', color: '#475569' }}>{row.hospital || '-'}</td>
+                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
+                          <button type="button" onClick={() => deleteLab(row.id)} disabled={deletingLabId === row.id} style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', color: '#dc2626', fontSize: 13 }}>🗑</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              {/* ผลการรักษา */}
+              <div style={{ marginTop: 16, maxWidth: 280 }}>
                 <FormSelect label="ผลการรักษา" options={OUTCOMES} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
               </div>
             </div>
@@ -527,6 +636,54 @@ export default function EditPatientPage() {
           </div>
         </form>
       </div>
+
+      {/* Lab Modal */}
+      {labModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 16, padding: 28, width: '100%', maxWidth: 660, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <h3 style={{ margin: '0 0 20px', fontSize: 16, fontWeight: 700, color: '#0f172a' }}>
+              {editingLabId ? '✏️ แก้ไขรายการ LAB' : '+ เพิ่มรายการ LAB'}
+            </h3>
+            <div className="grid grid-cols-3 gap-4" style={{ marginBottom: 14 }}>
+              <FormInput label="Lab No." value={labForm.lab_no} onChange={e => setLabForm(p => ({ ...p, lab_no: e.target.value }))} />
+              <FormDateThai label="วันที่ตรวจ (พ.ศ.)" value={labForm.test_date} onChange={v => setLabForm(p => ({ ...p, test_date: v }))} />
+              <FormSelect label="สาเหตุการตรวจ" value={labForm.test_reason} onChange={e => setLabForm(p => ({ ...p, test_reason: e.target.value }))} options={[
+                { value: 'วินิจฉัยTB', label: 'วินิจฉัยTB' },
+                ...Array.from({ length: 12 }, (_, i) => ({ value: `TB F/U เดือน ${String(i + 1).padStart(2, '0')}`, label: `TB F/U เดือน ${i + 1}` }))
+              ]} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Smear (ครั้งที่ 1, 2, 3)</label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                {(['smear_1', 'smear_2', 'smear_3'] as const).map((k, i) => (
+                  <select key={k} value={labForm[k]} onChange={e => setLabForm(p => ({ ...p, [k]: e.target.value }))}
+                    style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '8px 10px', fontSize: 13, background: '#fff', outline: 'none' }}>
+                    <option value="">- ครั้งที่ {i + 1} -</option>
+                    {['Neg', 'Pos', '1+', '2+', '3+', 'ไม่ได้ส่ง'].map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 14 }}>
+              <FormInput label="Molecular" value={labForm.molecular} onChange={e => setLabForm(p => ({ ...p, molecular: e.target.value }))} placeholder="-" />
+              <FormInput label="Xpert MTB/RIF" value={labForm.xpert} onChange={e => setLabForm(p => ({ ...p, xpert: e.target.value }))} placeholder="เช่น MTB detected, Neg" />
+            </div>
+            <div className="grid grid-cols-2 gap-4" style={{ marginBottom: 14 }}>
+              <FormInput label="Culture" value={labForm.culture} onChange={e => setLabForm(p => ({ ...p, culture: e.target.value }))} placeholder="-" />
+              <FormInput label="DST" value={labForm.dst} onChange={e => setLabForm(p => ({ ...p, dst: e.target.value }))} placeholder="-" />
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <SearchableSelect label="ร.พ.ส่งตรวจ" options={THAI_HOSPITALS} value={labForm.hospital} onChange={v => setLabForm(p => ({ ...p, hospital: v }))} />
+            </div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button type="button" onClick={() => setLabModal(false)} style={{ background: '#f1f5f9', color: '#475569', border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>ยกเลิก</button>
+              <button type="button" onClick={saveLab} disabled={savingLab} style={{ background: savingLab ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '10px 22px', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+                {savingLab ? '⏳ กำลังบันทึก...' : '💾 บันทึก'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
