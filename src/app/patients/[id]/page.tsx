@@ -603,109 +603,161 @@ export default function EditPatientPage() {
           {/* ส่วน 5 */}
           <div ref={el => { sectionRefs.current[4] = el }} style={{ background: '#fff', borderRadius: 24, border: '1px solid #e2e8f0', marginBottom: 20, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
             <SectionHeader num={5} title="ผลระหว่างการรักษา" color="#fefce8" border="#fde68a" textColor="#854d0e" />
-            <div style={{ padding: '16px 24px' }}>
-              {/* ─── CXR Table ─── */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-                <button type="button" onClick={openAddCxr} style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(220,38,38,0.3)' }}>
-                  + เพิ่มรายการ CXR
-                </button>
-              </div>
-              <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #cbd5e1', marginBottom: 20 }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 620 }}>
-                  <thead>
-                    <tr style={{ background: '#1e3a5f', color: '#fff' }}>
-                      {['แก้ไข','ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','ลบ'].map(h => (
-                        <th key={h} style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cxrRows.length === 0 ? (
-                      <tr><td colSpan={8} style={{ textAlign: 'center', padding: '24px', color: '#94a3b8', fontSize: 13 }}>ยังไม่มีข้อมูล CXR — กด <b>+ เพิ่มรายการ CXR</b> เพื่อเพิ่ม</td></tr>
-                    ) : cxrRows.map((row, i) => (
-                      <tr key={row.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#f8fafc', opacity: deletingCxrId === row.id ? 0.5 : 1 }}>
-                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
-                          <button type="button" onClick={() => openEditCxr(row)} style={{ background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
-                        </td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>{i + 1}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap', color: '#475569' }}>{toThaiBE(row.test_date)}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: row.cxr_result === 'Abnormal' ? '#dc2626' : row.cxr_result === 'Normal' ? '#15803d' : '#475569', fontWeight: row.cxr_result === 'Abnormal' ? 700 : 400 }}>{row.cxr_result || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.abnormal_result || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.xn || '-'}</td>
-                        <td style={{ padding: '7px 10px', whiteSpace: 'nowrap', color: '#475569' }}>{row.hospital || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
-                          <button type="button" onClick={() => deleteCxr(row.id)} disabled={deletingCxrId === row.id} style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', color: '#dc2626', fontSize: 13 }}>🗑</button>
-                        </td>
+            <div style={{ padding: '20px 28px' }}>
+              {/* ─── CXR Sub-section ─── */}
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%)', border: '1px solid #bfdbfe', borderRadius: 12, padding: '12px 18px', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 38, height: 38, background: '#dbeafe', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="3" width="20" height="18" rx="2"/>
+                        <path d="M7 8h2M7 12h2M7 16h2M13 8h4M13 12h4M13 16h4"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1e40af', letterSpacing: 0.2 }}>ผล X-Ray (CXR)</div>
+                      <div style={{ fontSize: 11, color: '#93c5fd', marginTop: 1 }}>{cxrRows.length} รายการ</div>
+                    </div>
+                  </div>
+                  <button type="button" onClick={openAddCxr} style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}>
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/></svg>
+                    เพิ่มรายการ CXR
+                  </button>
+                </div>
+                <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 620 }}>
+                    <thead>
+                      <tr style={{ background: 'linear-gradient(90deg, #1e3a5f, #1e40af)', color: '#fff' }}>
+                        {['แก้ไข','#','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','ลบ'].map(h => (
+                          <th key={h} style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>{h}</th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {cxrRows.length === 0 ? (
+                        <tr><td colSpan={8} style={{ textAlign: 'center', padding: '40px 24px', color: '#94a3b8' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M9 12h6M12 9v6"/></svg>
+                            <span style={{ fontSize: 13 }}>ยังไม่มีข้อมูล CXR</span>
+                          </div>
+                        </td></tr>
+                      ) : cxrRows.map((row, i) => (
+                        <tr key={row.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#f8fafc', opacity: deletingCxrId === row.id ? 0.5 : 1 }}>
+                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                            <button type="button" onClick={() => openEditCxr(row)} style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 7, padding: '5px 9px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#2563eb" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
+                            </button>
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#94a3b8', fontWeight: 700, fontSize: 12 }}>{i + 1}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', whiteSpace: 'nowrap', color: '#334155', fontWeight: 500 }}>{toThaiBE(row.test_date)}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                            {row.cxr_result ? (
+                              <span style={{ background: row.cxr_result === 'Abnormal' ? '#fef2f2' : row.cxr_result === 'Normal' ? '#f0fdf4' : '#f8fafc', color: row.cxr_result === 'Abnormal' ? '#dc2626' : row.cxr_result === 'Normal' ? '#16a34a' : '#475569', border: `1px solid ${row.cxr_result === 'Abnormal' ? '#fca5a5' : row.cxr_result === 'Normal' ? '#86efac' : '#e2e8f0'}`, padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, letterSpacing: 0.3 }}>{row.cxr_result}</span>
+                            ) : '-'}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#475569', fontSize: 12 }}>{row.abnormal_result || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#475569', fontSize: 12 }}>{row.xn || '-'}</td>
+                          <td style={{ padding: '8px 12px', whiteSpace: 'nowrap', color: '#334155', fontSize: 12 }}>{row.hospital || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                            <button type="button" onClick={() => deleteCxr(row.id)} disabled={deletingCxrId === row.id} style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 7, padding: '5px 9px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#dc2626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4h12M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1M6 7v5M10 7v5M3 4l1 9a1 1 0 001 1h6a1 1 0 001-1l1-9"/></svg>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              {/* ─── Lab Table ─── */}
-              {/* Toolbar */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-                <button type="button" onClick={openAddLab} style={{ background: '#dc2626', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 6px rgba(220,38,38,0.3)' }}>
-                  + เพิ่มรายการ LAB
-                </button>
-              </div>
-              {/* Lab table */}
-              <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #cbd5e1' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 860 }}>
-                  <thead>
-                    <tr style={{ background: '#1e3a5f', color: '#fff' }}>
-                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>แก้ไข</th>
-                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>ลำดับ</th>
-                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>Lab No.</th>
-                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>วันที่ตรวจ</th>
-                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>สาเหตุการตรวจ</th>
-                      <th colSpan={5} style={{ padding: '9px 10px', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11 }}>Lab Result</th>
-                      <th style={{ padding: '9px 10px', whiteSpace: 'nowrap', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11 }}>ร.พ.ส่งตรวจ</th>
-                      <th style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 600, fontSize: 11 }}>ลบ</th>
-                    </tr>
-                    <tr style={{ background: '#2d5a8e', color: '#cbd5e1' }}>
-                      <th colSpan={5} />
-                      {['Smear','Molecular','Xpert MTB/RIF','Culture','DST'].map(h => (
-                        <th key={h} style={{ padding: '6px 8px', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, textAlign: 'center' }}>{h}</th>
-                      ))}
-                      <th colSpan={2} />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {labRows.length === 0 ? (
-                      <tr><td colSpan={12} style={{ textAlign: 'center', padding: '28px', color: '#94a3b8', fontSize: 13 }}>ยังไม่มีข้อมูล Lab — กด <b>+ เพิ่มรายการ LAB</b> เพื่อเพิ่ม</td></tr>
-                    ) : labRows.map((row, i) => (
-                      <tr key={row.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#f8fafc', opacity: deletingLabId === row.id ? 0.5 : 1 }}>
-                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
-                          <button type="button" onClick={() => openEditLab(row)} style={{ background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', fontSize: 13 }}>✏️</button>
-                        </td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>{i + 1}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', fontFamily: 'monospace', color: '#334155' }}>{row.lab_no || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap', color: '#475569' }}>{toThaiBE(row.test_date)}</td>
-                        <td style={{ padding: '7px 8px', whiteSpace: 'nowrap', color: '#334155', fontWeight: 500 }}>{row.test_reason || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                          {[row.smear_1, row.smear_2, row.smear_3].map((s, j) => (
-                            <span key={j}>
-                              {j > 0 && <span style={{ color: '#cbd5e1' }}> | </span>}
-                              <span style={{ color: s && s !== 'ไม่ได้ส่ง' && s !== '-' ? (s === 'Neg' ? '#15803d' : '#dc2626') : '#94a3b8' }}>{s || '-'}</span>
-                            </span>
-                          ))}
-                        </td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.molecular || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', whiteSpace: 'nowrap', color: row.xpert?.toLowerCase().includes('detected') ? '#dc2626' : '#475569', fontWeight: row.xpert?.toLowerCase().includes('detected') ? 700 : 400 }}>{row.xpert || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.culture || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569' }}>{row.dst || '-'}</td>
-                        <td style={{ padding: '7px 10px', whiteSpace: 'nowrap', color: '#475569' }}>{row.hospital || '-'}</td>
-                        <td style={{ padding: '7px 8px', textAlign: 'center' }}>
-                          <button type="button" onClick={() => deleteLab(row.id)} disabled={deletingLabId === row.id} style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6, padding: '3px 8px', cursor: 'pointer', color: '#dc2626', fontSize: 13 }}>🗑</button>
-                        </td>
+              {/* ─── Lab Sub-section ─── */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)', border: '1px solid #86efac', borderRadius: 12, padding: '12px 18px', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 38, height: 38, background: '#dcfce7', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M8 3h8l1 5H7L8 3z"/>
+                        <path d="M7 8l-3 9a2 2 0 002 2h10a2 2 0 002-2l-3-9"/>
+                        <circle cx="12" cy="16" r="1.5" fill="#16a34a" stroke="none"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#15803d', letterSpacing: 0.2 }}>ผล Laboratory</div>
+                      <div style={{ fontSize: 11, color: '#4ade80', marginTop: 1 }}>{labRows.length} รายการ</div>
+                    </div>
+                  </div>
+                  <button type="button" onClick={openAddLab} style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(22,163,74,0.35)' }}>
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/></svg>
+                    เพิ่มรายการ LAB
+                  </button>
+                </div>
+                <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 860 }}>
+                    <thead>
+                      <tr style={{ background: 'linear-gradient(90deg, #1e3a5f, #1e40af)', color: '#fff' }}>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>แก้ไข</th>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>#</th>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>Lab No.</th>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>วันที่ตรวจ</th>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>สาเหตุการตรวจ</th>
+                        <th colSpan={5} style={{ padding: '11px 12px', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>Lab Result</th>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', borderLeft: '1px solid #2d5a8e', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>ร.พ.ส่งตรวจ</th>
+                        <th style={{ padding: '11px 12px', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>ลบ</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      <tr style={{ background: '#2d5a8e', color: '#bfdbfe' }}>
+                        <th colSpan={5} />
+                        {['Smear','Molecular','Xpert MTB/RIF','Culture','DST'].map(h => (
+                          <th key={h} style={{ padding: '7px 10px', whiteSpace: 'nowrap', fontSize: 10, fontWeight: 600, textAlign: 'center', letterSpacing: 0.5 }}>{h}</th>
+                        ))}
+                        <th colSpan={2} />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {labRows.length === 0 ? (
+                        <tr><td colSpan={12} style={{ textAlign: 'center', padding: '40px 24px', color: '#94a3b8' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3h8l1 5H7L8 3z"/><path d="M7 8l-3 9a2 2 0 002 2h10a2 2 0 002-2l-3-9"/></svg>
+                            <span style={{ fontSize: 13 }}>ยังไม่มีข้อมูล Lab</span>
+                          </div>
+                        </td></tr>
+                      ) : labRows.map((row, i) => (
+                        <tr key={row.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#f8fafc', opacity: deletingLabId === row.id ? 0.5 : 1 }}>
+                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                            <button type="button" onClick={() => openEditLab(row)} style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 7, padding: '5px 9px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#2563eb" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
+                            </button>
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#94a3b8', fontWeight: 700, fontSize: 12 }}>{i + 1}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', fontFamily: 'monospace', color: '#334155', fontWeight: 600 }}>{row.lab_no || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', whiteSpace: 'nowrap', color: '#334155', fontWeight: 500 }}>{toThaiBE(row.test_date)}</td>
+                          <td style={{ padding: '8px 10px', whiteSpace: 'nowrap', color: '#334155', fontWeight: 500 }}>{row.test_reason || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                            {[row.smear_1, row.smear_2, row.smear_3].map((s, j) => (
+                              <span key={j}>
+                                {j > 0 && <span style={{ color: '#e2e8f0' }}> | </span>}
+                                <span style={{ color: s && s !== 'ไม่ได้ส่ง' && s !== '-' ? (s === 'Neg' ? '#16a34a' : '#dc2626') : '#94a3b8', fontWeight: s && s !== 'ไม่ได้ส่ง' && s !== '-' && s !== 'Neg' ? 700 : 400 }}>{s || '-'}</span>
+                              </span>
+                            ))}
+                          </td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#475569' }}>{row.molecular || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', whiteSpace: 'nowrap', color: row.xpert?.toLowerCase().includes('detected') ? '#dc2626' : '#475569', fontWeight: row.xpert?.toLowerCase().includes('detected') ? 700 : 400 }}>{row.xpert || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#475569' }}>{row.culture || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center', color: '#475569' }}>{row.dst || '-'}</td>
+                          <td style={{ padding: '8px 12px', whiteSpace: 'nowrap', color: '#334155', fontSize: 12 }}>{row.hospital || '-'}</td>
+                          <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                            <button type="button" onClick={() => deleteLab(row.id)} disabled={deletingLabId === row.id} style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 7, padding: '5px 9px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#dc2626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4h12M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1M6 7v5M10 7v5M3 4l1 9a1 1 0 001 1h6a1 1 0 001-1l1-9"/></svg>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
+
               {/* ผลการรักษา */}
-              <div style={{ marginTop: 16, maxWidth: 280 }}>
+              <div style={{ maxWidth: 280 }}>
                 <FormSelect label="ผลการรักษา" options={OUTCOMES} value={form.treatment_outcome} onChange={e => set('treatment_outcome', e.target.value)} />
               </div>
             </div>
