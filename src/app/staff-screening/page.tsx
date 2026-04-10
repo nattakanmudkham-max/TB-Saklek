@@ -221,7 +221,7 @@ export default function StaffScreeningPage() {
                       }
                     </td>
                     <td style={{ padding: '11px 12px', color: '#0f172a', fontSize: 13, fontWeight: 600 }}>{d.department || '-'}</td>
-                    <td style={{ padding: '9px 10px', color: '#334155', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
+                    <td style={{ padding: '9px 10px', color: '#334155', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 13, fontWeight: 700 }}>
                       {toThaiBE(d.cxr_date)}
                     </td>
                     <td style={{ padding: '9px 10px', textAlign: 'center' }}>
