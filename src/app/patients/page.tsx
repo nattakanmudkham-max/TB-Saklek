@@ -22,7 +22,8 @@ const outcomeColor = (v: string) => {
   if (v.includes('กำลังรักษา')) return { bg: '#dbeafe', text: '#1d4ed8' }
   if (v.includes('หาย') || v.includes('ครบ')) return { bg: '#dcfce7', text: '#15803d' }
   if (v.includes('เสียชีวิต') || v.includes('ล้มเหลว')) return { bg: '#fee2e2', text: '#b91c1c' }
-  if (v.includes('ขาดยา') || v.includes('โอน') || v.includes('After loss')) return { bg: '#fef9c3', text: '#854d0e' }
+  if (v.includes('ขาดยา') || v.includes('After loss') || v.includes('Loss to')) return { bg: '#ffedd5', text: '#c2410c' }
+  if (v.includes('โอน') || v.includes('Transfer')) return { bg: '#e0f2fe', text: '#0369a1' }
   if (v.includes('Relapre') || v.includes('กลับซ้ำ')) return { bg: '#fce7f3', text: '#9d174d' }
   return { bg: '#f1f5f9', text: '#475569' }
 }
