@@ -362,7 +362,7 @@ export default function EditPatientPage() {
     const { error } = await supabase.from('tb_patients').update(payload).eq('id', params.id)
     setSaving(false)
     if (error) { console.error('UPDATE error:', error); setMsg('❌ ' + error.message); return }
-    router.push('/patients')
+    setMsg('✅ บันทึกข้อมูลเรียบร้อยแล้ว')
   }
 
   async function handleDelete() {
