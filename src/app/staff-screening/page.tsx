@@ -49,6 +49,8 @@ export default function StaffScreeningPage() {
   const [filterResult, setFilterResult] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [filterDept, setFilterDept] = useState('')
+  const [page, setPage] = useState(1)
+  const PAGE_SIZE = 10
 
   useEffect(() => { fetchData() }, [year])
 
@@ -78,6 +80,11 @@ export default function StaffScreeningPage() {
   })
 
   const hasFilter = !!filterResult || !!filterDept
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  useEffect(() => { setPage(1) }, [search, year, filterResult, filterDept])
 
   return (
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
@@ -192,15 +199,16 @@ export default function StaffScreeningPage() {
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" style={{ display: 'block', margin: '0 auto 10px' }}><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                   ไม่พบข้อมูล
                 </td></tr>
-              ) : filtered.map((d, i) => {
+              ) : paginated.map((d, i) => {
                 const cc = cxrColor(d.cxr_result)
                 const age = calcAge(d.birth_date)
+                const rowNum = (page - 1) * PAGE_SIZE + i + 1
                 return (
                   <tr key={d.id} style={{
                     borderBottom: '1px solid #f1f5f9',
                     background: i % 2 === 1 ? '#f8fafc' : '#fff',
                   }} className="table-row">
-                    <td style={{ padding: '11px 10px', color: '#94a3b8', fontSize: 12, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
+                    <td style={{ padding: '11px 10px', color: '#94a3b8', fontSize: 12, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{rowNum}</td>
                     <td style={{ padding: '11px 10px', color: '#334155', fontSize: 13, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.fiscal_year || '-'}</td>
                     <td style={{ padding: '11px 10px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
@@ -247,8 +255,53 @@ export default function StaffScreeningPage() {
               })}
             </tbody>
           </table>
-          <div style={{ padding: '10px 16px', fontSize: 12, color: '#94a3b8', borderTop: '1px solid #f1f5f9' }}>
-            แสดง {filtered.length} จาก {data.length} รายการ
+          {/* Pagination */}
+          <div style={{ padding: '12px 16px', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+            <span style={{ fontSize: 12, color: '#94a3b8' }}>
+              แสดง {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} จาก {filtered.length} รายการ
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <button
+                onClick={() => setPage(1)}
+                disabled={page === 1}
+                style={{ padding: '5px 10px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === 1 ? '#f8fafc' : '#fff', color: page === 1 ? '#cbd5e1' : '#475569', cursor: page === 1 ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >«</button>
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                style={{ padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === 1 ? '#f8fafc' : '#fff', color: page === 1 ? '#cbd5e1' : '#475569', cursor: page === 1 ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >‹ ก่อนหน้า</button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 2)
+                .reduce<(number | '...')[]>((acc, n, idx, arr) => {
+                  if (idx > 0 && n - (arr[idx - 1] as number) > 1) acc.push('...')
+                  acc.push(n)
+                  return acc
+                }, [])
+                .map((n, idx) =>
+                  n === '...'
+                    ? <span key={`ellipsis-${idx}`} style={{ padding: '0 4px', color: '#94a3b8', fontSize: 12 }}>…</span>
+                    : <button key={n} onClick={() => setPage(n as number)} style={{
+                        padding: '5px 10px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                        border: page === n ? '1px solid #2563eb' : '1px solid #e2e8f0',
+                        background: page === n ? '#2563eb' : '#fff',
+                        color: page === n ? '#fff' : '#475569',
+                        minWidth: 34,
+                      }}>{n}</button>
+                )}
+
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                style={{ padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === totalPages ? '#f8fafc' : '#fff', color: page === totalPages ? '#cbd5e1' : '#475569', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >ถัดไป ›</button>
+              <button
+                onClick={() => setPage(totalPages)}
+                disabled={page === totalPages}
+                style={{ padding: '5px 10px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === totalPages ? '#f8fafc' : '#fff', color: page === totalPages ? '#cbd5e1' : '#475569', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >»</button>
+            </div>
           </div>
         </div>
       </div>
