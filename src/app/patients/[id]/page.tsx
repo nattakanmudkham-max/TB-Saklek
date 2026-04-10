@@ -637,7 +637,7 @@ export default function EditPatientPage() {
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 620 }}>
                     <thead>
                       <tr style={{ background: 'linear-gradient(90deg, #1e3a5f, #1e40af)', color: '#fff' }}>
-                        {['แก้ไข','#','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','ลบ'].map(h => (
+                        {['แก้ไข','ลำดับ','วันที่ตรวจ','ผล CXR','ผล Abnormal','XN','หน่วยงาน','ลบ'].map(h => (
                           <th key={h} style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>{h}</th>
                         ))}
                       </tr>
@@ -705,7 +705,7 @@ export default function EditPatientPage() {
                     <thead>
                       <tr style={{ background: 'linear-gradient(90deg, #1e3a5f, #1e40af)', color: '#fff' }}>
                         <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>แก้ไข</th>
-                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>#</th>
+                        <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>ลำดับ</th>
                         <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>Lab No.</th>
                         <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>วันที่ตรวจ</th>
                         <th style={{ padding: '11px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontWeight: 600, fontSize: 11, letterSpacing: 0.5 }}>สาเหตุการตรวจ</th>
