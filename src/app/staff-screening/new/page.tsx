@@ -117,6 +117,11 @@ export default function NewStaffPage() {
         staff_type: prev.staff_type ?? p.staff_type,
         department: prev.department ?? p.department,
         birth_date: prev.birth_date ?? p.birth_date,
+        address: prev.address ?? p.address,
+        moo: prev.moo ?? p.moo,
+        province: prev.province ?? p.province,
+        district: prev.district ?? p.district,
+        subdistrict: prev.subdistrict ?? p.subdistrict,
       }))
     } else {
       setHnMsg('')
