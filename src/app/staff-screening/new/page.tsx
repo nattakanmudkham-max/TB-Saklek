@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { FormInput, FormSelect, FormTextArea, FormDateThai, SearchableSelect } from '@/components/FormComponents'
+import { PROVINCES, DISTRICTS_BY_PROVINCE, SUBDISTRICTS_BY_DISTRICT } from '@/data/thai_geography'
 
 function formatIdCard(v: string): string {
   const d = v.replace(/\D/g, '').slice(0, 13)
@@ -82,6 +83,7 @@ export default function NewStaffPage() {
     prefix: '', first_name: '', last_name: '',
     position: '', staff_type: '', department: '',
     birth_date: '',
+    address: '', moo: '', province: '', district: '', subdistrict: '',
     cxr_date: '', cxr_result: '', notes: ''
   })
   const set = (f: string, v: string) => setForm(p => ({ ...p, [f]: v }))
@@ -135,6 +137,11 @@ export default function NewStaffPage() {
       staff_type: form.staff_type || null,
       department: form.department || null,
       birth_date: form.birth_date || null,
+      address: form.address || null,
+      moo: form.moo || null,
+      province: form.province || null,
+      district: form.district || null,
+      subdistrict: form.subdistrict || null,
       cxr_date: form.cxr_date || null,
       cxr_result: form.cxr_result || null,
       notes: form.notes || null,
@@ -274,6 +281,34 @@ export default function NewStaffPage() {
               <div />
               <div style={{ gridColumn: '1 / -1' }}>
                 <FormSelect label="กลุ่มงาน/แผนก" options={DEPTS} value={form.department} onChange={e => set('department', e.target.value)} />
+              </div>
+              {/* ที่อยู่ */}
+              <div style={{ gridColumn: '1 / -1', borderTop: '1px solid #f1f5f9', paddingTop: 16, marginTop: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 14 }}>ที่อยู่</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '16px 24px', marginBottom: 16 }}>
+                  <FormInput label="ที่อยู่ (บ้านเลขที่ / ถนน / ซอย)" value={form.address} onChange={e => set('address', e.target.value)} placeholder="เช่น 123 ถ.พิจิตร-ตะพานหิน" />
+                  <FormInput label="หมู่" value={form.moo} onChange={e => set('moo', e.target.value)} placeholder="เช่น 1" />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px 24px' }}>
+                  <SearchableSelect
+                    label="จังหวัด"
+                    options={PROVINCES}
+                    value={form.province}
+                    onChange={v => { set('province', v); set('district', ''); set('subdistrict', '') }}
+                  />
+                  <SearchableSelect
+                    label="อำเภอ"
+                    options={form.province ? (DISTRICTS_BY_PROVINCE[form.province] ?? []) : []}
+                    value={form.district}
+                    onChange={v => { set('district', v); set('subdistrict', '') }}
+                  />
+                  <SearchableSelect
+                    label="ตำบล"
+                    options={form.district ? (SUBDISTRICTS_BY_DISTRICT[form.district] ?? []) : []}
+                    value={form.subdistrict}
+                    onChange={v => set('subdistrict', v)}
+                  />
+                </div>
               </div>
             </FieldGrid>
           </SectionCard>
