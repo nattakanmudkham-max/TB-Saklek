@@ -349,7 +349,7 @@ export default function EditStaffPage() {
             </div>
           }>
             <FieldGrid>
-              <FormInput label="วันที่ CXR" type="date" value={form.cxr_date} onChange={e => set('cxr_date', e.target.value)} />
+              <FormDateThai label="วันที่ CXR" value={form.cxr_date} onChange={v => set('cxr_date', v)} />
               <FormSelect label="ผล CXR" options={CXR} value={form.cxr_result} onChange={e => set('cxr_result', e.target.value)} />
               <div />
               <div style={{ gridColumn: '1 / -1' }}>
