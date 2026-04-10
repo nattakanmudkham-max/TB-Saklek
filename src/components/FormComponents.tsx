@@ -85,7 +85,7 @@ export function SearchableSelect({ label, options, value, onChange, required }: 
   function handleOpen() {
     if (inputRef.current) {
       const r = inputRef.current.getBoundingClientRect()
-      setDropRect({ top: r.bottom + window.scrollY + 3, left: r.left + window.scrollX, width: r.width })
+      setDropRect({ top: r.bottom + 3, left: r.left, width: r.width })
     }
     setOpen(true); setQuery('')
   }
