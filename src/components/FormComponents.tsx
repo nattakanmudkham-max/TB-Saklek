@@ -58,7 +58,7 @@ export function FormTextArea({ label, ...props }: TextAreaProps) {
   )
 }
 
-// SearchableSelect — Combobox with live filter
+// SearchableSelect — Combobox with live filter (uses fixed positioning to escape overflow:hidden)
 export function SearchableSelect({ label, options, value, onChange, required }: {
   label: string
   options: string[]
@@ -68,7 +68,9 @@ export function SearchableSelect({ label, options, value, onChange, required }: 
 }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [dropRect, setDropRect] = useState<{ top: number; left: number; width: number } | null>(null)
   const ref = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
@@ -79,6 +81,14 @@ export function SearchableSelect({ label, options, value, onChange, required }: 
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
   }, [])
+
+  function handleOpen() {
+    if (inputRef.current) {
+      const r = inputRef.current.getBoundingClientRect()
+      setDropRect({ top: r.bottom + window.scrollY + 3, left: r.left + window.scrollX, width: r.width })
+    }
+    setOpen(true); setQuery('')
+  }
 
   const filtered = query
     ? options.filter(o => o.toLowerCase().includes(query.toLowerCase()))
@@ -91,22 +101,26 @@ export function SearchableSelect({ label, options, value, onChange, required }: 
       </label>
       <div ref={ref} style={{ position: 'relative' }}>
         <input
+          ref={inputRef}
           type="text"
           value={open ? query : value}
           placeholder={value || '-- พิมพ์เพื่อค้นหา --'}
           onChange={e => setQuery(e.target.value)}
-          onFocus={() => { setOpen(true); setQuery('') }}
+          onFocus={handleOpen}
           className={inputClass}
           style={{ cursor: open ? 'text' : 'pointer', paddingRight: 28 }}
           required={required && !value}
         />
         <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 10, pointerEvents: 'none' }}>▼</span>
-        {open && (
+        {open && dropRect && (
           <div style={{
-            position: 'absolute', top: 'calc(100% + 3px)', left: 0, right: 0,
-            maxHeight: 220, overflowY: 'auto', background: '#fff',
-            border: '1px solid #bfdbfe', borderRadius: 10, zIndex: 9999,
-            boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
+            position: 'fixed',
+            top: dropRect.top,
+            left: dropRect.left,
+            width: dropRect.width,
+            maxHeight: 240, overflowY: 'auto', background: '#fff',
+            border: '1px solid #bfdbfe', borderRadius: 10, zIndex: 99999,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
           }}>
             {filtered.length === 0
               ? <div style={{ padding: '10px 14px', color: '#94a3b8', fontSize: 13 }}>ไม่พบข้อมูล</div>
