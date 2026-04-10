@@ -187,7 +187,7 @@ export default function NewStaffPage() {
       </div>
 
       <div style={{ padding: '28px 40px' }}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onKeyDown={e => { if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') e.preventDefault() }}>
 
           {/* Section 1: ข้อมูลทั่วไป */}
           <SectionCard header={
