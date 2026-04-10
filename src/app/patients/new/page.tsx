@@ -231,12 +231,13 @@ export default function NewPatientPage() {
       const { error } = await supabase.from('tb_patients').update(payload).eq('id', patientId)
       setSaving(false)
       if (error) { console.error(error); setMsg('❌ ' + error.message); return }
-      router.push(`/patients/${patientId}`)
+      setMsg('✅ บันทึกข้อมูลเรียบร้อยแล้ว')
     } else {
       const { data, error } = await supabase.from('tb_patients').insert(payload).select('id').single()
       setSaving(false)
       if (error) { console.error(error); setMsg('❌ ' + error.message); return }
-      router.push(`/patients/${data.id}`)
+      setPatientId(data.id)
+      setMsg('✅ บันทึกข้อมูลเรียบร้อยแล้ว')
     }
   }
 
