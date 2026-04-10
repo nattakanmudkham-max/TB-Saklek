@@ -22,8 +22,19 @@ const outcomeColor = (v: string) => {
   if (v.includes('กำลังรักษา')) return { bg: '#dbeafe', text: '#1d4ed8' }
   if (v.includes('หาย') || v.includes('ครบ')) return { bg: '#dcfce7', text: '#15803d' }
   if (v.includes('เสียชีวิต') || v.includes('ล้มเหลว')) return { bg: '#fee2e2', text: '#b91c1c' }
-  if (v.includes('ขาดยา') || v.includes('โอน')) return { bg: '#fef9c3', text: '#854d0e' }
+  if (v.includes('ขาดยา') || v.includes('โอน') || v.includes('After loss')) return { bg: '#fef9c3', text: '#854d0e' }
+  if (v.includes('Relapre') || v.includes('กลับซ้ำ')) return { bg: '#fce7f3', text: '#9d174d' }
   return { bg: '#f1f5f9', text: '#475569' }
+}
+
+const patientTypeColor = (v: string) => {
+  if (!v) return { bg: '#f1f5f9', text: '#64748b' }
+  if (v === 'NEW') return { bg: '#dbeafe', text: '#1d4ed8' }
+  if (v === 'RF' || v.includes('กลับมารักษา') || v.includes('Relapre')) return { bg: '#fce7f3', text: '#9d174d' }
+  if (v === 'TAD' || v.includes('รักษาหลัง')) return { bg: '#fef9c3', text: '#92400e' }
+  if (v === 'TFC' || v.includes('โอนมา')) return { bg: '#d1fae5', text: '#065f46' }
+  if (v === 'Other' || v.includes('อื่น')) return { bg: '#f3e8ff', text: '#6b21a8' }
+  return { bg: '#e0f2fe', text: '#0369a1' }
 }
 
 const selectStyle: React.CSSProperties = {
@@ -206,6 +217,7 @@ export default function PatientsPage() {
                 </td></tr>
               ) : filtered.map((p, i) => {
                 const oc = outcomeColor(p.treatment_outcome)
+                const pc = patientTypeColor(p.patient_type)
                 const isDeleting = deletingId === p.id
                 return (
                   <tr key={p.id} style={{
@@ -242,7 +254,7 @@ export default function PatientsPage() {
                     <td style={{ padding: '7px 6px', color: '#64748b', fontSize: 11, textAlign: 'center', whiteSpace: 'nowrap' }}>{toThaiBE(p.treatment_start_date)}</td>
                     <td style={{ padding: '7px 4px', textAlign: 'center' }}>
                       {p.patient_type
-                        ? <span style={{ background: '#dbeafe', color: '#1d4ed8', padding: '2px 5px', borderRadius: 5, fontSize: 10, fontWeight: 700, display: 'inline-block', maxWidth: 76, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }} title={p.patient_type}>{p.patient_type}</span>
+                        ? <span style={{ background: pc.bg, color: pc.text, padding: '2px 5px', borderRadius: 5, fontSize: 10, fontWeight: 700, display: 'inline-block', maxWidth: 76, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }} title={p.patient_type}>{p.patient_type}</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 11 }}>-</span>}
                     </td>
                     <td style={{ padding: '7px 4px', textAlign: 'center', whiteSpace: 'nowrap' }}>
