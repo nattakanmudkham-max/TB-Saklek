@@ -191,7 +191,7 @@ export default function PatientsPage() {
         <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
           <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse', minWidth: 1150 }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+              <tr style={{ background: 'linear-gradient(90deg, #1e3a5f 0%, #1e40af 100%)' }}>
                 {[
                   { label: 'ลำดับ', w: 42 },
                   { label: 'ปีงบ', w: 55 },
@@ -209,9 +209,9 @@ export default function PatientsPage() {
                   { label: 'การจัดการ', w: 86 },
                 ].map(h => (
                   <th key={h.label} style={{
-                    textAlign: 'center', padding: '8px 6px',
-                    fontSize: 11, fontWeight: 700, color: '#64748b',
-                    letterSpacing: 0.3, textTransform: 'uppercase',
+                    textAlign: 'center', padding: '13px 6px',
+                    fontSize: 13, fontWeight: 800, color: '#ffffff',
+                    letterSpacing: 0.5,
                     width: h.w, whiteSpace: 'nowrap',
                   }}>{h.label}</th>
                 ))}
@@ -232,7 +232,7 @@ export default function PatientsPage() {
                 return (
                   <tr key={p.id} style={{
                     borderBottom: '1px solid #f1f5f9',
-                    background: i % 2 === 1 ? '#fafbfc' : '#fff',
+                    background: i % 2 === 1 ? '#f8fafc' : '#fff',
                     opacity: isDeleting ? 0.5 : 1,
                   }} className="table-row">
                     <td style={{ padding: '7px 6px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{rowNum}</td>
