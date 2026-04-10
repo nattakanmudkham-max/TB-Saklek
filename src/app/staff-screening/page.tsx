@@ -45,7 +45,7 @@ export default function StaffScreeningPage() {
   const [search, setSearch] = useState('')
   const now = new Date()
   const currentThaiFY = String((now.getMonth() >= 9 ? now.getFullYear() + 1 : now.getFullYear()) + 543)
-  const [year, setYear] = useState(currentThaiFY)
+  const [year, setYear] = useState('')
   const [filterResult, setFilterResult] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [filterDept, setFilterDept] = useState('')

@@ -23,7 +23,7 @@ const outcomeColor = (v: string) => {
   if (v.includes('หาย') || v.includes('ครบ')) return { bg: '#dcfce7', text: '#15803d' }
   if (v.includes('เสียชีวิต') || v.includes('ล้มเหลว')) return { bg: '#fee2e2', text: '#b91c1c' }
   if (v.includes('ขาดยา') || v.includes('After loss') || v.includes('Loss to')) return { bg: '#ffedd5', text: '#c2410c' }
-  if (v.includes('โอน') || v.includes('Transfer')) return { bg: '#e0f2fe', text: '#0369a1' }
+  if (v.includes('โอน') || v.includes('Transfer')) return { bg: '#f3e8ff', text: '#7c3aed' }
   if (v.includes('Relapre') || v.includes('กลับซ้ำ')) return { bg: '#fce7f3', text: '#9d174d' }
   return { bg: '#f1f5f9', text: '#475569' }
 }
@@ -49,7 +49,7 @@ export default function PatientsPage() {
   const [search, setSearch] = useState('')
   const now = new Date()
   const currentThaiFY = String((now.getMonth() >= 9 ? now.getFullYear() + 1 : now.getFullYear()) + 543)
-  const [year, setYear] = useState(currentThaiFY)
+  const [year, setYear] = useState('')
   const [filterIP, setFilterIP] = useState('')
   const [filterType, setFilterType] = useState('')
   const [filterOutcome, setFilterOutcome] = useState('')
