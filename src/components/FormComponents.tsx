@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
   required?: boolean
+  error?: string
 }
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string
@@ -20,13 +21,14 @@ const inputClass = `
   transition-all placeholder-gray-400
 `
 
-export function FormInput({ label, required, ...props }: InputProps) {
+export function FormInput({ label, required, error, ...props }: InputProps) {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
         {label} {required && <span className="text-red-500 normal-case tracking-normal">*</span>}
       </label>
-      <input className={inputClass} required={required} {...props} />
+      <input className={inputClass + (error ? ' border-red-400 focus:ring-red-400' : '')} required={required} {...props} />
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   )
 }

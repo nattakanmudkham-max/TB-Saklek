@@ -4,6 +4,11 @@ import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { FormInput, FormSelect, FormTextArea, FormDateThai, SearchableSelect } from '@/components/FormComponents'
 
+function formatIdCard(v: string): string {
+  const d = v.replace(/\D/g, '').slice(0, 13)
+  return [d.slice(0,1), d.slice(1,5), d.slice(5,10), d.slice(10,12), d.slice(12,13)].filter(p => p).join('-')
+}
+
 const YEARS = [2575,2574,2573,2572,2571,2570,2569,2568,2567,2566,2565].map(y => ({ value: String(y), label: `ปีงบ ${y}` }))
 const CXR = ['ปกติ', 'ผิดปกติ', 'สงสัย TB', 'ไม่ได้ CXR'].map(v => ({ value: v, label: v }))
 const TYPES = ['ข้าราชการ', 'พนักงานกระทรวง', 'ลูกจ้างชั่วคราว', 'จ้างเหมาบริการ'].map(v => ({ value: v, label: v }))
@@ -248,7 +253,14 @@ export default function EditStaffPage() {
                 <FormInput label="ชื่อ-สกุล (เต็ม)" value={form.full_name} onChange={e => set('full_name', e.target.value)} />
               </div>
               <div style={{ gridColumn: '1 / -1' }}>
-                <FormInput label="หมายเลขบัตรประชาชน" value={form.id_card} onChange={e => set('id_card', e.target.value)} placeholder="X-XXXX-XXXXX-XX-X" />
+                <FormInput
+                  label="หมายเลขบัตรประชาชน"
+                  value={form.id_card}
+                  onChange={e => set('id_card', formatIdCard(e.target.value))}
+                  placeholder="X-XXXX-XXXXX-XX-X"
+                  maxLength={17}
+                  error={form.id_card && form.id_card.replace(/\D/g, '').length !== 13 ? 'กรุณากรอกเลขบัตรประชาชน 13 หลัก' : undefined}
+                />
               </div>
               {/* วันเกิด + อายุ */}
               <FormDateThai
