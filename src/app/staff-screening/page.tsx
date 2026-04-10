@@ -208,9 +208,9 @@ export default function StaffScreeningPage() {
                     borderBottom: '1px solid #f1f5f9',
                     background: i % 2 === 1 ? '#f8fafc' : '#fff',
                   }} className="table-row">
-                    <td style={{ padding: '11px 10px', color: '#94a3b8', fontSize: 12, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{rowNum}</td>
+                    <td style={{ padding: '11px 10px', color: '#334155', fontSize: 12, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{rowNum}</td>
                     <td style={{ padding: '11px 10px', color: '#334155', fontSize: 13, fontWeight: 700, textAlign: 'center', whiteSpace: 'nowrap' }}>{d.fiscal_year || '-'}</td>
-                    <td style={{ padding: '11px 10px', fontFamily: 'monospace', fontSize: 12, color: '#475569', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '11px 10px', fontFamily: 'monospace', fontSize: 12, color: '#334155', fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {d.hn ? String(Math.round(parseFloat(d.hn))).padStart(9, '0') : '-'}
                     </td>
                     <td style={{ padding: '11px 10px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left', fontSize: 13 }}>{d.full_name}</td>
@@ -221,7 +221,7 @@ export default function StaffScreeningPage() {
                       }
                     </td>
                     <td style={{ padding: '11px 12px', color: '#0f172a', fontSize: 13, fontWeight: 600 }}>{d.department || '-'}</td>
-                    <td style={{ padding: '9px 10px', color: '#475569', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
+                    <td style={{ padding: '9px 10px', color: '#334155', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12 }}>
                       {toThaiBE(d.cxr_date)}
                     </td>
                     <td style={{ padding: '9px 10px', textAlign: 'center' }}>
