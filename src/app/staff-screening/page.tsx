@@ -185,7 +185,7 @@ export default function StaffScreeningPage() {
                 ].map(h => (
                   <th key={h.label} style={{
                     textAlign: 'center', padding: '13px 12px',
-                    fontSize: 12, fontWeight: 700, color: '#e0f2fe',
+                    fontSize: 13, fontWeight: 800, color: '#ffffff',
                     letterSpacing: 0.5, whiteSpace: 'nowrap',
                   }}>{h.label}</th>
                 ))}
@@ -216,7 +216,7 @@ export default function StaffScreeningPage() {
                     <td style={{ padding: '11px 10px', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textAlign: 'left', fontSize: 13 }}>{d.full_name}</td>
                     <td style={{ padding: '11px 10px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {age !== null
-                        ? <span style={{ fontWeight: 700, color: '#0f172a', fontSize: 13 }}>{age}</span>
+                        ? <span style={{ fontWeight: 700, color: '#334155', fontSize: 13 }}>{age}</span>
                         : <span style={{ color: '#cbd5e1', fontSize: 12 }}>-</span>
                       }
                     </td>
