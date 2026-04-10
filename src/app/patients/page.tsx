@@ -54,6 +54,8 @@ export default function PatientsPage() {
   const [filterType, setFilterType] = useState('')
   const [filterOutcome, setFilterOutcome] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const PAGE_SIZE = 10
 
   useEffect(() => { fetchPatients() }, [year])
 
@@ -91,6 +93,12 @@ export default function PatientsPage() {
   })
 
   const hasFilter = filterIP || filterType || filterOutcome
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  // Reset to page 1 when filters/search change
+  useEffect(() => { setPage(1) }, [search, year, filterIP, filterType, filterOutcome])
 
   return (
     <div style={{ minHeight: '100vh', background: '#f1f5f9' }}>
@@ -216,17 +224,18 @@ export default function PatientsPage() {
                 <tr><td colSpan={14} style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>ไม่พบข้อมูล
                 </td></tr>
-              ) : filtered.map((p, i) => {
+              ) : paginated.map((p, i) => {
                 const oc = outcomeColor(p.treatment_outcome)
                 const pc = patientTypeColor(p.patient_type)
                 const isDeleting = deletingId === p.id
+                const rowNum = (page - 1) * PAGE_SIZE + i + 1
                 return (
                   <tr key={p.id} style={{
                     borderBottom: '1px solid #f1f5f9',
                     background: i % 2 === 1 ? '#fafbfc' : '#fff',
                     opacity: isDeleting ? 0.5 : 1,
                   }} className="table-row">
-                    <td style={{ padding: '7px 6px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{i + 1}</td>
+                    <td style={{ padding: '7px 6px', color: '#94a3b8', fontSize: 11, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>{rowNum}</td>
                     <td style={{ padding: '7px 6px', color: '#475569', fontSize: 12, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap' }}>
                       {p.fiscal_year ? `${p.fiscal_year}` : '-'}
                     </td>
@@ -286,8 +295,53 @@ export default function PatientsPage() {
               })}
             </tbody>
           </table>
-          <div style={{ padding: '10px 16px', fontSize: 12, color: '#94a3b8', borderTop: '1px solid #f1f5f9' }}>
-            แสดง {filtered.length} จาก {patients.length} รายการ
+          {/* Pagination */}
+          <div style={{ padding: '12px 16px', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+            <span style={{ fontSize: 12, color: '#94a3b8' }}>
+              แสดง {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} จาก {filtered.length} รายการ
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <button
+                onClick={() => setPage(1)}
+                disabled={page === 1}
+                style={{ padding: '5px 10px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === 1 ? '#f8fafc' : '#fff', color: page === 1 ? '#cbd5e1' : '#475569', cursor: page === 1 ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >«</button>
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                style={{ padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === 1 ? '#f8fafc' : '#fff', color: page === 1 ? '#cbd5e1' : '#475569', cursor: page === 1 ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >‹ ก่อนหน้า</button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 2)
+                .reduce<(number | '...')[]>((acc, n, idx, arr) => {
+                  if (idx > 0 && n - (arr[idx - 1] as number) > 1) acc.push('...')
+                  acc.push(n)
+                  return acc
+                }, [])
+                .map((n, idx) =>
+                  n === '...'
+                    ? <span key={`ellipsis-${idx}`} style={{ padding: '0 4px', color: '#94a3b8', fontSize: 12 }}>…</span>
+                    : <button key={n} onClick={() => setPage(n as number)} style={{
+                        padding: '5px 10px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                        border: page === n ? '1px solid #2563eb' : '1px solid #e2e8f0',
+                        background: page === n ? '#2563eb' : '#fff',
+                        color: page === n ? '#fff' : '#475569',
+                        minWidth: 34,
+                      }}>{n}</button>
+                )}
+
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                style={{ padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === totalPages ? '#f8fafc' : '#fff', color: page === totalPages ? '#cbd5e1' : '#475569', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >ถัดไป ›</button>
+              <button
+                onClick={() => setPage(totalPages)}
+                disabled={page === totalPages}
+                style={{ padding: '5px 10px', borderRadius: 8, border: '1px solid #e2e8f0', background: page === totalPages ? '#f8fafc' : '#fff', color: page === totalPages ? '#cbd5e1' : '#475569', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 12, fontWeight: 600 }}
+              >»</button>
+            </div>
           </div>
         </div>
       </div>
